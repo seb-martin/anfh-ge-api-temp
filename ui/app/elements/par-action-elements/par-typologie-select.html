@@ -1,0 +1,107 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-typologie-select">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+      }
+
+      paper-dropdown-menu {
+        width:100%        
+      }
+    </style>
+
+    <paper-dropdown-menu id="dropdown" label="[[label]]" required="[[required]]">
+      <paper-listbox class="dropdown-content" selected="{{_selected}}">
+        <template is="dom-repeat" items="[[_typos]]" as="_typo">
+          <paper-item>[[_typo.libelle]]</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-typologie-select',
+
+        behaviors: [
+          Polymer.IronFormElementBehavior,
+          Polymer.IronValidatableBehavior
+        ],
+
+        properties: {
+          label: {
+            type: String,
+            value: 'Typologie'
+          },
+          value: {
+            type: String,
+            notify: true,
+            observer: '_valueChanged'
+          },
+          _selected: {
+            type: Number,
+            observer: '_selectedChanged'
+          }
+        },
+
+        ready: function() {
+          this._typos = [
+            {
+              code: '1', 
+              libelle: 'Formation professionnelle initiale'
+            },
+            {
+              code: '2', 
+              libelle: 'Formation continue ou Développement des connaissances et des compétences'
+            },
+            {
+              code: '3', 
+              libelle: 'Préparation concours et examens'
+            },
+            {
+              code: '5', 
+              libelle: 'Action de conversion'
+            }
+          ];
+        },
+
+        // Overidden from Polymer.IronValidatableBehavior. Will set the `invalid`
+        // attribute automatically, which should be used for styling.
+        _getValidity: function() {
+          return this.$.dropdown.validate();
+        },
+
+        _valueChanged: function(typo) {
+          console.log('valueChanged', typo);
+          if (typo) {
+            var idx = this._typos.findIndex(function(t) {
+              return typo === t.code;
+            });
+
+            if (idx !== this._selected) {
+              this._selected = idx;
+            }
+          }
+        },
+
+        _selectedChanged: function(index) {
+          if (typeof index === 'number' && index >= 0) {
+            if (this._typos[index].code !== this.value) {
+              this.value = this._typos[index].code;
+            }
+          } else {
+            this.value = null;
+          }
+        }
+
+      });
+    })();
+  </script>
+
+</dom-module>

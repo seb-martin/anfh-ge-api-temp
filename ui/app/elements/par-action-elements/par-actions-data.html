@@ -1,0 +1,233 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-actions-data">
+
+  <template>
+    <par-globals id="globals"></par-globals>
+
+    <iron-ajax
+      id="actionsData"
+      auto
+      method="POST"
+      url="{{_searchUrl}}"
+      contentType="application/json"
+      body="{{_bodyString(codeRegion, exercice, from, size)}}"
+      debounceDuration="300"
+      handleAs="json"
+      on-loading-changed="_handleLoading"
+      on-response="_handleResponse"
+      ></iron-ajax>
+
+    <iron-ajax
+      id="actionsCreate"
+      method="POST"
+      url="{{_baseUrl}}",
+      params="{{_computeCreateParams()}}"
+      contentType="application/json"
+      handleAs="json"
+      on-loading-changed="_handleLoading"
+      on-response="_handleCreateResponse"
+      ></iron-ajax>
+
+    <iron-ajax
+      id="actionsUpdate"
+      method="PUT"
+      params="{{_computeUpdateParams()}}"
+      contentType="application/json"
+      handleAs="json"
+      on-loading-changed="_handleLoading"
+      on-response="_handleUpdateResponse"
+      ></iron-ajax>
+
+    <iron-ajax
+      id="actionsDelete"
+      method="DELETE"
+      params="{{_computeDeleteParams()}}"
+      contentType="application/json"
+      handleAs="json"
+      on-loading-changed="_handleLoading"
+      on-response="_handleDeleteResponse"
+      ></iron-ajax>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-actions-data',
+
+        properties: {
+          loading: {
+            type: Boolean,
+            reflectToAttribute: true,
+            notify: true,
+            readOnly: true
+          },
+
+          codeRegion: {
+            type: Object
+          },
+
+          exercice: {
+            type: Number
+          },
+
+          from: {
+            type: Number,
+            value: 0
+          },
+
+          size: {
+            type: Number,
+            value: 100
+          },
+
+          actions: {
+            type: Array,
+            notify: true,
+            readOnly: true
+          }
+        },
+
+        ready: function() {
+          this._baseUrl = this.$.globals.esHost + '/par/actions';
+          this._searchUrl = this._baseUrl + '/_search';
+        },
+
+        _bodyString: function(codeRegion, exercice, from, size) {
+          var body = {
+            from: from || 0,
+            size: size || 100,
+            sort: [
+              {'region': {order: 'asc'}},
+              {'exercice': {order: 'asc'}},
+              {'axe': {order: 'asc'}}
+            ]
+          };
+
+          if (codeRegion || exercice) {
+            body.query = {
+              bool: {
+                filter: []
+              }
+            };
+
+            if (codeRegion) {
+              body.query.bool.filter.push({term: {'region': codeRegion}});
+            }
+
+            if (exercice) {
+              body.query.bool.filter.push({term: {'exercice': exercice}});
+            }
+          }
+
+          return JSON.stringify(body);
+        },
+
+        _handleLoading: function(evt) {
+          this._setLoading(evt.detail.value);
+        },
+
+        _handleResponse: function(evt) {
+          if (!!evt.detail.response) {
+            this._setActions(this._mapSearchResp(evt.detail.response));
+          } else {
+            this._setActions([]);
+          }
+        },
+
+        refresh: function() {
+          this.$.actionsData.generateRequest();
+        },
+
+        _mapSearchResp: function(resp) {
+          var self = this;
+
+          if (!!resp) {
+            return resp.hits.hits.map(function(resp) {
+              return self._mapHit(resp);
+            });
+            
+          } else {
+            return [];
+          }
+        },
+
+        _mapHit: function(hit) {
+          // On ajoute à l'action son id ES
+          // - facilite la recherche
+          // - différencie une nouvelle action
+          hit._source._id = hit._id;
+          return hit._source;
+        },
+
+        _computeCreateParams: function() {
+          return {refresh: true};
+        },
+
+        creer: function(action) {
+          if (!action) {
+            throw 'L\'argument action est requis';
+          }
+
+          this.$.actionsCreate.body = JSON.stringify(action);
+          this.$.actionsCreate.generateRequest();
+
+        },
+
+        _handleCreateResponse: function() {
+          // Un axe a été créé, on rafraîchit la liste des axes
+          this.refresh();
+        },
+
+        _computeUpdateParams: function() {
+          return {refresh: true};
+        },
+
+        modifier: function(action) {
+          if (!action) {
+            throw 'L\'argument action est requis';
+          }
+
+          // L'id est retiré du document avant sa mise à jour
+          // L'id est conservé pour réaliser l'indexage du document
+          var _id = action._id;
+          delete action._id;
+
+          this.$.actionsUpdate.url = this._baseUrl + '/' + _id;
+          this.$.actionsUpdate.body = JSON.stringify(action);
+          this.$.actionsUpdate.generateRequest();
+
+        },
+
+        _handleUpdateResponse: function() {
+          // Une action a été modifiée, on rafraîchit la liste des actions
+          this.refresh();
+        },
+
+        _computeDeleteParams: function() {
+          return {refresh: true};
+        },
+
+        supprimer: function(action) {
+          if (!action) {
+            throw 'L\'argument action est requis';
+          }
+
+          this.$.actionsDelete.url = this._baseUrl + '/' + action._id;
+          this.$.actionsDelete.generateRequest();
+        },
+
+        _handleDeleteResponse: function() {
+          // Une action a été supprimée, on rafraîchit la liste des actions
+          this.refresh();
+        }
+
+      });
+
+    })();
+  </script>
+
+</dom-module>

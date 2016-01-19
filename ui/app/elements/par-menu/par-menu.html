@@ -1,0 +1,152 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-menu">
+
+  <template>
+
+    <style include="shared-styles"></style>
+
+    <style>
+      :root {
+      }
+
+      paper-menu iron-icon {
+        opacity: 0.54;
+        margin-right: 5px;
+        
+      }
+
+      paper-menu par-pastille {
+        --par-pastille-mixin: {
+          opacity: 0.54;
+          background-color: black;
+          color: #ffffff;
+          width: 24px;
+          height: 24px;
+          line-height: 24px;
+          font-size: 10px;
+          margin-right: 5px;
+        };
+      }
+
+      .par-menu .iron-selected {
+        color: var(--default-primary-color);
+      }
+
+      .par-menu .iron-selected par-pastille {
+          background-color: var(--default-primary-color);
+      }
+
+      paper-menu paper-item {
+        color: var(--menu-link-color);
+        font-family: 'Roboto', 'Noto', sans-serif;
+        -webkit-font-smoothing: antialiased;
+        text-rendering: optimizeLegibility;
+        font-size: 14px;
+        font-weight: 400;
+      }
+
+    </style>
+
+    <paper-menu id="parMenu" class="list" selected="{{selectedIndex}}">
+
+      <paper-item>
+        <iron-icon icon="home"  item-icon></iron-icon>
+        <span>Délégations</span>
+      </paper-item>
+
+      <template is="dom-repeat" items="{{regions}}">
+
+        <paper-item>
+          <par-pastille item-icon>{{item.code}}</par-pastille>
+          <!-- <iron-icon icon="home" item-icon></iron-icon> -->
+          <span>{{item.denomination}}</span>
+        </paper-item>
+
+      </template>
+
+    </paper-menu>
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-menu',
+
+      properties: {
+
+        regions: {
+          type: Array
+        },
+
+        s: {
+          type: Object,
+          observer: '_sChanged'
+        },
+
+        selectedRegion: {
+          type: Object,
+          notify: true,
+          observer: '_selectedRegionChanged'
+        },
+        
+        selectedIndex: {
+          type: Number,
+          readonly: true,
+          value: 0,
+          observer: '_selectedIndexChanged'
+        }
+        
+      },
+
+      _selectedIndexChanged: function(newValue) {
+
+        if (newValue > 0) {
+          var newRegion = this.regions[newValue - 1];
+          if (!this.selectedRegion || newRegion.code !== this.selectedRegion.code) {
+            this.selectedRegion = newRegion;
+          }
+        } else {
+          if (this.selectedRegion) {
+            this.selectedRegion = null;
+          }
+        }
+      },
+
+      ready: function() {
+
+      },
+
+      _selectedRegionChanged: function() {
+        var self = this;
+
+        if (this.selectedRegion) {
+
+          var idx = this.regions.findIndex(function(r) {
+            return self.selectedRegion.code === r.code;
+          });
+
+          // idx est égal à -1 si aucune région n'est trouvée
+          // On sélectionne l'item à idx + 1 pour le décalage provoqué par l'item de menu 'Régions'
+          // - Si la région n'a pas été trouvé, sélection de l'item 0
+          var idx1 = idx + 1;
+
+          if (idx1 !== this.$.parMenu.selected) {
+            this.$.parMenu.select(idx1);
+          }
+
+        } else {
+          if (0 !== this.$.parMenu.selected) {
+            this.$.parMenu.select(0);
+          }
+        }
+      }
+
+    });
+  })();
+
+  </script>
+
+</dom-module>

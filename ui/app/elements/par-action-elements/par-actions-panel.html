@@ -1,0 +1,250 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-actions-panel">
+  <template>
+
+    <style include="shared-styles"></style>
+
+    <style>
+    :host {
+      display: block;
+
+      --par-pastille-mixin: {
+        background-color: #3F51B5;
+        /* #3F51B5 */
+        color: #ffffff;
+      }
+    }
+
+    paper-fab#backFab {
+      position: fixed;
+      z-index: 4;
+    }
+
+    paper-fab#newFab {
+      margin: 5px;
+      position:fixed;
+      bottom: 60px;
+      right:60px;
+      z-index: 4;
+    }
+
+    .content {
+      max-width: 800px; 
+      margin-left: auto;
+      margin-right: auto
+    }
+    
+    paper-card {
+      width: 100%;
+    }
+
+    .card-content {
+      padding: 0;
+      
+    }
+
+    paper-icon-item {
+      height: 80px;
+
+/*       font-family: 'Roboto', 'Noto', sans-serif;
+-webkit-font-smoothing: antialiased;
+text-rendering: optimizeLegibility;
+font-size: 14px;
+font-weight: 400;
+ */
+      border-bottom: 1px solid #dedede;
+      background-color: #fff;
+
+    }
+
+    paper-icon-button:hover {
+      color: var(--accent-color);
+    }
+
+    .item.selected {
+      color: var(--default-primary-color);
+      font-weight: 900;
+    }
+
+    iron-icon[item-icon] {
+      width: 32px;
+      height: 32px;
+      color: var(--default-primary-color);
+    }
+    
+
+
+
+    </style>
+
+    <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+    <paper-fab id="newFab" icon="icons:create" on-tap="_newTap"></paper-fab>
+
+    <div class="content">
+
+      <template is="dom-if" if="{{!actions.length}}">
+        <paper-card elevation="1" heading="Ici viendra se dresser la liste des actions.">
+
+        </paper-card>
+      </template>
+      <template is="dom-if" if="{{actions.length}}">
+        <paper-card elevation="1">
+          <div class="card-content">
+
+            <iron-list id="actionsList" items="{{actions}}" as="action" selection-enabled selected-item="{{selectedAction}}">
+              <template>
+                <paper-icon-item class$="[[_computedClass(selected)]]" on-tap="_editTap">
+
+                  <iron-icon icon="icons:group-work" item-icon></iron-icon>
+
+
+                  <paper-item-body class="flex" two-line>
+                    <div>{{action.intitule}}</div>
+                    <div secondary>{{action.contexte}}</div>
+                  </paper-item-body>
+
+                  <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
+                  <paper-ripple class="circle" recenters></paper-ripple>
+                </paper-icon-item>
+              </template>
+            </iron-list>
+          </div>
+
+        </paper-card>
+
+      </template>
+    </div>
+
+
+
+    <paper-dialog id="confirmation">
+      <h2>Confirmation</h2>
+      <p>Etes-vous sûr de vouloir supprimer définitivement l'action <em>{{selectedAction.intitule}}</em> du plan de formations <em>{{selectedAction.exercice}}</em> ?</p>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus on-tap="_confirmDeleteTap">Oui</paper-button>
+        <paper-button dialog-dismiss on-tap="_cancelDeleteTap">Non</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-actions-panel',
+
+      properties: {
+        actions: {
+          type: Array,
+          observer: '_actionsChanged'
+        },
+
+        selectedAction: {
+          type: Object,
+          notify: true,
+          observer: '_selectedActionChanged'
+        }
+      },
+
+      created: function() {
+      },
+
+      ready: function() {
+
+      },
+
+      _computedClass: function(isSelected) {
+        var classes = 'item';
+        if (isSelected) {
+          classes += ' selected';
+        }
+        return classes;
+      },
+
+      _actionsChanged: function(/*actions*/) {
+        // http://stackoverflow.com/questions/32575919/polymer-iron-list-iterates-but-not-printing
+        var actionsList = this.querySelector('#actionsList');
+        if (actionsList) {
+          actionsList.fire('refresh');
+        }
+      },
+
+      _selectedActionChanged: function(action) {
+        var self = this;
+        var actionsList = this.querySelector('#actionsList');
+
+        if (action) {
+          if (this._command) {
+            this.async(function() {
+              if (self._command === 'delete') {
+                self._command = null;
+                self.$.confirmation.open();
+              } else if (self._command === 'edit') {
+                self._command = null;
+                self.fire('edit');
+              }
+
+            });
+
+          }
+
+        } else {
+          if (actionsList) {
+            actionsList.clearSelection();
+          }
+        }
+
+      },
+
+      _backTap: function(/* e */) {
+        var self = this;
+
+        this.async(function() {
+          self.fire('back');
+        });
+      },
+
+      _newTap: function() {
+        var self = this;
+
+        this.async(function() {
+          self.fire('new');
+        });
+
+      },
+
+      _deleteTap: function(/*e*/) {
+        this._command = 'delete';
+      },
+
+      _editTap: function(/*e*/) {
+        if (!this._command) {
+          this._command = 'edit';
+        }
+      },
+
+      _confirmDeleteTap: function(/*e*/) {
+        var self = this;
+
+        this.async(function() {
+          self.fire('delete');
+        });
+      },
+
+      _cancelDeleteTap: function() {
+        var actionsList = this.querySelector('#actionsList');
+
+        if (actionsList) {
+          actionsList.clearSelection();
+        }
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

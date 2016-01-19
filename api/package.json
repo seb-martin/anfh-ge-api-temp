@@ -1,0 +1,15 @@
+{
+  "name": "api",
+  "version": "0.0.1",
+  "description": "",
+  "dependencies": {
+    "body-parser": "^1.14.1",
+    "elasticsearch": "^10.0.1",
+    "express": "^4.13.3",
+    "underscore": "^1.8.3"
+  },
+  "scripts": {
+    "prestart": "npm install",
+    "start": "node server.js"
+  }
+}

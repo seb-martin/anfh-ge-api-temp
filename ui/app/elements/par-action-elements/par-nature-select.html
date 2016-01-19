@@ -1,0 +1,94 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-nature-select">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+      }
+
+      paper-dropdown-menu {
+        width:100%        
+      }
+
+    </style>
+
+    <paper-dropdown-menu label="[[label]]" required="[[required]]">
+      <paper-listbox class="dropdown-content" selected="{{_selected}}">
+        <template is="dom-repeat" items="[[_natures]]" as="_nature">
+          <paper-item>[[_nature.libelle]]</paper-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-nature-select',
+
+        behaviors: [
+          Polymer.IronFormElementBehavior,
+          Polymer.IronValidatableBehavior
+        ],
+
+        properties: {
+          label: {
+            type: String,
+            value: 'Nature'
+          },
+          value: {
+            type: String,
+            notify: true,
+            observer: '_valueChanged'
+          },
+          default: {
+            type: String
+          },
+          _selected: {
+            type: Number,
+            observer: '_selectedChanged'
+          }
+        },
+
+        ready: function() {
+          this._natures = [
+            {code: 'N', libelle: 'Nationale'},
+            {code: 'R', libelle: 'Régionale'}
+          ];
+
+          if (!this.value) {
+            this.value = this.default;
+          }
+        },
+
+        _valueChanged: function(nature) {
+          if (nature) {
+            var idx = this._natures.findIndex(function(n) {
+              return nature === n.code;
+            });
+
+            if (idx !== this._selected) {
+              this._selected = idx;
+            }
+          }
+        },
+
+        _selectedChanged: function(index) {
+          if (typeof index === 'number' && index >= 0) {
+            if (this._natures[index].code !== this.value) {
+              this.value = this._natures[index].code;
+            }
+          } else {
+            this.value = null;
+          }
+        }
+
+      });
+    })();
+  </script>
+
+</dom-module>

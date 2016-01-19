@@ -1,0 +1,66 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-marked-textarea">
+  <template>
+    <div class="layout horizontal end">
+      <paper-textarea class="flex" label="[[label]]" char-counter maxlength="4000" value="{{value}}"></paper-textarea>
+      <paper-icon-button icon$="[[_computeIcon(showPreview)]]" alt="" title$="[[_computeTitle(showPreview)]]" on-tap="_togglePreview"></paper-icon-button>
+    </div>
+
+    <template is="dom-if" if="{{showPreview}}">
+      <marked-element markdown="{{value}}">
+        <div class="markdown-html"></div>
+      </marked-element>
+    </template>
+    
+  </template>
+
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-marked-textarea',
+
+      behaviors: [
+        Polymer.IronFormElementBehavior,
+        Polymer.IronValidatableBehavior
+      ],
+
+      properties: {
+        label: {
+          type: String
+        },
+
+        showPreview: {
+          type: Boolean,
+          value: false,
+          observer: '_showPreviewChanged'
+        }
+      },
+
+      _computeIcon: function(showPreview) {
+        return showPreview ? 'icons:visibility-off' : 'icons:visibility';
+      },
+
+      _computeTitle: function(showPreview) {
+        return showPreview ? 'Maquer l\'aperçu' : 'Afficher l\'aperçu';
+      },
+
+      _togglePreview: function() {
+        console.log('_togglePreview');
+        this.showPreview = !this.showPreview;
+      },
+
+      _showPreviewChanged: function(/*preview*/) {
+        // console.log('_showPreviewChanged', preview);
+
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

@@ -1,0 +1,39 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-pastille">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: inline-block;
+        position: relative;
+        width: 40px;
+        height: 40px;
+        line-height: 40px;
+        border-radius: 50%;
+        overflow: hidden;
+        text-align: center;
+        vertical-align: middle;
+        background-color: #ccc;
+        /*
+        background-color: var(--par-pastille-background-color, #ccc);
+        color: var(--par-pastille-color);
+        */
+        @apply(--par-pastille-mixin)
+      }
+
+    </style>
+    <content></content>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-pastille'
+      });
+    })();
+  </script>
+
+</dom-module>

@@ -1,0 +1,126 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-regions-panel">
+  <template>
+
+    <style include="shared-styles"></style>
+
+    <style>
+    :host {
+      display: block;
+    }
+
+    .content {
+      max-width: 800px; 
+      margin-left: auto;
+      margin-right: auto
+    }
+
+    paper-material {
+      width: 100%;
+      padding: 0;
+    }
+
+    par-pastille {
+      --par-pastille-mixin: {
+        background-color: #3F51B5;
+        color: #ffffff;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 13px;
+      };
+    }
+
+    paper-icon-item {
+      height: 80px;
+
+/*       font-family: 'Roboto', 'Noto', sans-serif;
+-webkit-font-smoothing: antialiased;
+text-rendering: optimizeLegibility;
+font-size: 14px;
+font-weight: 400;
+ */
+      border-bottom: 1px solid #dedede;
+      background-color: #fff;
+    }
+
+
+
+    .item.selected {
+      color: var(--default-primary-color);
+      font-weight: 900;
+    }
+
+
+    </style>
+
+    <div class="content">
+      
+      <paper-material elevation="1">
+        <iron-list id="regionsList" items="{{regions}}" as="region" selection-enabled selected-item="{{selectedRegion}}">
+          <template>
+            <paper-icon-item class$="[[_computedClass(selected)]]">
+              <par-pastille item-icon>{{region.code}}</par-pastille>
+              {{region.denomination}}
+              <paper-ripple class="circle" recenters></paper-ripple>
+            </paper-icon-item>
+          </template>
+        </iron-list>
+      </paper-material>
+    </div>
+
+
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-regions-panel',
+
+      properties: {
+        regions: {
+          type: Array,
+          observer: '_regionsChanged'
+        },
+
+        selectedRegion: {
+          type: Object,
+          notify: true,
+          observer: '_selectedRegionChanged'
+        }
+        
+      },
+
+      _computedClass: function(isSelected) {
+        var classes = 'item';
+        if (isSelected) {
+          classes += ' selected';
+        }
+        return classes;
+      },
+
+      _selectedRegionChanged: function(region) {
+        var self = this;
+        if (!region) {
+          this.$.regionsList.clearSelection();
+        }
+
+        this.async(function() {
+          self.fire('show-region');
+        });
+      },
+
+      _regionsChanged: function(/*regions*/) {
+        // http://stackoverflow.com/questions/32575919/polymer-iron-list-iterates-but-not-printing
+        this.$.regionsList.fire('resize');
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

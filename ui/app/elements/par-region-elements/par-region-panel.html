@@ -1,0 +1,137 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-region-panel">
+
+  <style include="shared-styles"></style>
+
+  <style>
+  :root {
+    /* paper-menu */
+    --paper-menu-background-color: #fff;
+    --menu-link-color: #111111;
+    /*--menu-link-color: --primary-color;*/
+  }
+
+  .content {
+    max-width: 800px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+
+  .content > paper-card {
+    width: 100%;
+  }
+
+  paper-menu iron-icon {
+    margin-right: 33px;
+    opacity: 0.54;
+  }
+
+  .par-pars .iron-selected {
+    color: var(--default-primary-color);
+  }
+
+  paper-icon-item {
+    height: 80px;
+
+/*       font-family: 'Roboto', 'Noto', sans-serif;
+-webkit-font-smoothing: antialiased;
+text-rendering: optimizeLegibility;
+font-size: 14px;
+font-weight: 400;
+ */
+    border-top: 1px solid #dedede;
+    background-color: #fff;
+
+  }
+
+  iron-icon[item-icon] {
+    width: 32px;
+    height: 32px;
+    color: var(--default-primary-color);
+  }
+
+  </style>
+
+
+  <template>
+
+    <div class="content">
+
+      <template is="dom-repeat" items={{exercices}} as="exercice">
+
+        <paper-card elevation$="[[_computeElevation(exercice)]]" heading="Plan d'Actions Régional {{exercice}}">
+
+          <paper-icon-item data-action$="axes" on-tap="_axesTap">
+            <iron-icon icon="icons:explore" item-icon></iron-icon>
+            <paper-item-body class="flex">
+              <div>Axes</div>
+            </paper-item-body>
+            <paper-ripple class="circle" recenters></paper-ripple>
+          </paper-icon-item>
+          <paper-icon-item data-action$="actions" on-tap="_actionsTap">
+            <iron-icon icon="icons:group-work" item-icon></iron-icon>
+            <span>Actions</span>
+            <paper-ripple class="circle" recenters></paper-ripple>
+          </paper-icon-item>
+        </paper-card>
+
+        <div style="height: 20px"></div>
+
+      </template>
+    </div>
+
+
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-region-panel',
+
+      properties: {
+        region: {
+          type: Object
+        },
+        exercices: {
+          type: Array
+        },
+        selectedExercice: {
+          type: Number,
+          readOnly: true,
+          notify: true
+        }
+      },
+
+      ready: function() {
+      },
+
+      _computeElevation: function(exercice) {
+        var now = new Date();
+        return exercice === now.getFullYear() ? 3 : 1;
+      },
+
+      _axesTap: function(e) {
+        var self = this;
+        this._setSelectedExercice(e.model.exercice);
+        this.async(function() {
+          self.fire('show-axes');
+        });
+      },
+
+      _actionsTap: function(e) {
+        var self = this;
+        this._setSelectedExercice(e.model.exercice);
+        this.async(function() {
+          self.fire('show-actions');
+        });
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

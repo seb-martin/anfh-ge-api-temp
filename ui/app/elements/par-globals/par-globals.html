@@ -1,0 +1,29 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-globals">
+  <script>
+    (function() {
+      'use strict';
+
+      var esHost = 'http://localhost:9200';
+
+      var baseUrl = '/';
+      if (window.location.port === '') {  // if production
+        // Uncomment app.baseURL below and
+        // set baseURL to '/your-pathname/' if running from folder in production
+        // baseUrl = '/polymer-starter-kit/';
+      }
+
+      Polymer({
+        is: 'par-globals',
+
+        created: function() {
+          this.esHost = esHost;
+          this.baseUrl = baseUrl;
+        }
+
+      });
+    })();
+  </script>
+
+</dom-module>

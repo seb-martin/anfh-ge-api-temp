@@ -1,0 +1,52 @@
+{"index":{"_index":"par", "_type":"regions", "_id":"ALP"}}
+{ "code": "ALP", "denomination": "Alpes" }
+{"index":{"_index":"par", "_type":"regions", "_id":"ALS"}}
+{ "code": "ALS", "denomination": "Alsace" }
+{"index":{"_index":"par", "_type":"regions", "_id":"AQU"}}
+{ "code": "AQU", "denomination": "Aquitaine" }
+{"index":{"_index":"par", "_type":"regions", "_id":"AUV"}}
+{ "code": "AUV", "denomination": "Auvergne" }
+{"index":{"_index":"par", "_type":"regions", "_id":"BAS"}}
+{ "code": "BAS", "denomination": "Basse-Normandie" }
+{"index":{"_index":"par", "_type":"regions", "_id":"BGN"}}
+{ "code": "BGN", "denomination": "Bourgogne" }
+{"index":{"_index":"par", "_type":"regions", "_id":"BRE"}}
+{ "code": "BRE", "denomination": "Bretagne" }
+{"index":{"_index":"par", "_type":"regions", "_id":"CEN"}}
+{ "code": "CEN", "denomination": "Centre" }
+{"index":{"_index":"par", "_type":"regions", "_id":"CHA"}}
+{ "code": "CHA", "denomination": "Champagne-Ardenne" }
+{"index":{"_index":"par", "_type":"regions", "_id":"COR"}}
+{ "code": "COR", "denomination": "Corse" }
+{"index":{"_index":"par", "_type":"regions", "_id":"DGY"}}
+{ "code": "DGY", "denomination": "Guyane" }
+{"index":{"_index":"par", "_type":"regions", "_id":"FRA"}}
+{ "code": "FRA", "denomination": "Franche-Comté" }
+{"index":{"_index":"par", "_type":"regions", "_id":"DMA"}}
+{ "code": "DMA", "denomination": "Martinique" }
+{"index":{"_index":"par", "_type":"regions", "_id":"HAU"}}
+{ "code": "HAU", "denomination": "Haute-Normandie" }
+{"index":{"_index":"par", "_type":"regions", "_id":"LAN"}}
+{ "code": "LAN", "denomination": "Languedoc-Rousillon" }
+{"index":{"_index":"par", "_type":"regions", "_id":"IDF"}}
+{ "code": "IDF", "denomination": "Ile-De-France" }
+{"index":{"_index":"par", "_type":"regions", "_id":"LIM"}}
+{ "code": "LIM", "denomination": "Limousin" }
+{"index":{"_index":"par", "_type":"regions", "_id":"LOR"}}
+{ "code": "LOR", "denomination": "Lorraine" }
+{"index":{"_index":"par", "_type":"regions", "_id":"MID"}}
+{ "code": "MID", "denomination": "Midi-Pyrénées" }
+{"index":{"_index":"par", "_type":"regions", "_id":"NOR"}}
+{ "code": "NOR", "denomination": "Nord-Pas-De-Calais" }
+{"index":{"_index":"par", "_type":"regions", "_id":"PAY"}}
+{ "code": "PAY", "denomination": "Pays de la Loire" }
+{"index":{"_index":"par", "_type":"regions", "_id":"PIC"}}
+{ "code": "PIC", "denomination": "Picardie" }
+{"index":{"_index":"par", "_type":"regions", "_id":"POI"}}
+{ "code": "POI", "denomination": "Poitou-Charentes" }
+{"index":{"_index":"par", "_type":"regions", "_id":"PRO"}}
+{ "code": "PRO", "denomination": "Provence-Côte-D'Azur" }
+{"index":{"_index":"par", "_type":"regions", "_id":"REU"}}
+{ "code": "REU", "denomination": "Océan Indien" }
+{"index":{"_index":"par", "_type":"regions", "_id":"RHO"}}
+{ "code": "RHO", "denomination": "Rhône" }

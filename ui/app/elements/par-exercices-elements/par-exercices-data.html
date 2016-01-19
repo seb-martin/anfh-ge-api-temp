@@ -1,0 +1,26 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-exercices-data">
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-exercices-data',
+
+        properties: {
+          exercices: {
+            type: Array,
+            notify: true,
+            readOnly: true,
+            value: function() {
+              var currentYear = (new Date()).getFullYear();
+              return [currentYear - 1, currentYear, currentYear + 1, currentYear + 2];
+            }
+          }
+        }
+      });
+
+    })();
+  </script>
+</dom-module>

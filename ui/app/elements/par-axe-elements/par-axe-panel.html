@@ -1,0 +1,139 @@
+
+
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-axe-panel">
+  <template>
+
+    <style include="shared-styles"></style>
+    
+    <style>
+    :host {
+      display: block;
+    }
+
+    paper-fab#backFab {
+      position: fixed;
+      z-index: 100;
+      
+    }
+
+    .content {
+      max-width: 800px; 
+      margin-left: auto; 
+      margin-right: auto;
+    }
+
+    paper-card {
+      width: 100%;
+    }
+
+
+    </style>
+
+    <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+
+    <div class="content">
+
+      <paper-card heading="{{axe.intitule}}">
+        <form is="iron-form" id="axeForm">
+
+          <div class="card-content">
+            <paper-input name="num" label="Numéro" required auto-validate pattern="[1-9][0-9]*" allowed-pattern="[0-9]" value="{{_dirty.num}}"></paper-input>
+            <paper-input name="intitule" label="Intitulé sur 250 caractères maximum" required char-counter maxlength="250" auto-validate value="{{_dirty.intitule}}"></paper-input>
+          </div>
+
+          <div class="card-actions layout horizontal">
+            <div class="flex"></div>
+            <template is="dom-if" if="{{!_dirty._id}}">
+              <paper-button on-tap="_createTap">Créer</paper-button>
+            </template>
+            <template is="dom-if" if="{{_dirty._id}}">
+              <paper-button on-tap="_updateTap">Modifier</paper-button>
+            </template>
+            <paper-button on-tap="_cancelTap">Annuler</paper-button>
+          </div>
+
+        </form>
+      </paper-card>
+
+    </div>
+
+  </template>
+
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-axe-panel',
+
+      properties: {
+        axe: {
+          type: Object,
+          notify: true,
+          observer: '_axeChanged'
+        }
+
+      },
+
+      _axeChanged: function(axe) {
+        
+        var dirty;
+        if (axe) {
+          dirty = {};
+          for (var attr in axe) {
+            if (this.axe.hasOwnProperty(attr)) {
+              dirty[attr] = axe[attr];
+            }
+          }
+          
+        } else {
+          dirty = null;
+        }
+
+        this._dirty = dirty;
+
+      },
+
+      _backTap: function(/* e */) {
+        var self = this;
+        this._dirty = null;
+        this.async(function() {
+          self.fire('back');
+        });
+      },
+
+      _cancelTap: function(/* e */) {
+        var self = this;
+        this._dirty = null;
+        this.async(function() {
+          self.fire('cancel');
+        });
+      },
+
+      _createTap: function() {
+        var self = this;
+        if (this.$.axeForm.validate()) {
+          this.axe = this._dirty;
+          this.async(function() {
+            self.fire('create');
+          });
+        }
+      },
+
+      _updateTap: function() {
+        var self = this;
+        if (this.$.axeForm.validate()) {
+          this.axe = this._dirty;
+          this.async(function() {
+            self.fire('update');
+          });
+        }
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

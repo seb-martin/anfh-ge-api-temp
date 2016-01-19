@@ -1,0 +1,58 @@
+{
+  "mappings": {
+    "regions": {
+      "properties": {
+        "code": { "type": "string", "index":"not_analyzed" },
+        "denomination": { "type": "string"  }
+      }
+    },
+    "axes": {
+      "properties": {
+        "region": { "type": "string", "index":"not_analyzed" },
+        "exercice": { "type": "integer", "index":"not_analyzed"  },
+        "num": { "type": "integer", "index":"not_analyzed"  },
+        "intitule": { "type": "string"  }
+      }
+    },
+    "actions": {
+      "properties": {
+        "region": { "type": "string", "index":"not_analyzed" },
+        "exercice": { "type": "integer", "index":"not_analyzed"  },
+        "axe": { "type": "string", "index":"not_analyzed" },
+        "intitule": { "type": "string"  },
+        "contexte": { "type": "string"  },
+        "objectifs": { "type": "string"  },
+        "programme": { "type": "string"  },
+        "duree": { "type": "string"  },
+        "typologie": { "type": "string", "index":"not_analyzed" },
+        "publics": { "type": "string" },
+        "nature": { "type": "string" },
+        "titulaire": { "type": "string" },
+        "modules": {
+          "properties": {
+            "intitule": { "type": "string"  },
+            "contexte": { "type": "string"  },
+            "objectifs": { "type": "string"  },
+            "programme": { "type": "string"  },
+            "duree": { "type": "string"  },
+            "formateur": { "type": "string" },
+            "publics": { "type": "string"  }
+          }
+        },
+        "groupes": {
+          "properties": {
+            "num": { "type": "integer"  },
+            "sessions": {
+              "properties": {
+                "debut": { "type": "date", "format": "yyyy-MM-dd"  },
+                "fin": { "type": "date", "format": "yyyy-MM-dd"  },
+                "ville": { "type": "string"  }
+              }
+            }
+          }
+        }
+
+      }
+    }
+  }
+}

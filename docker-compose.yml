@@ -1,0 +1,46 @@
+environnement:
+  API_PORT: 80
+  DB_HOST: db
+  DB_PORT: 9200
+
+proxy:
+  image: nginx
+  ports:
+   - "80:80"
+   - "81:81"
+  volumes:
+   - ./proxy/nginx.conf:/etc/nginx/nginx.conf:ro
+  links:
+   - ui:ui
+   - api:api
+
+
+ui:
+  image: nginx
+  volumes:
+   - ./ui/nginx.conf:/etc/nginx/nginx.conf:ro
+   - ./ui/app:/etc/nginx/html/
+  links:
+   - db:db
+
+api:
+  # build: ./api
+  image: node:5.2.0
+  command: npm start
+  expose:
+   - "80"
+  volumes:
+   - ./api:/usr/src/app
+  working_dir: /usr/src/app
+  links:
+   - db:db
+
+
+db:
+  image: elasticsearch
+  ports:
+   - "9200:9200"
+   - "9300:9300"
+  volumes:
+    # - ./db/config":/usr/share/elasticsearch/config
+    - ./db/data:/usr/share/elasticsearch/data

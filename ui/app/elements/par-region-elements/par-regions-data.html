@@ -1,0 +1,79 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-regions-data">
+
+  <template>
+    <par-globals id="globals"></par-globals>
+
+    <iron-ajax
+        id="regionsData"
+        auto
+        url="{{_url}}"
+        method="POST"
+        contentType="application/json"
+        body="{{_body}}"
+        debounceDuration="300"
+        handleAs="json"
+        on-loading-changed="_handleLoading"
+        on-response="_handleResponse"
+        ></iron-ajax>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-regions-data',
+
+        properties: {
+          loading: {
+            type: Boolean,
+            reflectToAttribute: true,
+            notify: true,
+            readOnly: true
+          },
+
+          regions: {
+            type: Array,
+            notify: true,
+            readOnly: true
+          }
+        },
+
+        ready: function() {
+          this._url = this.$.globals.esHost + '/par/regions/_search';
+
+          this._body = JSON.stringify({
+            from: 0,
+            size: 30,
+            sort: {
+              denomination: 'asc'
+            }
+          });
+        },
+
+        _handleLoading: function(evt) {
+          this._setLoading(evt.detail.value);
+        },
+
+        _handleResponse: function(evt) {
+          if (!!evt.detail.response) {
+            this._setRegions(evt.detail.response.hits.hits.map(function(hit) {
+              return hit._source;
+            }));
+          } else {
+            this._setRegions([]);
+          }
+        },
+
+        refresh: function() {
+          this.$.regionsData.generateRequest();
+        }
+
+      });
+    })();
+  </script>
+
+</dom-module>

@@ -1,0 +1,91 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-axe-select">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+      }
+
+      paper-dropdown-menu {
+        width:100%        
+      }
+
+    </style>
+
+    <paper-dropdown-menu label="[[label]]" required="[[required]]">
+      <paper-listbox class="dropdown-content" selected="{{_selected}}">
+        <template is="dom-repeat" items="[[axes]]" as="axe">
+          <paper-icon-item>
+            <iron-icon icon="icons:explore" item-icon></iron-icon>
+            Axe [[axe.num]] : [[axe.intitule]]
+          </paper-icon-item>
+        </template>
+      </paper-listbox>
+    </paper-dropdown-menu>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-axe-select',
+
+        behaviors: [
+          Polymer.IronFormElementBehavior,
+          Polymer.IronValidatableBehavior
+        ],
+
+        properties: {
+          label: {
+            type: String,
+            value: 'Axe'
+          },
+          
+          axes: {
+            type: Array
+          },
+
+          value: {
+            type: String,
+            notify: true,
+            observer: '_valueChanged'
+          },
+          _selected: {
+            type: Number,
+            observer: '_selectedChanged'
+          }
+        },
+
+        ready: function() {
+        },
+
+        _valueChanged: function(axe) {
+          if (axe) {
+            var idx = this.axes.findIndex(function(a) {
+              return axe === a._id;
+            });
+
+            if (idx !== this._selected) {
+              this._selected = idx;
+            }
+          }
+        },
+
+        _selectedChanged: function(index) {
+          if (typeof index === 'number' && index >= 0) {
+            if (this.axes[index]._id !== this.value) {
+              this.value = this.axes[index]._id;
+            }
+          } else {
+            this.value = null;
+          }
+        }
+
+      });
+    })();
+  </script>
+
+</dom-module>
