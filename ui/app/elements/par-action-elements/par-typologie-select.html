@@ -71,12 +71,6 @@
           ];
         },
 
-        // Overidden from Polymer.IronValidatableBehavior. Will set the `invalid`
-        // attribute automatically, which should be used for styling.
-        _getValidity: function() {
-          return this.$.dropdown.validate();
-        },
-
         _valueChanged: function(typo) {
           console.log('valueChanged', typo);
           if (typo) {
@@ -87,6 +81,8 @@
             if (idx !== this._selected) {
               this._selected = idx;
             }
+          } else {
+            this._selected = null;
           }
         },
 

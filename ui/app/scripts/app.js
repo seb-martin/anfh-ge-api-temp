@@ -142,6 +142,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       region: app._region.code,
       exercice: app._exercice,
       intitule: 'Nouvelle Action',
+      typologie: null,
       publics: [],
       modules: [],
       groupes: []
