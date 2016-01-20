@@ -10,24 +10,18 @@
     <style>
     :host {
       display: block;
-
-      --par-pastille-mixin: {
-        background-color: #3F51B5;
-        /* #3F51B5 */
-        color: #ffffff;
-      }
     }
 
-    paper-fab#backFab {
+    #backFab {
       position: fixed;
       z-index: 4;
     }
 
-    paper-fab#newFab {
+    #newFab {
       margin: 5px;
       position:fixed;
       bottom: 60px;
-      right:60px;
+      right: 60px;
       z-index: 4;
     }
 
@@ -41,10 +35,6 @@
       width: 100%;
     }
 
-    .card-content {
-      padding: 0;
-      
-    }
 
     paper-icon-item {
       height: 80px;
@@ -60,23 +50,19 @@ font-weight: 400;
 
     }
 
-    paper-icon-button:hover {
-      color: var(--accent-color);
-    }
-
-    .item.selected {
-      color: var(--default-primary-color);
-      font-weight: 900;
-    }
-
     iron-icon[item-icon] {
       width: 32px;
       height: 32px;
       color: var(--default-primary-color);
     }
     
+    paper-icon-item:hover iron-icon[item-icon] {
+      color: var(--accent-color);
+    }
 
-
+    paper-icon-button:hover {
+      color: var(--accent-color);
+    }
 
     </style>
 
@@ -86,43 +72,33 @@ font-weight: 400;
     <div class="content">
 
       <template is="dom-if" if="{{!actions.length}}">
-        <paper-card elevation="1" heading="Ici viendra se dresser la liste des actions.">
-
-        </paper-card>
+        <paper-card elevation="1" heading="Ici viendra se dresser la liste des actions."> </paper-card>
       </template>
+
       <template is="dom-if" if="{{actions.length}}">
-        <paper-card elevation="1">
-          <div class="card-content">
+        <paper-material elevation="1">
+          <template is="dom-repeat" id="actionList" items="{{actions}}" as="action">
+            <paper-icon-item on-tap="_editTap">
 
-            <iron-list id="actionsList" items="{{actions}}" as="action" selection-enabled selected-item="{{selectedAction}}">
-              <template>
-                <paper-icon-item class$="[[_computedClass(selected)]]" on-tap="_editTap">
+              <iron-icon icon="icons:group-work" item-icon></iron-icon>
 
-                  <iron-icon icon="icons:group-work" item-icon></iron-icon>
+              <paper-item-body class="flex" two-line>
+                <div>{{action.intitule}}</div>
+                <div secondary>{{action.contexte}}</div>
+              </paper-item-body>
 
-
-                  <paper-item-body class="flex" two-line>
-                    <div>{{action.intitule}}</div>
-                    <div secondary>{{action.contexte}}</div>
-                  </paper-item-body>
-
-                  <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
-                  <paper-ripple class="circle" recenters></paper-ripple>
-                </paper-icon-item>
-              </template>
-            </iron-list>
-          </div>
-
-        </paper-card>
+              <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
+              <paper-ripple class="circle" recenters></paper-ripple>
+            </paper-icon-item>
+          </template>
+        </paper-material>
 
       </template>
     </div>
 
-
-
-    <paper-dialog id="confirmation">
+    <paper-dialog id="confirmation" opened="{{_toBeDeleted}}">
       <h2>Confirmation</h2>
-      <p>Etes-vous sûr de vouloir supprimer définitivement l'action <em>{{selectedAction.intitule}}</em> du plan de formations <em>{{selectedAction.exercice}}</em> ?</p>
+      <p>Etes-vous sûr de vouloir supprimer définitivement l'action <em>{{_toBeDeleted.intitule}}</em> du plan de formations <em>{{_toBeDeleted.exercice}}</em> ?</p>
       <div class="buttons">
         <paper-button dialog-confirm autofocus on-tap="_confirmDeleteTap">Oui</paper-button>
         <paper-button dialog-dismiss on-tap="_cancelDeleteTap">Non</paper-button>
@@ -140,108 +116,37 @@ font-weight: 400;
 
       properties: {
         actions: {
-          type: Array,
-          observer: '_actionsChanged'
-        },
-
-        selectedAction: {
-          type: Object,
-          notify: true,
-          observer: '_selectedActionChanged'
+          type: Array
         }
       },
 
-      created: function() {
-      },
-
-      ready: function() {
-
-      },
-
-      _computedClass: function(isSelected) {
-        var classes = 'item';
-        if (isSelected) {
-          classes += ' selected';
-        }
-        return classes;
-      },
-
-      _actionsChanged: function(/*actions*/) {
-        // http://stackoverflow.com/questions/32575919/polymer-iron-list-iterates-but-not-printing
-        var actionsList = this.querySelector('#actionsList');
-        if (actionsList) {
-          actionsList.fire('refresh');
-        }
-      },
-
-      _selectedActionChanged: function(action) {
-        var self = this;
-        var actionsList = this.querySelector('#actionsList');
-
-        if (action) {
-          if (this._command) {
-            this.async(function() {
-              if (self._command === 'delete') {
-                self._command = null;
-                self.$.confirmation.open();
-              } else if (self._command === 'edit') {
-                self._command = null;
-                self.fire('edit');
-              }
-
-            });
-
-          }
-
-        } else {
-          if (actionsList) {
-            actionsList.clearSelection();
-          }
-        }
-
-      },
-
-      _backTap: function(/* e */) {
-        var self = this;
-
-        this.async(function() {
-          self.fire('back');
-        });
+      _backTap: function() {
+        this.fire('back');
       },
 
       _newTap: function() {
-        var self = this;
-
-        this.async(function() {
-          self.fire('new');
-        });
-
+        this.fire('new');
       },
 
-      _deleteTap: function(/*e*/) {
-        this._command = 'delete';
+      _deleteTap: function(evt) {
+        // evt.preventDefault();
+        evt.stopPropagation();
+        this._toBeDeleted = this.querySelector('#actionList').itemForElement(evt.target);
       },
 
-      _editTap: function(/*e*/) {
-        if (!this._command) {
-          this._command = 'edit';
-        }
+      _editTap: function(evt) {
+        var action = this.querySelector('#actionList').itemForElement(evt.target);
+        this.fire('edit', {action: action});
       },
 
-      _confirmDeleteTap: function(/*e*/) {
-        var self = this;
-
-        this.async(function() {
-          self.fire('delete');
-        });
+      _confirmDeleteTap: function() {
+        var action = this._toBeDeleted;
+        this._toBeDeleted = null;
+        this.fire('delete', {action: action});  
       },
 
       _cancelDeleteTap: function() {
-        var actionsList = this.querySelector('#actionsList');
-
-        if (actionsList) {
-          actionsList.clearSelection();
-        }
+        this._toBeDeleted = null;
       }
 
     });

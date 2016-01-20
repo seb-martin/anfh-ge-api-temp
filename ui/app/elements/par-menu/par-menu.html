@@ -120,18 +120,23 @@
       },
 
       _selectedRegionChanged: function() {
-        var self = this;
+        var i = 0;
+        var idx = -1;
+        var idx1;
 
         if (this.selectedRegion) {
 
-          var idx = this.regions.findIndex(function(r) {
-            return self.selectedRegion.code === r.code;
-          });
+          for (i ; i < this.regions.length ; i++) {
+            if (this.regions[i].code === this.selectedRegion.code) {
+              idx = i;
+              break;
+            }
+          }
 
           // idx est égal à -1 si aucune région n'est trouvée
           // On sélectionne l'item à idx + 1 pour le décalage provoqué par l'item de menu 'Régions'
           // - Si la région n'a pas été trouvé, sélection de l'item 0
-          var idx1 = idx + 1;
+          idx1 = idx + 1;
 
           if (idx1 !== this.$.parMenu.selected) {
             this.$.parMenu.select(idx1);

@@ -45,6 +45,9 @@
             notify: true,
             observer: '_valueChanged'
           },
+          autoValidate: {
+            type: Boolean
+          },
           default: {
             type: String
           },
@@ -66,14 +69,29 @@
         },
 
         _valueChanged: function(nature) {
+          var idx = -1;
+          var i = 0;
+
           if (nature) {
-            var idx = this._natures.findIndex(function(n) {
-              return nature === n.code;
-            });
+
+            for (i ; i < this._natures.length ; i++) {
+              if (this._natures[i].code === nature) {
+                idx = i;
+                break;
+              }
+            }
 
             if (idx !== this._selected) {
               this._selected = idx;
             }
+          } else {
+            this.selected = null;
+          }
+
+          if (this.autoValidate) {
+            this.async(function() {
+              this.$.dropdown.validate(nature);
+            });
           }
         },
 

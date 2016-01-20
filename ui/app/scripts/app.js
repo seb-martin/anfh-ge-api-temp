@@ -112,22 +112,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   };
 
-  app.editAxe = function() {
+  app.editAxe = function(evt) {
+    app._axe = evt.detail.axe;
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/axes/' + app._axe._id);
   };
 
-  app.deleteAxe = function() {
-    app.$.axesData.supprimer(this._axe);
+  app.deleteAxe = function(evt) {
+    app.$.axesData.supprimer(evt.detail.axe);
     app.showAxes();
   };
 
-  app.createAxe = function() {
-    app.$.axesData.creer(this._axe);
+  app.createAxe = function(evt) {
+    app.$.axesData.creer(evt.detail.axe);
     app.showAxes();
   };
 
-  app.updateAxe = function() {
-    app.$.axesData.modifier(this._axe);
+  app.updateAxe = function(evt) {
+    app.$.axesData.modifier(evt.detail.axe);
     app.showAxes();
   };
 
@@ -152,22 +153,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   };
 
-  app.editAction = function() {
+  app.editAction = function(evt) {
+    app._action = evt.detail.action;
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/actions/' + app._action._id);
   };
 
-  app.deleteAction = function() {
-    app.$.actionsData.supprimer(this._action);
+  app.deleteAction = function(evt) {
+    app.$.actionsData.supprimer(evt.detail.action);
     app.showActions();
   };
 
-  app.createAction = function() {
-    app.$.actionsData.creer(this._action);
+  app.createAction = function(evt) {
+    app.$.actionsData.creer(evt.detail.action);
     app.showActions();
   };
 
-  app.updateAction = function() {
-    app.$.actionsData.modifier(this._action);
+  app.updateAction = function(evt) {
+    app.$.actionsData.modifier(evt.detail.action);
     app.showActions();
   };
 

@@ -44,6 +44,10 @@
             notify: true,
             observer: '_valueChanged'
           },
+          autoValidate: {
+            type: Boolean
+          },
+
           _selected: {
             type: Number,
             observer: '_selectedChanged'
@@ -72,11 +76,17 @@
         },
 
         _valueChanged: function(typo) {
-          console.log('valueChanged', typo);
+          var idx = -1;
+          var i = 0;
+
           if (typo) {
-            var idx = this._typos.findIndex(function(t) {
-              return typo === t.code;
-            });
+
+            for (i ; i < this._typos.length ; i++) {
+              if (this._typo[i].code === typo) {
+                idx = i;
+                break;
+              }
+            }
 
             if (idx !== this._selected) {
               this._selected = idx;
@@ -84,6 +94,13 @@
           } else {
             this._selected = null;
           }
+
+          if (this.autoValidate) {
+            this.async(function() {
+              this.$.dropdown.validate(typo);
+            });
+          }
+          
         },
 
         _selectedChanged: function(index) {

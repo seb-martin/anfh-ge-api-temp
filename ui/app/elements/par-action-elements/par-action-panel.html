@@ -1,5 +1,3 @@
-
-
 <link rel="import" href="../../bower_components/polymer/polymer.html">
 
 <dom-module id="par-action-panel">
@@ -12,7 +10,7 @@
       display: block;
     }
 
-    paper-fab#backFab {
+    #backFab {
       position: fixed;
       z-index: 100;
       
@@ -39,28 +37,77 @@
         <form is="iron-form" id="actionForm">
 
           <div class="card-content layout vertical">
-            <paper-input name="intitule" label="Intitulé" required char-counter maxlength="250" auto-validate value="{{_dirty.intitule}}"></paper-input>
+            <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{_dirty.intitule}}"></paper-input>
 
             <par-axe-select label="Axe" axes="[[axes]]" value="{{_dirty.axe}}"></par-axe-select>
 
-            <par-nature-select label="Nature" value="{{_dirty.nature}}" default="R" required></par-nature-select>
+            <par-nature-select label="Nature" value="{{_dirty.nature}}" default="R" required auto-validate></par-nature-select>
 
-            <par-typologie-select label="Typologie FPTLV" value="{{_dirty.typologie}}" required></par-typologie-select>
+            <par-typologie-select label="Typologie FPTLV" value="{{_dirty.typologie}}" required auto-validate></par-typologie-select>
 
-            <par-marked-textarea label="Contexte" value="{{_dirty.contexte}}"></par-marked-textarea>
+            <paper-input name="titulaire" label="Titulaire" required char-counter maxlength="250" auto-validate value="{{_dirty.titulaire}}"></paper-input>
 
-            <par-marked-textarea label="Objectifs" value="{{_dirty.objectifs}}"></par-marked-textarea>
+            <par-marked-textarea label="Contexte" value="{{_dirty.contexte}}" maxlength="1000"></par-marked-textarea>
 
-            <par-marked-textarea label="Programme" value="{{_dirty.programme}}"></par-marked-textarea>
+            <par-marked-textarea label="Objectifs" value="{{_dirty.objectifs}}" maxlength="600"></par-marked-textarea>
+
+            <br>
+
+            <paper-card heading="Publics">
+              <div class="card-content">
+                <par-publics-list publics="{{_dirty.publics}}"></par-publics-list>
+              </div>
+            </paper-card>
+            
+            <br>
+
+            <paper-card heading="Modules">
+              <div class="card-content">
+                <template is="dom-repeat" items="{{_dirty.modules}}" as="module">
+                  
+                  <paper-card heading="{{module.intitule}}">
+                    <div class="card-content layout vertical">
+                      
+                      <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{module.intitule}}"></paper-input>
+
+                      <paper-input label="Formateur" required char-counter maxlength="250" auto-validate value="{{module.formateur}}"></paper-input>
+
+                      <par-marked-textarea label="Contexte" value="{{module.contexte}}" maxlength="1000"></par-marked-textarea>
+
+                      <par-marked-textarea label="Objectifs" value="{{module.objectifs}}" maxlength="600"></par-marked-textarea>
+                      
+                      <par-marked-textarea label="Programme" value="{{module.programme}}" maxlength="1700"></par-marked-textarea>
+
+                      <paper-card heading="Publics">
+                        <div class="card-content">
+                          <par-publics-list publics="{{_dirty.publics}}"></par-publics-list>
+                        </div>
+                      </paper-card>
+                    </div>
+                    <div class="card-actions layout horizontal">
+                      <span class="flex"></span>
+                      <paper-fab mini icon="icons:delete" on-tap="_removeModule"></paper-fab>
+                    </div>
+                  </paper-card>
+
+                </template>
+
+              </div>
+              <div class="card-actions layout horizontal">
+                <span class="flex"></span>
+                <paper-fab mini icon="icons:create" on-tap="_addModule"></paper-fab>
+              </div>
+            </paper-card>
+
           </div>
 
           <div class="card-actions layout horizontal">
             <div class="flex"></div>
             <template is="dom-if" if="{{!_dirty._id}}">
-              <paper-button on-tap="_createTap">Créer</paper-button>
+              <paper-button raised on-tap="_createTap">Créer</paper-button>
             </template>
             <template is="dom-if" if="{{_dirty._id}}">
-              <paper-button on-tap="_updateTap">Modifier</paper-button>
+              <paper-button raised on-tap="_updateTap">Modifier</paper-button>
             </template>
             <paper-button on-tap="_cancelTap">Annuler</paper-button>
           </div>
@@ -70,12 +117,65 @@
 
     </div>
 
+    <paper-toast id="toast"></paper-toast>
+
   </template>
 
 
   <script>
   (function() {
     'use strict';
+
+    var cloneAction = function(action) {
+      if (!action) {
+        return action;
+      }
+
+      var clone = {
+        _id: action._id,
+        region: action.region,
+        exercice: action.exercice,
+        axe: action.axe,
+        intitule: action.intitule,
+        contexte: action.contexte,
+        objectifs: action.objectifs,
+        typologie: action.typologie,
+        titulaire: action.titulaire,
+        publics: [],
+        modules: [],
+        calendrier: []
+      };
+
+      if (Array.isArray(action.publics)) {
+        action.publics.forEach(function(p) {
+          clone.publics.push(p);
+        });
+      }
+
+      if (Array.isArray(action.modules)) {
+        action.modules.forEach(function(m) {
+          var moduleClone = {
+            intitule: m.intitule,
+            contexte: m.contexte,
+            objectifs: m.objectifs,
+            programme: m.programme,
+            duree: m.duree,
+            formateur: m.formateur,
+            publics: []
+          };
+
+          if (Array.isArray(m.publics)) {
+            m.publics.forEach(function(p) {
+              moduleClone.publics.push(p);
+            });
+          }
+
+          clone.modules.push(moduleClone);
+        });
+      }
+
+      return clone;
+    };
 
     Polymer({
       is: 'par-action-panel',
@@ -93,65 +193,54 @@
 
       },
 
-      created: function() {
-      },
-
-      ready: function() {
-      },
-
       _actionChanged: function(action) {
-        
-        var dirty;
-        if (action) {
-          dirty = {};
-          for (var attr in action) {
-            if (this.action.hasOwnProperty(attr)) {
-              dirty[attr] = action[attr];
-            }
-          }
-          
-        } else {
-          dirty = null;
-        }
-
-        this._dirty = dirty;
-
+        this._dirty = cloneAction(action);
       },
 
-      _backTap: function(/* e */) {
-        var self = this;
+      _backTap: function() {
         this._dirty = null;
-        this.async(function() {
-          self.fire('back');
-        });
+        this.fire('back');
       },
 
-      _cancelTap: function(/* e */) {
-        var self = this;
+      _cancelTap: function() {
         this._dirty = null;
-        this.async(function() {
-          self.fire('cancel');
-        });
+        this.fire('cancel');
       },
 
       _createTap: function() {
-        var self = this;
         if (this.$.actionForm.validate()) {
           this.action = this._dirty;
-          this.async(function() {
-            self.fire('create');
-          });
+          this.fire('create', {action: this.action});
+        } else {
+          this.$.toast.text = 'Création l\'action refusée.';
+          this.$.toast.text += ' Le formulaire comporte des données invalides';
+          this.$.toast.open();
         }
       },
 
       _updateTap: function() {
-        var self = this;
         if (this.$.actionForm.validate()) {
           this.action = this._dirty;
-          this.async(function() {
-            self.fire('update');
-          });
+          this.fire('update', {action: this.action});
+        } else {
+          this.$.toast.text = 'Modification de l\'action refusée.';
+          this.$.toast.text += ' Le formulaire comporte des données invalides';
+          this.$.toast.open();
         }
+      },
+
+      _addModule: function() {
+        if (!Array.isArray(this._dirty.modules)) {
+          this.set('_dirty.modules', []);
+        }
+        this.push('_dirty.modules', {intitule: 'Nouveau module'});
+
+        console.log('_addModule', this._dirty.modules);
+      },
+
+      _removeModule: function(evt) {
+        var model = evt.model;
+        this.splice('_dirty.modules', model.index);
       }
 
     });

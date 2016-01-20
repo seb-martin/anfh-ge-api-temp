@@ -10,20 +10,14 @@
     <style>
     :host {
       display: block;
-
-      --par-pastille-mixin: {
-        background-color: #3F51B5;
-        /* #3F51B5 */
-        color: #ffffff;
-      }
     }
 
-    paper-fab#backFab {
+    #backFab {
       position: fixed;
       z-index: 4;
     }
 
-    paper-fab#newFab {
+    #newFab {
       margin: 5px;
       position:fixed;
       bottom: 60px;
@@ -41,11 +35,6 @@
       width: 100%;
     }
 
-    .card-content {
-      padding: 0;
-      
-    }
-
     paper-icon-item {
       height: 80px;
 
@@ -60,23 +49,19 @@ font-weight: 400;
 
     }
 
-    paper-icon-button:hover {
-      color: var(--accent-color);
-    }
-
-    .item.selected {
-      color: var(--default-primary-color);
-      font-weight: 900;
-    }
-
     iron-icon[item-icon] {
       width: 32px;
       height: 32px;
       color: var(--default-primary-color);
     }
-    
 
+    paper-icon-item:hover iron-icon[item-icon] {
+      color: var(--accent-color);
+    }
 
+    paper-icon-button:hover {
+      color: var(--accent-color);
+    }
 
     </style>
 
@@ -86,43 +71,33 @@ font-weight: 400;
     <div class="content">
 
       <template is="dom-if" if="{{!axes.length}}">
-        <paper-card elevation="1" heading="Ici viendra se dresser la liste des axes.">
-
-        </paper-card>
+        <paper-card elevation="1" heading="Ici viendra se dresser la liste des axes."> </paper-card>
       </template>
+
       <template is="dom-if" if="{{axes.length}}">
-        <paper-card elevation="1">
-          <div class="card-content">
+        <paper-material elevation="1">
+          <template is="dom-repeat" id="axeList" items="{{axes}}" as="axe">
+            <paper-icon-item on-tap="_editTap">
 
-            <iron-list id="axesList" items="{{axes}}" as="axe" selection-enabled selected-item="{{selectedAxe}}">
-              <template>
-                <paper-icon-item class$="[[_computedClass(selected)]]" on-tap="_editTap">
+              <iron-icon icon="icons:explore" item-icon></iron-icon>
 
-                  <iron-icon icon="icons:explore" item-icon></iron-icon>
+              <paper-item-body class="flex" two-line>
+                <div>Axe {{axe.num}}</div>
+                <div secondary>{{axe.intitule}}</div>
+              </paper-item-body>
 
-
-                  <paper-item-body class="flex" two-line>
-                    <div>Axe {{axe.num}}</div>
-                    <div secondary>{{axe.intitule}}</div>
-                  </paper-item-body>
-
-                  <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
-                  <paper-ripple class="circle" recenters></paper-ripple>
-                </paper-icon-item>
-              </template>
-            </iron-list>
-          </div>
-
-        </paper-card>
+              <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
+              <paper-ripple class="circle" recenters></paper-ripple>
+            </paper-icon-item>
+          </template>
+        </paper-material>
 
       </template>
     </div>
 
-
-
-    <paper-dialog id="confirmation">
+    <paper-dialog id="confirmation" opened="{{_toBeDeleted}}">
       <h2>Confirmation</h2>
-      <p>Etes-vous sûr de vouloir supprimer définitivement l'axe <em>{{selectedAxe.intitule}}</em> du plan de formations <em>{{selectedAxe.exercice}}</em> ?</p>
+      <p>Etes-vous sûr de vouloir supprimer définitivement l'axe <em>{{_toBeDeleted.intitule}}</em> du plan de formations <em>{{_toBeDeleted.exercice}}</em> ?</p>
       <div class="buttons">
         <paper-button dialog-confirm autofocus on-tap="_confirmDeleteTap">Oui</paper-button>
         <paper-button dialog-dismiss on-tap="_cancelDeleteTap">Non</paper-button>
@@ -140,113 +115,37 @@ font-weight: 400;
 
       properties: {
         axes: {
-          type: Array,
-          observer: '_axesChanged'
-        },
-
-        selectedAxe: {
-          type: Object,
-          notify: true,
-          observer: '_selectedAxeChanged'
+          type: Array
         }
       },
 
-      created: function() {
-      },
-
-      ready: function() {
-
-      },
-
-      _computedClass: function(isSelected) {
-        var classes = 'item';
-        if (isSelected) {
-          classes += ' selected';
-        }
-        return classes;
-      },
-
-      _axesChanged: function(/*axes*/) {
-        // console.log('_axesChanged', axes);
-
-        // http://stackoverflow.com/questions/32575919/polymer-iron-list-iterates-but-not-printing
-        var axesList = this.querySelector('#axesList');
-        if (axesList) {
-          this.async(function() {
-            axesList.fire('iron-resize');
-            // axesList.fire('refresh');
-          });
-        }
-      },
-
-      _selectedAxeChanged: function(axe) {
-        var self = this;
-        var axesList = this.querySelector('#axesList');
-
-        if (axe) {
-          if (this._command) {
-            this.async(function() {
-              if (self._command === 'delete') {
-                self._command = null;
-                self.$.confirmation.open();
-              } else if (self._command === 'edit') {
-                self._command = null;
-                self.fire('edit');
-              }
-
-            });
-
-          }
-
-        } else {
-          if (axesList) {
-            axesList.clearSelection();
-          }
-        }
-
-      },
-
-      _backTap: function(/* e */) {
-        var self = this;
-
-        this.async(function() {
-          self.fire('back');
-        });
+      _backTap: function() {
+        this.fire('back');
       },
 
       _newTap: function() {
-        var self = this;
-
-        this.async(function() {
-          self.fire('new');
-        });
-
+        this.fire('new');
       },
 
-      _deleteTap: function(/*e*/) {
-        this._command = 'delete';
+      _deleteTap: function(evt) {
+        // evt.preventDefault();
+        evt.stopPropagation();
+        this._toBeDeleted = this.querySelector('#axeList').itemForElement(evt.target);
       },
 
-      _editTap: function(/*e*/) {
-        if (!this._command) {
-          this._command = 'edit';
-        }
+      _editTap: function(evt) {
+        var axe = this.querySelector('#axeList').itemForElement(evt.target);
+        this.fire('edit', {axe: axe});
       },
 
-      _confirmDeleteTap: function(/*e*/) {
-        var self = this;
-
-        this.async(function() {
-          self.fire('delete');
-        });
+      _confirmDeleteTap: function() {
+        var axe = this._toBeDeleted;
+        this._toBeDeleted = null;
+        this.fire('delete', {axe: axe});  
       },
 
       _cancelDeleteTap: function() {
-        var axesList = this.querySelector('#axesList');
-
-        if (axesList) {
-          axesList.clearSelection();
-        }
+        this._toBeDeleted = null;
       }
 
     });
