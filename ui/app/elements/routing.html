@@ -32,21 +32,52 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       next();
     }
 
+    function selectRegion(ctx, next) {
+      if (ctx.params.reg) {
+        app._regions.forEach(function(region) {
+          if (region.code === ctx.params.reg) {
+            app._region = region;
+          }
+        });
+      }
+
+      next();
+    }
+
+    function selectExercice(ctx, next) {
+      if (ctx.params.exe) {
+        app._exercice = parseInt(ctx.params.exe);
+      }
+
+      next();
+    }
+
+    function selectAxe(ctx, next) {
+      if (ctx.params.idaxe) {
+        app._axes.forEach(function(axe) {
+          if (axe._id === ctx.params.idaxe) {
+            app._axe = axe;
+          }
+        });
+      }
+
+      next();
+    }
+
+    function selectAction(ctx, next) {
+      if (ctx.params.idact) {
+        app._actions.forEach(function(action) {
+          if (action._id === ctx.params.idact) {
+            app._action = action;
+          }
+        });
+      }
+
+      next();
+    }
+
     // Routes
     page('*', scrollToTop, closeDrawer, function(ctx, next) {
-      next();
-    });
-
-    page('/:reg/*', function(ctx, next) {
-      next();
-
-    });
-
-    page('/:reg/:exe/*', function(ctx, next) {
-      next();
-    });
-
-    page('/:reg/:exe/axes/*', function(ctx, next) {
       next();
     });
 
@@ -62,15 +93,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.route = 'regions';
     });
 
-    page('/:reg', function(data) {
+    page('/:reg', selectRegion, function(data) {
       app.titre = 'Plans d\'Actions Régional';
       app.sstitre = 'de la délégation ' + app._region.denomination;
       app.route = 'region';
       app.params = data.params;
-
     });
 
-    page('/:reg/:exe/axes', function(data) {
+    page('/:reg/:exe/axes', selectRegion, selectExercice, function(data) {
 
       app.titre = 'Axes de Formation';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
@@ -81,7 +111,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     });
 
-    page('/:reg/:exe/actions', function(data) {
+    page('/:reg/:exe/actions', selectRegion, selectExercice, function(data) {
       app.titre = 'Actions de Formation';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)
@@ -90,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.params = data.params;
     });
 
-    page('/:reg/:exe/axes/nouveau', function(data) {
+    page('/:reg/:exe/axes/nouveau', selectRegion, selectExercice, function(data) {
       app.titre = 'Créer un Axe';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)
@@ -99,7 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.params = data.params;
     });
 
-    page('/:reg/:exe/axes/:id', function(data) {
+    page('/:reg/:exe/axes/:idaxe', selectRegion, selectExercice, selectAxe, function(data) {
       app.titre = 'Modifier un Axe';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)
@@ -109,7 +139,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     });
 
-    page('/:reg/:exe/actions/nouveau', function(data) {
+    page('/:reg/:exe/actions/nouveau', selectRegion, selectExercice, function(data) {
       app.titre = 'Créer une Action';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)
@@ -119,7 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.params = data.params;
     });
 
-    page('/:reg/:exe/actions/:id', function(data) {
+    page('/:reg/:exe/actions/:idact', selectRegion, selectExercice, selectAction, function(data) {
       app.titre = 'Modifier une Action';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)

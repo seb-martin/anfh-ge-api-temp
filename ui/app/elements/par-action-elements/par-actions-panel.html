@@ -89,6 +89,7 @@ font-weight: 400;
                 <div secondary>{{action.contexte}}</div>
               </paper-item-body>
 
+              <!-- <paper-toggle-button on-tap="_publishChange">Publier</paper-toggle-button> -->
               <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
               <paper-ripple class="circle" recenters></paper-ripple>
             </paper-icon-item>
@@ -141,6 +142,11 @@ font-weight: 400;
         this.fire('edit', {action: action});
       },
 
+/*      _publishChange: function(evt) {
+        evt.stopPropagation();
+        return false;
+      },
+*/
       _confirmDeleteTap: function() {
         var action = this._toBeDeleted;
         this._toBeDeleted = null;
