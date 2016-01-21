@@ -8,10 +8,6 @@
 
   <style>
   :root {
-    /* paper-menu */
-    --paper-menu-background-color: #fff;
-    --menu-link-color: #111111;
-    /*--menu-link-color: --primary-color;*/
   }
 
   .content {
@@ -24,14 +20,6 @@
     width: 100%;
   }
 
-  paper-menu iron-icon {
-    margin-right: 33px;
-    opacity: 0.54;
-  }
-
-  .par-pars .iron-selected {
-    color: var(--default-primary-color);
-  }
 
   paper-icon-item {
     height: 80px;
@@ -53,6 +41,9 @@ font-weight: 400;
     color: var(--default-primary-color);
   }
 
+  paper-icon-item:hover iron-icon[item-icon] {
+    color: var(--accent-color);
+  }
   </style>
 
 
@@ -64,14 +55,14 @@ font-weight: 400;
 
         <paper-card elevation$="[[_computeElevation(exercice)]]" heading="Plan d'Actions Régional {{exercice}}">
 
-          <paper-icon-item data-action$="axes" on-tap="_axesTap">
+          <paper-icon-item on-tap="_axesTap">
             <iron-icon icon="icons:explore" item-icon></iron-icon>
             <paper-item-body class="flex">
               <div>Axes</div>
             </paper-item-body>
             <paper-ripple class="circle" recenters></paper-ripple>
           </paper-icon-item>
-          <paper-icon-item data-action$="actions" on-tap="_actionsTap">
+          <paper-icon-item on-tap="_actionsTap">
             <iron-icon icon="icons:group-work" item-icon></iron-icon>
             <span>Actions</span>
             <paper-ripple class="circle" recenters></paper-ripple>
@@ -99,15 +90,7 @@ font-weight: 400;
         },
         exercices: {
           type: Array
-        },
-        selectedExercice: {
-          type: Number,
-          readOnly: true,
-          notify: true
         }
-      },
-
-      ready: function() {
       },
 
       _computeElevation: function(exercice) {
@@ -115,20 +98,12 @@ font-weight: 400;
         return exercice === now.getFullYear() ? 3 : 1;
       },
 
-      _axesTap: function(e) {
-        var self = this;
-        this._setSelectedExercice(e.model.exercice);
-        this.async(function() {
-          self.fire('show-axes');
-        });
+      _axesTap: function(evt) {
+        this.fire('show-axes', {exercice: evt.model.exercice});
       },
 
-      _actionsTap: function(e) {
-        var self = this;
-        this._setSelectedExercice(e.model.exercice);
-        this.async(function() {
-          self.fire('show-actions');
-        });
+      _actionsTap: function(evt) {
+        this.fire('show-actions', {exercice: evt.model.exercice});
       }
 
     });

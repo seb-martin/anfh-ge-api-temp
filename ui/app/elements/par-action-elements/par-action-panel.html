@@ -13,7 +13,7 @@
     #backFab {
       position: fixed;
       z-index: 100;
-      
+      @apply(--shadow-elevation-6dp);
     }
 
     .content {
@@ -29,6 +29,8 @@
 
     </style>
 
+    <par-axes-data id="axesData" code-region="[[action.region]]" exercice="[[action.exercice]]" axes="{{_axes}}"></par-axes-data>
+
     <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
 
     <div class="content">
@@ -39,7 +41,7 @@
           <div class="card-content layout vertical">
             <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{_dirty.intitule}}"></paper-input>
 
-            <par-axe-select label="Axe" axes="[[axes]]" value="{{_dirty.axe}}"></par-axe-select>
+            <par-axe-select label="Axe" axes="[[_axes]]" value="{{_dirty.axe}}"></par-axe-select>
 
             <par-nature-select label="Nature" value="{{_dirty.nature}}" default="R" required auto-validate></par-nature-select>
 
@@ -185,12 +187,7 @@
           type: Object,
           notify: true,
           observer: '_actionChanged'
-        },
-
-        axes: {
-          type: Array
         }
-
       },
 
       _actionChanged: function(action) {

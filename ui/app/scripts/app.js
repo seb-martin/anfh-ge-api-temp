@@ -81,15 +81,26 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   // Personnalisations
 
-  app.showRegion = function() {
-    if (app._region) {
-      page(app.baseUrl + app._region.code);
-    } else {
-      page(app.baseUrl);
-    }
+  app.computeLoading = function(_regionsLoading, _axesLoading, _actionsLoading) {
+    return _regionsLoading || _axesLoading || _actionsLoading;
   };
 
-  app.showAxes = function() {
+  app.showDelegations = function() {
+    app._region = null;
+    page(app.baseUrl);
+  };
+
+  app.showRegion = function(evt) {
+    if (evt.detail.region) {
+      app._region = evt.detail.region;
+    }
+    page(app.baseUrl + app._region.code);
+  };
+
+  app.showAxes = function(evt) {
+    if (evt.detail.exercice) {
+      app._exercice = evt.detail.exercice;
+    }
     app._axe = null;
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/axes');
   };
@@ -119,20 +130,23 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   app.deleteAxe = function(evt) {
     app.$.axesData.supprimer(evt.detail.axe);
-    app.showAxes();
+    app.showAxes(evt);
   };
 
   app.createAxe = function(evt) {
     app.$.axesData.creer(evt.detail.axe);
-    app.showAxes();
+    app.showAxes(evt);
   };
 
   app.updateAxe = function(evt) {
     app.$.axesData.modifier(evt.detail.axe);
-    app.showAxes();
+    app.showAxes(evt);
   };
 
-  app.showActions = function() {
+  app.showActions = function(evt) {
+    if (evt.detail.exercice) {
+      app._exercice = evt.detail.exercice;
+    }
     app._action = null;
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/actions');
   };
@@ -143,7 +157,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       region: app._region.code,
       exercice: app._exercice,
       intitule: 'Nouvelle Action',
-      typologie: null,
       publics: [],
       modules: [],
       groupes: []
@@ -160,17 +173,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   app.deleteAction = function(evt) {
     app.$.actionsData.supprimer(evt.detail.action);
-    app.showActions();
+    app.showActions(evt);
   };
 
   app.createAction = function(evt) {
     app.$.actionsData.creer(evt.detail.action);
-    app.showActions();
+    app.showActions(evt);
   };
 
   app.updateAction = function(evt) {
     app.$.actionsData.modifier(evt.detail.action);
-    app.showActions();
+    app.showActions(evt);
   };
 
 })(document);

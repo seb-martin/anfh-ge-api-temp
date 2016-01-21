@@ -64,13 +64,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <template is="dom-bind" id="app">
 
-<!--     <par-model id="parModel" 
-            synchronizing="{{loading}}"
-            regions="{{_regions}}" selected-region="{{_region}}"
-            actions="{{_actions}}" selected-action="{{_action}}"
-            ></par-model>
- -->
-
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
       <paper-scroll-header-panel drawer fixed>
@@ -81,7 +74,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         </paper-toolbar>
 
         <!-- Drawer Content -->
-        <par-menu regions="{{_regions}}" selected-region="{{_region}}" on-selected-region-changed="showRegion"></par-menu>
+        <par-menu regions="{{_regions}}" selected-region="{{_region}}" on-show-delegations="showDelegations" on-show-region="showRegion"></par-menu>
 
       </paper-scroll-header-panel>
 
@@ -95,9 +88,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
           <!-- Toolbar icons -->
           <!-- <paper-icon-button icon="refresh"></paper-icon-button> -->
-          <paper-spinner-lite active="{{loading}}"></paper-spinner-lite>
-
-          <!-- Application name -->
+          <paper-spinner-lite active="{{computeLoading(_regionsLoading, _axesLoading, _actionsLoading)}}"></paper-spinner-lite>
+<!--           <paper-spinner-lite active="{{_regionsLoading}}"></paper-spinner-lite>
+          <paper-spinner-lite active="{{_axesLoading}}"></paper-spinner-lite>
+          <paper-spinner-lite active="{{_actionsLoading}}"></paper-spinner-lite>
+           -->          <!-- Application name -->
           <div class="middle middle-container center horizontal layout">
             <div class="app-name">{{titre}}</div>
           </div>
@@ -115,10 +110,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <section data-route="regions">
 
-              <par-regions-data regions="{{_regions}}" loading="_regionsLoading"></par-regions-data>
+              <par-regions-data regions="{{_regions}}" loading="{{_regionsLoading}}"></par-regions-data>
 
               <par-regions-panel id="regionsPane" regions="[[_regions]]"
-                                  selected-region="{{_region}}"
                                   on-show-region="showRegion"></par-regions-panel>
 
             </section>
@@ -135,7 +129,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <section data-route="axes">
 
-              <par-axes-data id="axesData" code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}"></par-axes-data>
+              <par-axes-data id="axesData" code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}"></par-axes-data>
 
               <par-axes-panel id="axesPane" axes="[[_axes]]" 
                                 on-back="showRegion" on-new="newAxe" on-edit="editAxe" on-delete="deleteAxe"></par-axes-panel>
@@ -147,14 +141,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </section>
 
             <section data-route="actions">
-              <par-actions-data id="actionsData" code-region="[[_region.code]]" exercice="[[_exercice]]" actions="{{_actions}}"></par-actions-data>
+              <par-actions-data id="actionsData" code-region="[[_region.code]]" exercice="[[_exercice]]" actions="{{_actions}}" loading="{{_actionsLoading}}"></par-actions-data>
 
-              <par-actions-panel id="actionsPane" actions="[[_actions]]" selected-action="{{_action}}" 
+              <par-actions-panel id="actionsPane" actions="[[_actions]]"
                                   on-back="showRegion" on-new="newAction" on-edit="editAction" on-delete="deleteAction"></par-actions-panel>
             </section>
 
             <section data-route="action">
-              <par-action-panel id="actionPane" action="[[_action]]" axes="[[_axes]]" on-back="showActions" on-create="createAction" on-update="updateAction" on-cancel="showActions"></par-action-panel>
+              <par-action-panel id="actionPane" action="[[_action]]" on-back="showActions" on-create="createAction" on-update="updateAction" on-cancel="showActions"></par-action-panel>
             </section>
 
           </iron-pages>

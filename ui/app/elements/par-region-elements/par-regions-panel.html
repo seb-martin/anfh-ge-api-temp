@@ -18,21 +18,6 @@
       margin-right: auto
     }
 
-    paper-material {
-      width: 100%;
-      padding: 0;
-    }
-
-    par-pastille {
-      --par-pastille-mixin: {
-        background-color: #3F51B5;
-        color: #ffffff;
-        width: 32px;
-        height: 32px;
-        line-height: 32px;
-        font-size: 13px;
-      };
-    }
 
     paper-icon-item {
       height: 80px;
@@ -47,31 +32,35 @@ font-weight: 400;
       background-color: #fff;
     }
 
-
-
-    .item.selected {
-      color: var(--default-primary-color);
-      font-weight: 900;
+    par-pastille[item-icon] {
+      --par-pastille-mixin: {
+        background-color: var(--default-primary-color);
+        color: #ffffff;
+        width: 32px;
+        height: 32px;
+        line-height: 32px;
+        font-size: 13px;
+      };
     }
 
-
+    paper-icon-item:hover par-pastille[item-icon] {
+      background-color: var(--accent-color);
+    }
     </style>
 
     <div class="content">
-      
-      <paper-material elevation="1">
-        <iron-list id="regionsList" items="{{regions}}" as="region" selection-enabled selected-item="{{selectedRegion}}">
-          <template>
-            <paper-icon-item class$="[[_computedClass(selected)]]">
-              <par-pastille item-icon>{{region.code}}</par-pastille>
-              {{region.denomination}}
-              <paper-ripple class="circle" recenters></paper-ripple>
-            </paper-icon-item>
-          </template>
-        </iron-list>
-      </paper-material>
-    </div>
 
+      <paper-material elevation="1">
+        <template is="dom-repeat" items="{{regions}}" as="region">
+          <paper-icon-item on-tap="_regionTap">
+            <par-pastille item-icon>{{region.code}}</par-pastille>
+            {{region.denomination}}
+            <paper-ripple class="circle" recenters></paper-ripple>
+          </paper-icon-item>
+        </template>
+      </paper-material>
+      
+    </div>
 
   </template>
 
@@ -84,40 +73,12 @@ font-weight: 400;
 
       properties: {
         regions: {
-          type: Array,
-          observer: '_regionsChanged'
-        },
-
-        selectedRegion: {
-          type: Object,
-          notify: true,
-          observer: '_selectedRegionChanged'
+          type: Array
         }
-        
       },
 
-      _computedClass: function(isSelected) {
-        var classes = 'item';
-        if (isSelected) {
-          classes += ' selected';
-        }
-        return classes;
-      },
-
-      _selectedRegionChanged: function(region) {
-        var self = this;
-        if (!region) {
-          this.$.regionsList.clearSelection();
-        }
-
-        this.async(function() {
-          self.fire('show-region');
-        });
-      },
-
-      _regionsChanged: function(/*regions*/) {
-        // http://stackoverflow.com/questions/32575919/polymer-iron-list-iterates-but-not-printing
-        this.$.regionsList.fire('resize');
+      _regionTap: function(evt) {
+        this.fire('show-region', {region: evt.model.region});
       }
 
     });

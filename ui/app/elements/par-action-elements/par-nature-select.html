@@ -13,7 +13,7 @@
 
     </style>
 
-    <paper-dropdown-menu label="[[label]]" required="[[required]]">
+    <paper-dropdown-menu id="dropdown" label="[[label]]" required="[[required]]">
       <paper-listbox class="dropdown-content" selected="{{_selected}}">
         <template is="dom-repeat" items="[[_natures]]" as="_nature">
           <paper-item>[[_nature.libelle]]</paper-item>

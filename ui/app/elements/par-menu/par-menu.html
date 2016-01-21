@@ -10,33 +10,6 @@
       :root {
       }
 
-      paper-menu iron-icon {
-        opacity: 0.54;
-        margin-right: 5px;
-        
-      }
-
-      paper-menu par-pastille {
-        --par-pastille-mixin: {
-          opacity: 0.54;
-          background-color: black;
-          color: #ffffff;
-          width: 24px;
-          height: 24px;
-          line-height: 24px;
-          font-size: 10px;
-          margin-right: 5px;
-        };
-      }
-
-      .par-menu .iron-selected {
-        color: var(--default-primary-color);
-      }
-
-      .par-menu .iron-selected par-pastille {
-          background-color: var(--default-primary-color);
-      }
-
       paper-menu paper-item {
         color: var(--menu-link-color);
         font-family: 'Roboto', 'Noto', sans-serif;
@@ -46,9 +19,53 @@
         font-weight: 400;
       }
 
+      paper-item iron-icon, paper-item par-pastille {
+        opacity: 0.54;
+        margin-right: 5px;
+        
+      }
+
+      paper-item iron-icon {
+        color: var(--default-primary-color);
+      }
+
+      paper-item:hover iron-icon {
+        color: var(--accent-color);
+      }
+
+      paper-item par-pastille {
+        --par-pastille-mixin: {
+          background-color: var(--default-primary-color);
+          color: #ffffff;
+          width: 24px;
+          height: 24px;
+          line-height: 24px;
+          font-size: 10px;
+        };
+      }
+
+      paper-item:hover par-pastille {
+        background-color: var(--accent-color);
+      }
+
+      .par-menu .iron-selected {
+        color: var(--default-primary-color);
+      }
+
+      .par-menu .iron-selected iron-icon {
+        /* opacity: 1; */
+
+        color: var(--accent-color);
+      }
+
+      .par-menu .iron-selected par-pastille {
+        /* opacity: 1; */
+        background-color: var(--accent-color);
+      }
+
     </style>
 
-    <paper-menu id="parMenu" class="list" selected="{{selectedIndex}}">
+    <paper-menu id="parMenu" class="list" selected="{{selectedIndex}}" on-iron-activate="_itemActivate">
 
       <paper-item>
         <iron-icon icon="home"  item-icon></iron-icon>
@@ -59,7 +76,6 @@
 
         <paper-item>
           <par-pastille item-icon>{{item.code}}</par-pastille>
-          <!-- <iron-icon icon="home" item-icon></iron-icon> -->
           <span>{{item.denomination}}</span>
         </paper-item>
 
@@ -81,53 +97,36 @@
           type: Array
         },
 
-        s: {
-          type: Object,
-          observer: '_sChanged'
-        },
-
         selectedRegion: {
           type: Object,
           notify: true,
           observer: '_selectedRegionChanged'
-        },
-        
-        selectedIndex: {
-          type: Number,
-          readonly: true,
-          value: 0,
-          observer: '_selectedIndexChanged'
-        }
-        
-      },
-
-      _selectedIndexChanged: function(newValue) {
-
-        if (newValue > 0) {
-          var newRegion = this.regions[newValue - 1];
-          if (!this.selectedRegion || newRegion.code !== this.selectedRegion.code) {
-            this.selectedRegion = newRegion;
-          }
-        } else {
-          if (this.selectedRegion) {
-            this.selectedRegion = null;
-          }
         }
       },
 
       ready: function() {
-
+        this.$.parMenu.select(0);
       },
 
-      _selectedRegionChanged: function() {
+      _itemActivate: function(evt) {
+        // On trouve l'index de l'item activé
+        var idx = this.$.parMenu.indexOf(evt.detail.item);
+
+        if (idx > 0) {
+          this.fire('show-region', {region: this.regions[idx - 1]});
+        } else {
+          this.fire('show-delegations');
+        }
+      },
+
+      _selectedRegionChanged: function(region) {
         var i = 0;
         var idx = -1;
-        var idx1;
 
-        if (this.selectedRegion) {
+        if (region) {
 
           for (i ; i < this.regions.length ; i++) {
-            if (this.regions[i].code === this.selectedRegion.code) {
+            if (this.regions[i].code === region.code) {
               idx = i;
               break;
             }
@@ -135,17 +134,10 @@
 
           // idx est égal à -1 si aucune région n'est trouvée
           // On sélectionne l'item à idx + 1 pour le décalage provoqué par l'item de menu 'Régions'
-          // - Si la région n'a pas été trouvé, sélection de l'item 0
-          idx1 = idx + 1;
-
-          if (idx1 !== this.$.parMenu.selected) {
-            this.$.parMenu.select(idx1);
-          }
-
+          // - Si la région n'a pas été trouvée, sélection de l'item 0
+          this.$.parMenu.select(idx + 1);
         } else {
-          if (0 !== this.$.parMenu.selected) {
-            this.$.parMenu.select(0);
-          }
+          this.$.parMenu.select(0);
         }
       }
 

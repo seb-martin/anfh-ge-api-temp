@@ -38,10 +38,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/*', function(ctx, next) {
-      
-      if (!app._region || ctx.params.reg !== app._region.code) {
-        app.$.parModel.selectRegion(ctx.params.reg);
-      }
       next();
 
     });
@@ -67,11 +63,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg', function(data) {
-
-      if (!app._region || data.params.reg !== app._region.code) {
-        app.$.parModel.selectRegion(data.params.reg);
-
-      }
       app.titre = 'Plans d\'Actions Régional';
       app.sstitre = 'de la délégation ' + app._region.denomination;
       app.route = 'region';
@@ -100,7 +91,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/axes/nouveau', function(data) {
-      app.titre = 'Céer Axe';
+      app.titre = 'Créer un Axe';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
@@ -109,7 +100,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/axes/:id', function(data) {
-      app.titre = 'Modifier Axe';
+      app.titre = 'Modifier un Axe';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
@@ -119,7 +110,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/actions/nouveau', function(data) {
-      app.titre = 'Créer Action';
+      app.titre = 'Créer une Action';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
@@ -129,7 +120,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/actions/:id', function(data) {
-      app.titre = 'Modifier Action';
+      app.titre = 'Modifier une Action';
       app.sstitre = 'du plan de formation :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
