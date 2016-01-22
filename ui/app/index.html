@@ -64,6 +64,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   <template is="dom-bind" id="app">
 
+
+    <iron-localstorage id="localStorage" name="userRegion" value={{_region}}></iron-localstorage>
+
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
       <paper-scroll-header-panel drawer fixed>

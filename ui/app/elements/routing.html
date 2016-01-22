@@ -32,6 +32,14 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       next();
     }
 
+    function redirectRegion(ctx, next) {
+      if (app._region) {
+        page(app.baseUrl + app._region.code);
+      } else {
+        next();
+      }
+    }
+
     function selectRegion(ctx, next) {
       if (ctx.params.reg) {
         app._regions.forEach(function(region) {
@@ -81,13 +89,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       next();
     });
 
-    page('/', function() {
+    page('/', redirectRegion, function() {
       app.titre = 'Plans d\'Actions Régionaux';
       app.sstitre = 'des délégations régionales ANFH';
       app.route = 'regions';
     });
 
-    page(app.baseUrl, function() {
+    page(app.baseUrl, redirectRegion, function() {
       app.titre = 'Plans d\'Actions Régionaux';
       app.sstitre = 'des délégations régionales ANFH';
       app.route = 'regions';
