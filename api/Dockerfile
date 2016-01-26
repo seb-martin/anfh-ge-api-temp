@@ -1,12 +1,12 @@
-FROM node:5.2.0
+FROM node:5.5.0
 
-# RUN mkdir -p /usr/src/app
-# WORKDIR /usr/src/app
+RUN mkdir -p /usr/src/app
+WORKDIR /usr/src/app
 
-# COPY package.json /usr/src/app/
-# RUN npm install
-# COPY . /usr/src/app
+COPY src/package.json /usr/src/app/
+RUN npm install
+COPY src /usr/src/app
 
-# EXPOSE 80
+EXPOSE 80
 
-# CMD [ "npm", "start" ]
+CMD [ "npm", "start" ]

@@ -25,7 +25,10 @@ Vagrant.configure(2) do |config|
 
   config.vm.provider "virtualbox" do |vb|
     # Use VBoxManage to customize the VM.
-    vb.customize ["modifyvm", :id, "--memory", "1024"]
+    vb.customize ["modifyvm", :id, "--memory", "2048"]
+
+    # http://stackoverflow.com/questions/24200333/symbolic-links-and-synced-folders-in-vagrant
+    vb.customize ["setextradata", :id, "VBoxInternal2/SharedFoldersEnableSymlinksCreate/v-root", "1"]
   end
 
 end

@@ -5,11 +5,9 @@
   "dependencies": {
     "body-parser": "^1.14.1",
     "elasticsearch": "^10.0.1",
-    "express": "^4.13.3",
-    "underscore": "^1.8.3"
+    "express": "^4.13.3"
   },
   "scripts": {
-    "prestart": "npm install",
     "start": "node server.js"
   }
 }

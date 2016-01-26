@@ -5,7 +5,7 @@
     (function() {
       'use strict';
 
-      var esHost = 'http://localhost:9200';
+      var esHost = window.location.protocol + '//' + window.location.hostname + ':9200';
 
       var baseUrl = '/';
       if (window.location.port === '') {  // if production

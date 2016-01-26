@@ -2,15 +2,14 @@
   'use strict'
 
   // call the packages we need
-  var _             = require('underscore');     // functional
   var express       = require('express');        // call express
   var app           = express();                 // define our app using express
   var bodyParser    = require('body-parser');
   var elasticsearch = require('elasticsearch');
 
-  var port          = process.env.API_PORT || 80;        // set our port
-  var dbHost        = process.env.DB_HOST || 'localhost';
-  var dbPort        = process.env.DB_PORT || 9200
+  var port          = process.env.API_PORT_80_TCP_PORT || 80;        // set our port
+  var dbHost        = process.env.DB_PORT_9300_TCP_ADDR || 'localhost';
+  var dbPort        = process.env.DB_PORT_9200_TCP_PORT || 9200
   var client        = new elasticsearch.Client({
     host: 'host:port'.replace('host', dbHost).replace('port', dbPort)
     // , log: 'trace'
