@@ -64,7 +64,8 @@
             value: true,
             reflectToAttribute: true,
             notify: true,
-            readOnly: true
+            readOnly: true,
+            value: []
           },
 
           codeRegion: {
@@ -150,7 +151,7 @@
             return resp.hits.hits.map(function(resp) {
               return self._mapHit(resp);
             });
-            
+
           } else {
             return [];
           }
