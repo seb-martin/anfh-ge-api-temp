@@ -10,7 +10,7 @@ L'API temporaire est un système permettant de fournir temporairement l'API des 
 Il est composé de
 
 - une application présentant les ressources Région Formation, Axe Formation et Action Formation décritent dans le document [Gesform Evolution - API v1](https://docs.google.com/document/d/1mGhBQKpE_jTKBTFomEtEWp3L7fZFS5dYFgcQWklF6lk/edit?usp=sharing).
-- une application présentant une interface utilisateur permettant la saisie des axes et actions de formation. 
+- une application présentant une interface utilisateur permettant la saisie des axes et actions de formation.
 
 
 ## Prérequis
@@ -35,7 +35,7 @@ cd anfh-ge-api-temp
 Tirer les images Docker "de base", construire les images du projet et exécuter les containers du système.
 
 ```sh
-docker-compose up
+docker-compose up -d
 ```
 
 ## Interfaces
