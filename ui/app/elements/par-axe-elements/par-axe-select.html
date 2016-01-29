@@ -59,14 +59,16 @@
           }
         },
 
-        ready: function() {
-        },
-
         _valueChanged: function(axe) {
+          var idx = -1;
+          var i = 0;
+
           if (axe) {
-            var idx = this.axes.findIndex(function(a) {
-              return axe === a._id;
-            });
+            for (i ; i < this.axes.length ; i++) {
+              if (this.axes[i]._id === axe) {
+                idx = i;
+              }
+            }
 
             if (idx !== this._selected) {
               this._selected = idx;
