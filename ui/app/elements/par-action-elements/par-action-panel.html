@@ -16,6 +16,15 @@
       @apply(--shadow-elevation-6dp);
     }
 
+    #createFab, #updateFab {
+      margin: 5px;
+      position:fixed;
+      bottom: 60px;
+      right: 60px;
+      z-index: 4;
+      @apply(--shadow-elevation-6dp);
+    }
+
     .content {
       max-width: 800px; 
       margin-left: auto; 
@@ -24,6 +33,12 @@
 
     paper-card {
       width: 100%;
+      margin: 20px 0;
+    }
+
+    paper-material {
+      padding: 0 20px;
+      margin: 10px 0;
     }
 
 
@@ -33,27 +48,57 @@
 
     <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
 
+    <template is="dom-if" if="{{!_dirty._id}}">
+      <paper-fab id="createFab" icon="icons:add" on-tap="_createTap"></paper-fab>
+      <!-- <paper-button raised on-tap="_createTap">Créer</paper-button> -->
+    </template>
+    <template is="dom-if" if="{{_dirty._id}}">
+      <paper-fab id="updateFab" icon="icons:check" on-tap="_updateTap"></paper-fab>
+      <!-- <paper-button raised on-tap="_updateTap">Modifier</paper-button> -->
+    </template>
+
+
     <div class="content">
 
-      <paper-card heading="{{action.intitule}}">
-        <form is="iron-form" id="actionForm">
-
+      <form is="iron-form" id="actionForm">
+        <paper-card heading="{{action.intitule}}">
           <div class="card-content layout vertical">
-            <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{_dirty.intitule}}"></paper-input>
 
-            <par-axe-select label="Axe" axes="[[_axes]]" value="{{_dirty.axe}}"></par-axe-select>
+            <div class="layout horizontal">
+              <span class="flex"></span>
+              <paper-toggle-button checked="{{_dirty._publie}}">Publié</paper-toggle-button>
+            </div>
 
-            <par-nature-select label="Nature" value="{{_dirty.nature}}" default="R" required auto-validate></par-nature-select>
+<!--             <paper-material elevaton="1" style="padding: 10px 10px">
+</paper-material>
+ -->
+            <paper-material elevation="1">
+              <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{_dirty.intitule}}"></paper-input>
+            </paper-material>
 
-            <par-typologie-select label="Typologie FPTLV" value="{{_dirty.typologie}}" required auto-validate></par-typologie-select>
+            <paper-material elevation="1">
+              <par-axe-select label="Axe" axes="[[_axes]]" value="{{_dirty.axe}}"></par-axe-select>
+            </paper-material>
 
-            <paper-input name="titulaire" label="Titulaire" required char-counter maxlength="250" auto-validate value="{{_dirty.titulaire}}"></paper-input>
+            <paper-material elevation="1">
+              <par-nature-select label="Nature" value="{{_dirty.nature}}" default="R" required auto-validate></par-nature-select>
+            </paper-material>
 
-            <par-marked-textarea label="Contexte" value="{{_dirty.contexte}}" maxlength="1000"></par-marked-textarea>
+            <paper-material elevation="1">
+              <par-typologie-select label="Typologie FPTLV" value="{{_dirty.typologie}}" required auto-validate></par-typologie-select>
+            </paper-material>
 
-            <par-marked-textarea label="Objectifs" value="{{_dirty.objectifs}}" maxlength="600"></par-marked-textarea>
+            <paper-material elevation="1">
+              <paper-input name="titulaire" label="Titulaire" required char-counter maxlength="250" auto-validate value="{{_dirty.titulaire}}"></paper-input>
+            </paper-material>
 
-            <br>
+            <paper-material elevation="1">
+              <par-marked-textarea label="Contexte" value="{{_dirty.contexte}}" maxlength="1000"></par-marked-textarea>
+            </paper-material>
+
+            <paper-material elevation="1">
+              <par-marked-textarea label="Objectifs" value="{{_dirty.objectifs}}" maxlength="600"></par-marked-textarea>
+            </paper-material>
 
             <paper-card heading="Publics">
               <div class="card-content">
@@ -63,59 +108,54 @@
             
             <br>
 
-            <paper-card heading="Modules">
-              <div class="card-content">
-                <template is="dom-repeat" items="{{_dirty.modules}}" as="module">
-                  
-                  <paper-card heading="{{module.intitule}}">
-                    <div class="card-content layout vertical">
-                      
-                      <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{module.intitule}}"></paper-input>
-
-                      <paper-input label="Formateur" required char-counter maxlength="250" auto-validate value="{{module.formateur}}"></paper-input>
-
-                      <par-marked-textarea label="Contexte" value="{{module.contexte}}" maxlength="1000"></par-marked-textarea>
-
-                      <par-marked-textarea label="Objectifs" value="{{module.objectifs}}" maxlength="600"></par-marked-textarea>
-                      
-                      <par-marked-textarea label="Programme" value="{{module.programme}}" maxlength="1700"></par-marked-textarea>
-
-                      <paper-card heading="Publics">
-                        <div class="card-content">
-                          <par-publics-list publics="{{_dirty.publics}}"></par-publics-list>
-                        </div>
-                      </paper-card>
-                    </div>
-                    <div class="card-actions layout horizontal">
-                      <span class="flex"></span>
-                      <paper-fab mini icon="icons:delete" on-tap="_removeModule"></paper-fab>
-                    </div>
-                  </paper-card>
-
-                </template>
-
-              </div>
-              <div class="card-actions layout horizontal">
-                <span class="flex"></span>
-                <paper-fab mini icon="icons:create" on-tap="_addModule"></paper-fab>
-              </div>
-            </paper-card>
-
           </div>
+        </paper-card>
 
-          <div class="card-actions layout horizontal">
-            <div class="flex"></div>
-            <template is="dom-if" if="{{!_dirty._id}}">
-              <paper-button raised on-tap="_createTap">Créer</paper-button>
-            </template>
-            <template is="dom-if" if="{{_dirty._id}}">
-              <paper-button raised on-tap="_updateTap">Modifier</paper-button>
-            </template>
-            <paper-button on-tap="_cancelTap">Annuler</paper-button>
-          </div>
+        <template is="dom-repeat" items="{{_dirty.modules}}" as="module">
+          
+          <paper-card heading="{{module.intitule}}">
+            <div class="card-content layout vertical">
 
-        </form>
-      </paper-card>
+              <paper-material elevation="1">
+                <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{module.intitule}}"></paper-input>
+              </paper-material>
+
+              <paper-material elevation="1">
+                <paper-input label="Formateur" required char-counter maxlength="250" auto-validate value="{{module.formateur}}"></paper-input>
+              </paper-material>
+
+              <paper-material elevation="1">
+                <par-marked-textarea label="Contexte" value="{{module.contexte}}" maxlength="1000"></par-marked-textarea>
+              </paper-material>
+
+              <paper-material elevation="1">
+                <par-marked-textarea label="Objectifs" value="{{module.objectifs}}" maxlength="600"></par-marked-textarea>
+              </paper-material>
+              
+              <paper-material elevation="1">
+                <par-marked-textarea label="Programme" value="{{module.programme}}" maxlength="1700"></par-marked-textarea>
+              </paper-material>
+
+              <paper-card heading="Publics">
+                <div class="card-content">
+                  <par-publics-list publics="{{_dirty.publics}}"></par-publics-list>
+                </div>
+              </paper-card>
+            </div>
+            <div class="card-actions layout horizontal">
+              <span class="flex"></span>
+              <paper-fab mini icon="icons:delete" on-tap="_removeModule"></paper-fab>
+            </div>
+          </paper-card>
+
+        </template>
+
+        <div class="layout horizontal">
+          <span class="flex"></span>
+          <paper-fab id="addModuleFab" mini icon="icons:create" title="Ajouter un nouveau module" on-tap="_addModule"></paper-fab>
+        </div>
+
+      </form>
 
     </div>
 
@@ -135,6 +175,7 @@
 
       var clone = {
         _id: action._id,
+        _publie: action._publie,
         region: action.region,
         exercice: action.exercice,
         axe: action.axe,
@@ -231,8 +272,6 @@
           this.set('_dirty.modules', []);
         }
         this.push('_dirty.modules', {intitule: 'Nouveau module'});
-
-        console.log('_addModule', this._dirty.modules);
       },
 
       _removeModule: function(evt) {
