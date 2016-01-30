@@ -28,11 +28,11 @@
     }
 
     .content {
-      max-width: 800px; 
+      max-width: 800px;
       margin-left: auto;
       margin-right: auto
     }
-    
+
     paper-card {
       width: 100%;
     }
@@ -57,7 +57,10 @@ font-weight: 400;
       height: 32px;
       color: var(--default-primary-color);
     }
-    
+    .publie {
+      color: var(--accent-color);
+    }
+
     paper-icon-item:hover iron-icon[item-icon] {
       color: var(--accent-color);
     }
@@ -89,7 +92,9 @@ font-weight: 400;
                 <div secondary>{{action.contexte}}</div>
               </paper-item-body>
 
-              <!-- <paper-toggle-button on-tap="_publishChange">Publier</paper-toggle-button> -->
+              <template is="dom-if" if="{{action._publie}}">
+                <iron-icon icon="icons:check" class="publie"></iron-icon>
+              </template>
               <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
               <paper-ripple class="circle" recenters></paper-ripple>
             </paper-icon-item>
@@ -145,11 +150,16 @@ font-weight: 400;
       _confirmDeleteTap: function() {
         var action = this._toBeDeleted;
         this._toBeDeleted = null;
-        this.fire('delete', {action: action});  
+        this.fire('delete', {action: action});
       },
 
       _cancelDeleteTap: function() {
         this._toBeDeleted = null;
+      },
+
+      _computePublicationIconClass: function(action) {
+        console.log(action._publie ? 'publie' : 'non publie');
+        return action._publie ? 'publie' : '';
       }
 
     });
