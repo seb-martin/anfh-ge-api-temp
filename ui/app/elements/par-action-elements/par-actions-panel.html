@@ -72,7 +72,9 @@ font-weight: 400;
     </style>
 
     <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+    <paper-tooltip for="backFab">Retour au plan de formation</paper-tooltip>
     <paper-fab id="newFab" icon="icons:create" on-tap="_newTap"></paper-fab>
+    <paper-tooltip for="newFab" position="top">Nouvelle action de formation</paper-tooltip>
 
     <div class="content">
 
@@ -93,9 +95,15 @@ font-weight: 400;
               </paper-item-body>
 
               <template is="dom-if" if="{{action._publie}}">
-                <iron-icon icon="icons:check" class="publie"></iron-icon>
+                <div>
+                  <iron-icon icon="icons:check" class="publie"></iron-icon>
+                  <paper-tooltip position="left">Cette action est publiée</paper-tooltip>
+                </div>
               </template>
-              <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
+              <div>
+                <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
+                <paper-tooltip position="right">Supprimer cette action</paper-tooltip>
+              </div>
               <paper-ripple class="circle" recenters></paper-ripple>
             </paper-icon-item>
           </template>
