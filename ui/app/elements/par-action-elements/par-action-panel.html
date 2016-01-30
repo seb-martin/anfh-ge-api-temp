@@ -10,18 +10,24 @@
       display: block;
     }
 
-    #backFab {
+    .back-zone {
       position: fixed;
-      z-index: 100;
+      z-index: 4;
+    }
+
+    #backFab {
       @apply(--shadow-elevation-6dp);
     }
 
-    #createFab, #updateFab {
+    .commands-zone {
       margin: 5px;
       position:fixed;
       bottom: 60px;
       right: 60px;
       z-index: 4;
+    }
+
+    #createFab, #updateFab {
       @apply(--shadow-elevation-6dp);
     }
 
@@ -41,21 +47,30 @@
       margin: 10px 0;
     }
 
+    #addModuleFab {
+      margin-left: 5px;
+    }
+
 
     </style>
 
     <par-axes-data id="axesData" code-region="[[action.region]]" exercice="[[action.exercice]]" axes="{{_axes}}"></par-axes-data>
 
-    <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+    <div class="back-zone">
+      <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+      <paper-tooltip position="bottom">Retour à la liste des actions</paper-tooltip>
+    </div>
 
-    <template is="dom-if" if="{{!_dirty._id}}">
-      <paper-fab id="createFab" icon="icons:add" on-tap="_createTap"></paper-fab>
-      <!-- <paper-button raised on-tap="_createTap">Créer</paper-button> -->
-    </template>
-    <template is="dom-if" if="{{_dirty._id}}">
-      <paper-fab id="updateFab" icon="icons:check" on-tap="_updateTap"></paper-fab>
-      <!-- <paper-button raised on-tap="_updateTap">Modifier</paper-button> -->
-    </template>
+    <div class="commands-zone">
+      <template is="dom-if" if="{{!_dirty._id}}">
+        <paper-fab id="createFab" icon="icons:add" on-tap="_createTap"></paper-fab>
+        <paper-tooltip position="top">Ajouter cette action au plan</paper-tooltip>
+      </template>
+      <template is="dom-if" if="{{_dirty._id}}">
+        <paper-fab id="updateFab" icon="icons:check" on-tap="_updateTap"></paper-fab>
+        <paper-tooltip position="top">Mettre à jour cette action</paper-tooltip>
+      </template>
+    </div>
 
 
     <div class="content">
@@ -156,8 +171,9 @@
 
         </template>
 
-        <div class="layout horizontal">
+        <div class="layout horizontal center">
           <span class="flex"></span>
+          <span>Ajouter un module &#8594;</span>
           <paper-fab id="addModuleFab" mini icon="icons:create" title="Ajouter un nouveau module" on-tap="_addModule"></paper-fab>
         </div>
 

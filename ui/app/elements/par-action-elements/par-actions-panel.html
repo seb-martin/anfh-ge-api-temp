@@ -12,18 +12,24 @@
       display: block;
     }
 
-    #backFab {
+    .back-zone {
       position: fixed;
       z-index: 4;
+    }
+
+    #backFab {
       @apply(--shadow-elevation-6dp);
     }
 
-    #newFab {
+    .new-zone {
       margin: 5px;
       position:fixed;
       bottom: 60px;
       right: 60px;
       z-index: 4;
+    }
+
+    #newFab {
       @apply(--shadow-elevation-6dp);
     }
 
@@ -71,10 +77,14 @@ font-weight: 400;
 
     </style>
 
-    <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
-    <paper-tooltip for="backFab">Retour au plan de formation</paper-tooltip>
-    <paper-fab id="newFab" icon="icons:create" on-tap="_newTap"></paper-fab>
-    <paper-tooltip for="newFab" position="top">Nouvelle action de formation</paper-tooltip>
+    <div class="back-zone">
+      <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+      <paper-tooltip position="bottom">Retour au plan de formation</paper-tooltip>
+    </div>
+    <div class="new-zone">
+      <paper-fab id="newFab" icon="icons:create" on-tap="_newTap"></paper-fab>
+      <paper-tooltip position="top">Nouvelle action de formation</paper-tooltip>
+    </div>
 
     <div class="content">
 
@@ -166,7 +176,6 @@ font-weight: 400;
       },
 
       _computePublicationIconClass: function(action) {
-        console.log(action._publie ? 'publie' : 'non publie');
         return action._publie ? 'publie' : '';
       }
 
