@@ -4,7 +4,7 @@
   <template>
 
     <style include="shared-styles"></style>
-    
+
     <style>
     :host {
       display: block;
@@ -26,8 +26,8 @@
     }
 
     .content {
-      max-width: 800px; 
-      margin-left: auto; 
+      max-width: 800px;
+      margin-left: auto;
       margin-right: auto;
     }
 
@@ -66,12 +66,9 @@
 
             <div class="layout horizontal">
               <span class="flex"></span>
-              <paper-toggle-button checked="{{_dirty._publie}}">Publié</paper-toggle-button>
+              <paper-toggle-button checked="{{_dirty._publie}}">Publiée</paper-toggle-button>
             </div>
 
-<!--             <paper-material elevaton="1" style="padding: 10px 10px">
-</paper-material>
- -->
             <paper-material elevation="1">
               <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{_dirty.intitule}}"></paper-input>
             </paper-material>
@@ -105,19 +102,28 @@
                 <par-publics-list publics="{{_dirty.publics}}"></par-publics-list>
               </div>
             </paper-card>
-            
+
             <br>
 
           </div>
         </paper-card>
 
         <template is="dom-repeat" items="{{_dirty.modules}}" as="module">
-          
+
           <paper-card heading="{{module.intitule}}">
             <div class="card-content layout vertical">
 
               <paper-material elevation="1">
                 <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{module.intitule}}"></paper-input>
+              </paper-material>
+
+              <paper-material elevation="1">
+                <paper-input-container always-float-label auto-validate attr-for-value="value">
+                  <label>Durée</label>
+                  <par-duree-input class="paper-input-input" value="{{module.duree}}"></par-duree-input>
+                  <paper-input-error>Durée invalide</paper-input-error>
+                </paper-input-container>
+                
               </paper-material>
 
               <paper-material elevation="1">
@@ -131,7 +137,7 @@
               <paper-material elevation="1">
                 <par-marked-textarea label="Objectifs" value="{{module.objectifs}}" maxlength="600"></par-marked-textarea>
               </paper-material>
-              
+
               <paper-material elevation="1">
                 <par-marked-textarea label="Programme" value="{{module.programme}}" maxlength="1700"></par-marked-textarea>
               </paper-material>
@@ -271,7 +277,7 @@
         if (!Array.isArray(this._dirty.modules)) {
           this.set('_dirty.modules', []);
         }
-        this.push('_dirty.modules', {intitule: 'Nouveau module'});
+        this.push('_dirty.modules', {intitule: 'Nouveau module', duree: 'P1D'});
       },
 
       _removeModule: function(evt) {
