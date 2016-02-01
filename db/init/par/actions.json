@@ -1,10 +1,2 @@
 {"index":{"_index":"par", "_type":"actions"}}
-{"region": "ALP", "exercice":2015, "axe": "A", "intitule":"Offre ALP/2015 #1", "contexte": "Contexte Offre ALP/2015 #1", "objectifs": "Objectifs Offre ALP/2015 #1", "programme": "Programme Offre ALP/2015 #1", "duree":"P5D", "typologie":"1", "publics":["ASH"], "nature":"R", "titulaire":"Organisme A", "modules": [{"intitule":"Offre ALP/2015 #1 Module #1", "contexte": "Contexte Offre ALP/2015 #1 Module #1", "objectifs": "Objectifs Offre ALP/2015 #1 Module #1", "programme": "Programme Offre ALP/2015 #1 Module #1", "duree":"P5D", "formateur":"Organisme A", "publics":["ASH"]}], "groupes": [{"num": 1, "sessions": [{"debut":"2016-02-01", "fin":"2016-02-05", "ville": "PARIS"}]}]}
-{"index":{"_index":"par", "_type":"actions"}}
-{"region": "ALP", "exercice":2015, "axe": "A", "intitule":"Offre ALP/2015 #2", "contexte": "", "objectifs": "", "programme": ""}
-{"index":{"_index":"par", "_type":"actions"}}
-{"region": "ALP", "exercice":2015, "axe": "B", "intitule":"Offre ALP/2015 #3", "contexte": "", "objectifs": "", "programme": ""}
-{"index":{"_index":"par", "_type":"actions"}}
-{"region": "RHO", "exercice":2015, "axe": "G", "intitule":"Offre RHO/2015 #1", "contexte": "", "objectifs": "", "programme": ""}
-{"index":{"_index":"par", "_type":"actions"}}
-{"region": "RHO", "exercice":2015, "axe": "H", "intitule":"Offre RHO/2015 #2", "contexte": "", "objectifs": "", "programme": ""}
+{"region": "ALP", "exercice":2015, "axe": "A", "intitule":"Offre ALP/2015 #1", "contexte": "Contexte Offre ALP/2015 #1", "objectifs": "Objectifs Offre ALP/2015 #1", "typologie":"1",  "publics":["ASH"], "nature":"R", "titulaire":"Organisme A", "modules": [{"intitule":"Offre ALP/2015 #1 Module #1", "contexte": "Contexte Offre ALP/2015 #1 Module #1", "objectifs": "Objectifs Offre ALP/2015 #1 Module #1", "programme": "Programme Offre ALP/2015 #1 Module #1", "duree":"P5D", "formateur":"Organisme A", "publics":["ASH"]}], "calendrier": [{"debut":"2016-02-01", "fin":"2016-02-05", "ville": "PARIS"}]}
