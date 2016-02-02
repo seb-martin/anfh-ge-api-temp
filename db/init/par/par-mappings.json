@@ -17,13 +17,13 @@
     "actions": {
       "properties": {
         "region": { "type": "string", "index":"not_analyzed" },
-        "exercice": { "type": "integer", "index":"not_analyzed"  },
+        "exercice": { "type": "integer", "index":"not_analyzed" },
+        "_publie": { "type": "boolean", "index":"not_analyzed" },
         "axe": { "type": "string", "index":"not_analyzed" },
+        "classifRegionale": { "type": "string", "index":"not_analyzed" },
         "intitule": { "type": "string"  },
         "contexte": { "type": "string"  },
         "objectifs": { "type": "string"  },
-        "programme": { "type": "string"  },
-        "duree": { "type": "string"  },
         "typologie": { "type": "string", "index":"not_analyzed" },
         "publics": { "type": "string" },
         "nature": { "type": "string" },
@@ -39,16 +39,11 @@
             "publics": { "type": "string"  }
           }
         },
-        "groupes": {
+        "calendrier": {
           "properties": {
-            "num": { "type": "integer"  },
-            "sessions": {
-              "properties": {
-                "debut": { "type": "date", "format": "yyyy-MM-dd"  },
-                "fin": { "type": "date", "format": "yyyy-MM-dd"  },
-                "ville": { "type": "string"  }
-              }
-            }
+            "debut": { "type": "date", "format": "yyyy-MM-dd"  },
+            "fin": { "type": "date", "format": "yyyy-MM-dd"  },
+            "ville": { "type": "string"  }
           }
         }
 

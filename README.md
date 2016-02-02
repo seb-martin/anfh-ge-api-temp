@@ -22,6 +22,8 @@ Le système est distribué sous la forme d'images [Docker](https://www.docker.co
 - [Install Docker Engine](https://docs.docker.com/engine/installation/)
 - [Install Docker Compose](https://docs.docker.com/compose/install/)
 
+**Consulter la page [Installation Prérequis Centos 7](https://github.com/seb-martin/anfh-ge-api-temp/wiki/Installation-Pr%C3%A9requis-Centos-7)**
+
 
 ## Installation
 
