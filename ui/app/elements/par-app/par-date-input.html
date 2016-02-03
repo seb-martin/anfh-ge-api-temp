@@ -1,0 +1,119 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-date-input">
+  <template>
+    <style include="shared-styles"></style>
+    <style>
+      :host {
+        display: inline-block;
+      }
+      input[is="iron-input"] {
+        font: inherit;
+        outline: none;
+        box-shadow: none;
+        border: none;
+        width: 6em;
+        text-align: right;
+      }
+    </style>
+
+    <paper-input-container attr-for-value="date" always-float-label>
+      <label>{{label}}</label>
+      <input is="iron-input" type="text" value="{{_computeShortDate(date)}}" readonly
+        on-tap="_openDialog">
+      <paper-icon-button suffix icon="icons:date-range" toggles active="{{dialogOpened}}"></paper-icon-button>
+    </paper-input-container>
+
+    <paper-dialog id="dialog" class="paper-date-picker-dialog" modal opened="{{dialogOpened}}" >
+      <paper-date-picker
+      id="datepicker"
+      class="paper-input-input"
+      locale="fr"
+      on-date-changed="_pickedDateChanged"
+      force-narrow
+      heading-format="ddd D MMMM"
+      ></paper-date-picker>
+
+      <div class="buttons">
+        <paper-button dialog-confirm>OK</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-date-input',
+
+        behaviors: [
+          Polymer.IronFormElementBehavior,
+          Polymer.IronValidatableBehavior
+        ],
+
+        properties: {
+          value: {
+            type: String,
+            notify: true,
+            observer: '_valueChanged'
+          },
+
+          label: {
+            type: String
+          },
+
+          date: {
+            type: Object,
+            notify: true,
+            readOnly: true,
+            observer: '_dateChanged'
+          }
+        },
+
+        _dateChanged: function(date) {
+
+          if (!this.value || !date.isSame(moment(this.value), 'day')) {
+            this.value = date.toISOString().substring(0, 'YYYY-MM-DD'.length);
+          }
+
+          if (!this.$.datepicker.date ||
+            !date.isSame(moment(this.$.datepicker.date), 'day')) {
+
+            this.$.datepicker.date = date.toDate();
+          }
+
+        },
+
+        _pickedDateChanged: function(evt) {
+          var pickedDate = evt.detail.value;
+          if (pickedDate) {
+            this._setDate(moment(pickedDate).startOf('day'));
+          } else {
+            this._setDate(null);
+          }
+        },
+
+        _valueChanged: function(dateISO) {
+
+          if (dateISO) {
+            this._setDate(moment(dateISO).startOf('day'));
+          } else {
+            this._setDate(moment());
+          }
+        },
+
+        _computeShortDate: function(date) {
+          return moment(date).format("DD/MM/YYYY");
+        },
+
+        _openDialog: function() {
+          this.$.dialog.open();
+        }
+
+      });
+    })();
+  </script>
+
+</dom-module>

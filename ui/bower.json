@@ -10,7 +10,8 @@
     "polymer": "Polymer/polymer#^1.2.0",
     "paper-menu": "PolymerElements/paper-menu#4fecb43601",
     "elasticsearch": "~10.0.1",
-    "moment": "^2.11.1"
+    "moment": "^2.11.1",
+    "paper-date-picker": "polymer-paper-date-picker#^1.1.2"
   },
   "devDependencies": {
     "web-component-tester": "*"
