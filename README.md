@@ -61,7 +61,7 @@ curl -X PUT http://localhost:9200/par?pretty -d @db/init/par/par-mappings.json
 Peupler les régions de formation.
 
 ```sh
-curl -X POST http://localhost:9200/par/_bulk -d @db/init/par/regions.json
+curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@db/init/par/regions.json"
 ```
 
 # Machine Virtuelle
