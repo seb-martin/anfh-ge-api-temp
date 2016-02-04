@@ -1,0 +1,16 @@
+{
+  "name": "recovery",
+  "version": "1.0.0",
+  "description": "Reprise des données de ANFH.fr livrées par Supersoniks",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sébastien Martin <s.martin@anfh.fr>",
+  "license": "ISC",
+  "dependencies": {
+    "moment": "^2.11.1",
+    "to-markdown": "^2.0.1",
+    "xml2js": "^0.4.16"
+  }
+}
