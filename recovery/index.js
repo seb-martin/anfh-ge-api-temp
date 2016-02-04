@@ -194,8 +194,8 @@
         // Durée du module
         if (typeof srctgt.src.field_af_duree[0].n0[0].value[0] === 'string') {
           try {
-            var nbHeures = parseInt(srctgt.src.field_af_duree[0].n0[0].value[0]);
-            srctgt.target.action.modules[0].duree = 'PT' + nbHeures + 'H'
+            var nbJours = parseInt(srctgt.src.field_af_duree[0].n0[0].value[0]);
+            srctgt.target.action.modules[0].duree = 'P' + nbJours + 'D'
           } catch (err) {
             console.warn('La durée n\'est pas un entier',  srctgt.src.field_af_duree[0].n0[0].value[0], err);
           }
