@@ -71,7 +71,7 @@
   }
 
 
-  fs.readFile(__dirname + '/export-supersoniks/export-supersoniks.xml', function(err, data) {
+  fs.readFile(__dirname + '/export-supersoniks/export_formations.xml', function(err, data) {
     parser.parseString(data, function (err, result) {
 
       // Juste pour voir
@@ -130,7 +130,6 @@
       .map(function(srctgt) {
         // Objectifs
         if (typeof srctgt.src.field_objectif[0].n0[0].value[0] === 'string') {
-          console.log(typeof srctgt.src.field_objectif[0].n0[0].value[0]);
           srctgt.target.action.objectifs = toMarkdown(srctgt.src.field_objectif[0].n0[0].value[0], toMarkdownOptions).trim();
         }
         return srctgt;
@@ -195,8 +194,8 @@
         // Durée du module
         if (typeof srctgt.src.field_af_duree[0].n0[0].value[0] === 'string') {
           try {
-            var nbHeures = parseInt(srctgt.src.field_af_duree[0].n0[0].value[0]);
-            srctgt.target.action.modules[0].duree = 'PT' + nbHeures + 'H'
+            var nbJours = parseInt(srctgt.src.field_af_duree[0].n0[0].value[0]);
+            srctgt.target.action.modules[0].duree = 'P' + nbJours + 'D'
           } catch (err) {
             console.warn('La durée n\'est pas un entier',  srctgt.src.field_af_duree[0].n0[0].value[0], err);
           }
@@ -258,16 +257,22 @@
         Il n'existe pas de notion d'exercice dans les données reprise.
 
         On détermine l'exercice en prenant la plus petite date de début dans le calendrier
+        A défaut de date dans le calendrier, on utilise le champ 'revision_timestamp'
+        http://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
         */
+        var exercice
         if (srctgt.target.action.calendrier.length > 0) {
-          var exercice = srctgt.target.action.calendrier.map(function(calendrier) {
+          exercice = srctgt.target.action.calendrier.map(function(calendrier) {
             return parseInt(calendrier.debut.substring(0, 'YYYY'.length));
           }).reduce(function(m, exe) {
             return m < exe ? exe : m;
           });
 
-          srctgt.target.action.exercice = exercice;
+        } else {
+          // Utilisation du revision_timestamp
+          exercice = new Date(parseInt(srctgt.src.revision_timestamp[0]) * 1000).getFullYear();
         }
+        srctgt.target.action.exercice = exercice;
 
         return srctgt;
       })
