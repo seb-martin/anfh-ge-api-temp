@@ -6,23 +6,27 @@
     <style>
       :host {
         display: inline-block;
+        width: 100%;
       }
-      input[is="iron-input"] {
-        font: inherit;
-        outline: none;
-        box-shadow: none;
-        border: none;
-        width: auto;
-        text-align: right;
+
+      paper-input[type="number"] {
+        --paper-input-container-input: {
+
+          text-align: right;
+        };
       }
     </style>
 
-    <input is="iron-input" type="number" pattern="[0-9]*" bind-value="{{_jours}}" min="0" aria-label="Nombre de jours">
-    jours
-    <input is="iron-input" type="number" pattern="[0-9]*" bind-value="{{_heures}}" min="0" aria-label="Nombre d'heures'">
-    heures
-    <input is="iron-input" type="number" pattern="[0-9]*" bind-value="{{_minutes}}" min="0" aria-label="Nombre de minutes">
-    minutes
+    <div class="content layout horizontal justified">
+      <paper-input id="daysInput" label="Jours" type="number" on-change="_inputsChanged" pattern="[0-9]*" min="0" aria-label="Nombre de jours">
+      </paper-input>
+
+      <paper-input id="hoursInput" label="Heures" type="number" on-change="_inputsChanged" pattern="[0-9]*" aria-label="Nombre d'heures'">
+      </paper-input>
+
+      <paper-input id="minutesInput" label="Minutes" type="number" on-change="_inputsChanged" pattern="[0-9]*" aria-label="Nombre de minutes">
+      </paper-input>
+    </div>
   </template>
 
   <script>
@@ -49,70 +53,63 @@
             notify: true,
             readOnly: true,
             observer: '_durationChanged'
-          },
-
-          _jours: {
-            type: Number
-          },
-
-          _heures: {
-            type: Number
-          },
-
-          _minutes: {
-            type: Number
           }
-        },
-
-        observers: [
-          '_inputsChanged(_jours, _heures, _minutes)'
-        ],
-
-        ready: function() {
         },
 
         _durationChanged: function(duration) {
-          this.value = duration.toISOString();
+
+          var valueDuration = moment.duration(this.value);
+          if (valueDuration.asMilliseconds() !== duration.asMilliseconds()) {
+            this.value = duration.toISOString();
+          }
+
+          this.$.daysInput.value = Math.floor(this.duration.asDays());
+          this.$.hoursInput.value = this.duration.hours() >= 7 ? 6 : this.duration.hours();
+          this.$.minutesInput.value = this.duration.minutes();
+
         },
 
         _valueChanged: function(dureeISO) {
-          var duration = dureeISO ?
-            moment.duration(dureeISO) :
-            moment.duration();
 
-          if (!this.duration || this.duration.asMilliseconds() !== duration.asMilliseconds()) {
-            this._setDuration(duration);
-            // this._jours = this.duration.days() + (30 * this.duration.months());
-            this._jours = Math.floor(this.duration.asDays());
-            this._heures = this.duration.hours();
-            this._minutes = this.duration.minutes();
-          }
-
+          var duration = dureeISO ? moment.duration(dureeISO) : moment.duration();
+          this._setDuration(duration);
         },
 
-        _inputsChanged: function(jours, heures, minutes) {
-          jours = parseInt(jours);
-          heures = parseInt(heures);
-          minutes = parseInt(minutes);
+        _inputsChanged: function() {
 
-          jours = jours < 0 ? 0 : jours;
-          heures = heures < 0 ? 0 : heures;
-          minutes = minutes < 0 ? 0 : minutes;
+          // On parse les nombre de jours, heures, minutes
+          var jours = parseInt(this.$.daysInput.value);
+          var heures = parseInt(this.$.hoursInput.value);
+          var minutes = parseInt(this.$.minutesInput.value);
 
-          this._minutes = minutes % 60;
-          var _totalHeures = heures + Math.floor(minutes / 60);
-          this._heures = _totalHeures % 7;
-          this._jours = jours + Math.floor(_totalHeures / 7);
+          if (minutes >= 60) {
+            heures += Math.floor(minutes / 60);
+            minutes = minutes % 60;
+          } else if (minutes < 0) {
+            heures += Math.floor(minutes / 60);
+            minutes = 60 + (minutes % 60);
+          }
+
+          if (heures >= 7) {
+            jours += Math.floor(heures / 7);
+            heures = heures % 7;
+          } else if (heures < 0) {
+            jours += Math.floor(heures / 7);
+            heures = 7 + (heures % 7);
+          }
 
           var duration = moment.duration({
-            days: this._jours,
-            hours: this._heures,
-            minutes: this._minutes
+            days: jours,
+            hours: heures,
+            minutes: minutes
           });
 
-          if (this.duration.asMilliseconds() !== duration.asMilliseconds()) {
-            this._setDuration(duration);
+          // Si la durée est négative, elle est égale à 0
+          if (duration.asMilliseconds() < 0) {
+            duration = moment.duration(0);
           }
+
+          this._setDuration(duration);
         }
 
       });
