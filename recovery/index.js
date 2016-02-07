@@ -225,6 +225,14 @@
           }
         }).filter(function(itemCalendrier) {
           return itemCalendrier;
+        }).sort(function(item1, item2) {
+          if (item1.debut < item2.debut) {
+            return -1;
+          } else if (item1.debut > item2.debut) {
+            return 1;
+          } else {
+            return 0;
+          }
         });
 
         return srctgt;
