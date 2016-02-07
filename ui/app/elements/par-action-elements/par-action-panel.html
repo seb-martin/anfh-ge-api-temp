@@ -112,14 +112,12 @@
               <par-marked-textarea label="Objectifs" value="{{_dirty.objectifs}}" maxlength="600"></par-marked-textarea>
             </paper-material>
 
-            <paper-card heading="Publics">
-              <div class="card-content">
-                <par-publics-list publics="{{_dirty.publics}}"></par-publics-list>
-              </div>
-            </paper-card>
+          </div>
+        </paper-card>
 
-            <br>
-
+        <paper-card heading="Publics">
+          <div class="card-content">
+            <par-publics-list publics="{{_dirty.publics}}"></par-publics-list>
           </div>
         </paper-card>
 
@@ -133,12 +131,7 @@
               </paper-material>
 
               <paper-material elevation="1">
-                <paper-input-container always-float-label auto-validate attr-for-value="value">
-                  <label>Durée</label>
-                  <par-duree-input class="paper-input-input" value="{{module.duree}}"></par-duree-input>
-                  <paper-input-error>Durée invalide</paper-input-error>
-                </paper-input-container>
-
+                <par-duree-input value="{{module.duree}}"></par-duree-input>
               </paper-material>
 
               <paper-material elevation="1">
@@ -176,6 +169,12 @@
           <span>Ajouter un module &#8594;</span>
           <paper-fab id="addModuleFab" mini icon="icons:create" title="Ajouter un nouveau module" on-tap="_addModule"></paper-fab>
         </div>
+
+        <paper-card heading="Calendrier">
+          <div class="card-content">
+            <par-evenement-list evenements="{{_dirty.calendrier}}"></par-evenement-list>
+          </div>
+        </paper-card>
 
       </form>
 
@@ -240,6 +239,19 @@
         });
       }
 
+      if (Array.isArray(action.calendrier)) {
+        clone.calendrier = action.calendrier.map(function(evenement) {
+          return {
+            debut: evenement.debut,
+            fin: evenement.fin,
+            ville: evenement.ville
+          };
+        });
+
+      } else {
+        clone.calendrier = action.calendrier;
+      }
+
       return clone;
     };
 
@@ -252,6 +264,9 @@
           notify: true,
           observer: '_actionChanged'
         }
+      },
+
+      ready: function() {
       },
 
       _actionChanged: function(action) {
@@ -301,7 +316,6 @@
         var model = evt.model;
         this.splice('_dirty.modules', model.index);
       }
-
     });
   })();
   </script>
