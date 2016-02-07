@@ -21,7 +21,7 @@
       <label>{{label}}</label>
       <input is="iron-input" type="text" value="{{_computeShortDate(date)}}" readonly
         on-tap="_openDialog">
-      <paper-icon-button suffix icon="icons:date-range" toggles active="{{dialogOpened}}"></paper-icon-button>
+      <paper-icon-button suffix icon="icons:event" toggles active="{{dialogOpened}}"></paper-icon-button>
     </paper-input-container>
 
     <paper-dialog id="dialog" class="paper-date-picker-dialog" modal opened="{{dialogOpened}}" >
@@ -73,9 +73,8 @@
         },
 
         _dateChanged: function(date) {
-
           if (!this.value || !date.isSame(moment(this.value), 'day')) {
-            this.value = date.toISOString().substring(0, 'YYYY-MM-DD'.length);
+            this.value = date.format('YYYY-MM-DD');
           }
 
           if (!this.$.datepicker.date ||
@@ -96,7 +95,6 @@
         },
 
         _valueChanged: function(dateISO) {
-
           if (dateISO) {
             this._setDate(moment(dateISO).startOf('day'));
           } else {
@@ -105,7 +103,7 @@
         },
 
         _computeShortDate: function(date) {
-          return moment(date).format("DD/MM/YYYY");
+          return moment(date).format('DD/MM/YYYY');
         },
 
         _openDialog: function() {
