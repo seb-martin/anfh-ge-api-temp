@@ -1,0 +1,116 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-evenement-list">
+  <template>
+    <style include="shared-styles"></style>
+
+    <style>
+      :host {
+        @apply(--layout-vertical);
+      }
+      .list-item {
+        border-bottom: 1px solid #dedede;
+        background-color: #fff;
+
+      }
+    </style>
+
+    <paper-material elevation="1" class="list">
+      <template is="dom-repeat" items="{{evenements}}" as="evenement">
+        <par-evenement-item value="{{evenement}}" class="list-item" style="width: 100%"
+          on-update-evenement="_updateEvenement"
+          on-remove-evenement="_removeEvenement"
+        ></par-evenement-item>
+      </template>
+    </paper-material>
+
+    <paper-material elevation="0">
+      <par-evenement-new-item mode="creation" style="width: 100%"
+        value="{{_newEvenement}}"
+        on-add-evenement="_addEvenement"
+      ></par-evenement-new-item>
+    </paper-material>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-evenement-list',
+
+        behaviors: [
+          Polymer.IronFormElementBehavior,
+          Polymer.IronValidatableBehavior
+        ],
+
+        properties: {
+          evenements: {
+            type: Array,
+            value: []
+          }
+        },
+
+        observers: ['_evenementsChanged(evenements.splices)'],
+
+        _evenementsChanged: function() {
+          console.log(this.evenements);
+        },
+
+        ready: function() {
+          this._newEvenement = {
+            debut: moment().format('YYYY-MM-DD'),
+            fin: moment().format('YYYY-MM-DD')
+          };
+        },
+
+        _findAddIndex: function(nouvelEvenement) {
+          return this.evenements.reduceRight(
+            function(addIndex, evenement, index) {
+              var evtMoment = moment(evenement.debut);
+              var newMoment = moment(nouvelEvenement.debut);
+              if (evtMoment.isAfter(newMoment)) {
+                return index;
+              } else {
+                return addIndex;
+              }
+            }, this.evenements.length
+          );
+        },
+
+        _addEvenement: function(evt) {
+          if (!Array.isArray(this.evenements)) {
+            this.set('evenements', []);
+          }
+
+          var addIndex = this._findAddIndex(evt.detail.evenement);
+
+          this.splice('evenements', addIndex, 0, evt.detail.evenement);
+
+          //this.push('evenements', evt.detail.evenement);
+
+          this._newEvenement = {
+            debut: moment().format('YYYY-MM-DD'),
+            fin: moment().format('YYYY-MM-DD')
+          };
+        },
+
+        _updateEvenement: function(evt) {
+          this.splice('evenements', evt.model.index, 1);
+          var addIndex = this._findAddIndex(evt.detail.evenement);
+          this.splice('evenements', addIndex, 0, evt.detail.evenement);
+        },
+
+        _removeEvenement: function(evt) {
+          // Le removed est placé en new, pour être récupérable
+          this._newEvenement = evt.detail.evenement;
+          this.splice('evenements', evt.model.index, 1);
+        }
+
+      });
+
+    })();
+  </script>
+
+</dom-module>
