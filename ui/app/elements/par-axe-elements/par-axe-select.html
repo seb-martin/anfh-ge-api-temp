@@ -7,18 +7,28 @@
       :host {
       }
 
+      .without-item {
+        font-style: italic;
+      }
+
       paper-dropdown-menu {
-        width:100%        
+        width:100%
       }
 
     </style>
 
     <paper-dropdown-menu label="[[label]]" required="[[required]]">
-      <paper-listbox class="dropdown-content" selected="{{_selected}}">
+      <paper-listbox class="dropdown-content" selected="{{_selected}}" on-selected-changed="_selectedChanged">
         <template is="dom-repeat" items="[[axes]]" as="axe">
           <paper-icon-item>
             <iron-icon icon="icons:explore" item-icon></iron-icon>
             Axe [[axe.num]] : [[axe.intitule]]
+          </paper-icon-item>
+        </template>
+        <template is="dom-if" if="{{_computeShowRemoveAxe(required, value)}}">
+          <paper-icon-item class="without-item">
+            <iron-icon icon="icons:highlight-off" item-icon></iron-icon>
+            Sans {{label}}
           </paper-icon-item>
         </template>
       </paper-listbox>
@@ -43,19 +53,16 @@
             type: String,
             value: 'Axe'
           },
-          
+
           axes: {
-            type: Array
+            type: Array,
+            value: []
           },
 
           value: {
             type: String,
             notify: true,
             observer: '_valueChanged'
-          },
-          _selected: {
-            type: Number,
-            observer: '_selectedChanged'
           }
         },
 
@@ -78,14 +85,24 @@
           }
         },
 
-        _selectedChanged: function(index) {
-          if (typeof index === 'number' && index >= 0) {
+        _selectedChanged: function(evt) {
+          var index = evt.detail.value;
+          if (index >= 0 && index < this.axes.length) {
             if (this.axes[index]._id !== this.value) {
               this.value = this.axes[index]._id;
             }
           } else {
             this.value = null;
           }
+        },
+
+        _computeShowRemoveAxe: function(required, value) {
+          if (required || !value) {
+            return false;
+          } else {
+            return true;
+          }
+
         }
 
       });
