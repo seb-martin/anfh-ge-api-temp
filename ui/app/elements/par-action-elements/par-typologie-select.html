@@ -7,15 +7,22 @@
       :host {
       }
 
+      .without-item {
+        font-style: italic;
+      }
+
       paper-dropdown-menu {
-        width:100%        
+        width:100%
       }
     </style>
 
     <paper-dropdown-menu id="dropdown" label="[[label]]" required="[[required]]">
-      <paper-listbox class="dropdown-content" selected="{{_selected}}">
+      <paper-listbox class="dropdown-content" selected="{{_selected}}" on-selected-changed="_selectedChanged">
         <template is="dom-repeat" items="[[_typos]]" as="_typo">
           <paper-item>[[_typo.libelle]]</paper-item>
+        </template>
+        <template is="dom-if" if="{{_computeShowRemoveTypo(required, value)}}">
+          <paper-item class="without-item">Sans {{label}}</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
@@ -25,6 +32,25 @@
   <script>
     (function() {
       'use strict';
+
+      var typologies = [
+        {
+          code: '1',
+          libelle: 'Formation professionnelle initiale'
+        },
+        {
+          code: '2',
+          libelle: 'Formation continue ou Développement des connaissances et des compétences'
+        },
+        {
+          code: '3',
+          libelle: 'Préparation concours et examens'
+        },
+        {
+          code: '5',
+          libelle: 'Action de conversion'
+        }
+      ];
 
       Polymer({
         is: 'par-typologie-select',
@@ -46,47 +72,27 @@
           },
           autoValidate: {
             type: Boolean
-          },
-
-          _selected: {
-            type: Number,
-            observer: '_selectedChanged'
           }
         },
 
         ready: function() {
-          this._typos = [
-            {
-              code: '1', 
-              libelle: 'Formation professionnelle initiale'
-            },
-            {
-              code: '2', 
-              libelle: 'Formation continue ou Développement des connaissances et des compétences'
-            },
-            {
-              code: '3', 
-              libelle: 'Préparation concours et examens'
-            },
-            {
-              code: '5', 
-              libelle: 'Action de conversion'
-            }
-          ];
+          this._typos = typologies;
         },
 
-        _valueChanged: function(typo) {
-          var idx = -1;
-          var i = 0;
+        _valueChanged: function(codeTypo) {
+          if (codeTypo) {
 
-          if (typo) {
-
-            for (i ; i < this._typos.length ; i++) {
-              if (this._typos[i].code === typo) {
-                idx = i;
-                break;
-              }
-            }
+            // Cherche l'index de la typologie de code codeTypo
+            var idx = this._typos.reduce(
+              function(mem, typo, index) {
+                if (typo.code === codeTypo) {
+                  return index;
+                } else {
+                  return mem;
+                }
+              },
+              -1
+            );
 
             if (idx !== this._selected) {
               this._selected = idx;
@@ -97,19 +103,29 @@
 
           if (this.autoValidate) {
             this.async(function() {
-              this.$.dropdown.validate(typo);
+              this.$.dropdown.validate(codeTypo);
             });
           }
-          
+
         },
 
-        _selectedChanged: function(index) {
-          if (typeof index === 'number' && index >= 0) {
+        _selectedChanged: function(evt) {
+          var index = evt.detail.value;
+          // var typoIndex = this.required ? index : index - 1;
+          if (index >= 0 && index < this._typos.length) {
             if (this._typos[index].code !== this.value) {
               this.value = this._typos[index].code;
             }
           } else {
             this.value = null;
+          }
+        },
+
+        _computeShowRemoveTypo: function(required, value) {
+          if (required || !value) {
+            return false;
+          } else {
+            return true;
           }
         }
 
