@@ -1,0 +1,101 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-public-list">
+  <template>
+    <style include="shared-styles"></style>
+
+    <style>
+      :host {
+        @apply(--layout-vertical);
+      }
+
+      .list-item {
+        border-bottom: 1px solid #dedede;
+        background-color: #fff;
+      }
+    </style>
+
+    <paper-material elevation="1" class="list">
+      <template is="dom-repeat" items="{{publics}}" as="public">
+        <par-public-item value="{{public}}" class="list-item" style="width: 100%"
+          on-update-public="_updatePublic"
+          on-remove-public="_removePublic"
+        ></par-public-item>
+      </template>
+    </paper-material>
+
+    <paper-material elevation="0">
+      <par-public-new-item style="width: 100%"
+        value="{{_newPublic}}"
+        on-add-public="_addPublic"
+      ></par-public-new-item>
+    </paper-material>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-public-list',
+
+        behaviors: [
+          Polymer.IronFormElementBehavior,
+          Polymer.IronValidatableBehavior
+        ],
+
+        properties: {
+          publics: {
+            type: Array,
+            value: []
+          }
+        },
+
+        ready: function() {
+          this._newPublic = '';
+        },
+
+        _findAddIndex: function(nouveauPublic) {
+          return this.publics.reduceRight(
+            function(addIndex, p, index) {
+              if (p > nouveauPublic) {
+                return index;
+              } else {
+                return addIndex;
+              }
+            },
+            this.publics.length
+          );
+        },
+
+        _addPublic: function(evt) {
+          if (!Array.isArray(this.publics)) {
+            this.set('publics', []);
+          }
+
+          var addIndex = this._findAddIndex(evt.detail.public);
+
+          this.splice('publics', addIndex, 0, evt.detail.public);
+
+          this._newPublic = '';
+        },
+
+        _updatePublic: function(evt) {
+          // Le public peut ne plus devoir être à la même place
+          // Il convient de replacer le public dans la liste
+          this.splice('publics', evt.model.index, 1);
+          var addIndex = this._findAddIndex(evt.detail.public);
+          this.splice('publics', addIndex, 0, evt.detail.public);
+        },
+
+        _removePublic: function(evt) {
+          // Le removed est placé en new, pour être récupérable
+          this._newPublic = evt.detail.public;
+          this.splice('publics', evt.model.index, 1);
+        }
+      });
+
+    })();
+  </script>
+
+</dom-module>

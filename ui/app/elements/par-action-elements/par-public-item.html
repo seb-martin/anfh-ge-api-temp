@@ -1,0 +1,106 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-public-item">
+  <template>
+
+    <style include="shared-styles"></style>
+
+    <style>
+    :host {
+      display: inline-block;
+    }
+
+    </style>
+
+    <template is="dom-if" if="{{edition}}">
+      <paper-icon-item>
+        <iron-icon icon="icons:face" item-icon></iron-icon>
+        <paper-item-body>
+          <paper-input label="Public" value="{{_copy}}" on-keydown="_inputKeydown"></paper-input>
+        </paper-item-body>
+        <paper-icon-button icon="icons:check-circle" disabled="{{_computeUpdateDisabled(_copy)}}" on-tap="_updateTap" alt="Mettre à jour" title="Mettre à jour"></paper-icon-button>
+        <paper-icon-button icon="icons:cancel" on-tap="_cancelTap"></paper-icon-button>
+      </paper-icon-item>
+    </template>
+
+    <template is="dom-if" if="{{!edition}}">
+      <paper-icon-item id="consultationItem" active="{{edition}}" toggles>
+        <iron-icon icon="icons:face" item-icon></iron-icon>
+
+        <paper-item-body>{{value}}</paper-item-body>
+
+        <paper-icon-button icon="icons:remove-circle" on-tap="_removeTap"></paper-icon-button>
+
+        <paper-ripple class="circle" recenters></paper-ripple>
+      </paper-icon-item>
+    </template>
+
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-public-item',
+
+      properties: {
+        value: {
+          type: String,
+          notify: true,
+          value: ''
+        },
+
+        edition: {
+          type: Boolean,
+          notify: true,
+          value: false,
+          observer: '_editionChanged'
+        }      },
+
+      ready: function() {
+      },
+
+      _editionChanged: function(edition) {
+        if (edition) {
+          // En mode édition, on travaille sur une copie
+          // afin de pouvoir annuler les modifications
+          this._copy = this.value;
+        } else {
+          this._copy = null;
+        }
+
+      },
+
+      _computeUpdateDisabled: function(p) {
+        return !p || !p.trim();
+      },
+
+      _inputKeydown: function(evt) {
+        if (evt.keyCode === 13) {
+          // 'Enter'
+          this._updateTap();
+        } else if (evt.keyCode === 27) {
+          // 'Echap'
+          this._cancelTap();
+        }
+      },
+
+      _updateTap: function() {
+        this.fire('update-public', {public: this._copy});
+        this.edition = false;
+      },
+
+      _cancelTap: function() {
+        this.fire('cancel-public');
+        this.edition = false;
+      },
+
+      _removeTap: function() {
+        this.fire('remove-public', {public: this.value});
+      }
+
+    });
+  })();
+  </script>
+</dom-module>
