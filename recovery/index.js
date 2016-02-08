@@ -150,7 +150,7 @@
         })
         .filter(function(public) {
           return public;
-        });
+        }).sort();
         return srctgt;
       })
       .map(function(srctgt) {
