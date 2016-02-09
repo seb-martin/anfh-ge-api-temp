@@ -314,7 +314,7 @@
 
       _removeModule: function(evt) {
         var model = evt.model;
-        this.splice('_dirty.modules', model.index);
+        this.splice('_dirty.modules', model.index, 1);
       }
     });
   })();
