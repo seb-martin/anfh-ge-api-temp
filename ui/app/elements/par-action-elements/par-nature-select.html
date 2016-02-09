@@ -8,13 +8,13 @@
       }
 
       paper-dropdown-menu {
-        width:100%        
+        width:100%
       }
 
     </style>
 
     <paper-dropdown-menu id="dropdown" label="[[label]]" required="[[required]]">
-      <paper-listbox class="dropdown-content" selected="{{_selected}}">
+      <paper-listbox class="dropdown-content" selected="{{_selected}}" on-selected-changed="_selectedChanged">
         <template is="dom-repeat" items="[[_natures]]" as="_nature">
           <paper-item>[[_nature.libelle]]</paper-item>
         </template>
@@ -26,6 +26,11 @@
   <script>
     (function() {
       'use strict';
+
+      var natures = [
+        {code: 'N', libelle: 'Nationale'},
+        {code: 'R', libelle: 'Régionale'}
+      ];
 
       Polymer({
         is: 'par-nature-select',
@@ -47,28 +52,15 @@
           },
           autoValidate: {
             type: Boolean
-          },
-          default: {
-            type: String
-          },
-          _selected: {
-            type: Number,
-            observer: '_selectedChanged'
           }
         },
 
         ready: function() {
-          this._natures = [
-            {code: 'N', libelle: 'Nationale'},
-            {code: 'R', libelle: 'Régionale'}
-          ];
-
-          if (!this.value) {
-            this.value = this.default;
-          }
+          this._natures = natures;
         },
 
         _valueChanged: function(nature) {
+          console.log('_valueChanged', nature);
           var idx = -1;
           var i = 0;
 
@@ -95,7 +87,8 @@
           }
         },
 
-        _selectedChanged: function(index) {
+        _selectedChanged: function(evt) {
+          var index = evt.detail.value;
           if (typeof index === 'number' && index >= 0) {
             if (this._natures[index].code !== this.value) {
               this.value = this._natures[index].code;
