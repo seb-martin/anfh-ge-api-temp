@@ -1,0 +1,26 @@
+{
+  "name": "ge-api-temp",
+  "version": "0.0.1",
+  "description": "Gesform-Evolution API temporaire",
+  "main": "gulpfile.js",
+  "dependencies": {
+    "gulp": "^3.9.1",
+    "gulp-bump": "^1.0.0",
+    "minimist": "^1.2.0"
+  },
+  "devDependencies": {},
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/seb-martin/anfh-ge-api-temp.git"
+  },
+  "keywords": [],
+  "author": "",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/seb-martin/anfh-ge-api-temp/issues"
+  },
+  "homepage": "https://github.com/seb-martin/anfh-ge-api-temp#readme"
+}
