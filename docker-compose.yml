@@ -1,16 +1,16 @@
-# Interface Utilisateur 
+# Interface Utilisateur
 ui:
   build: ./ui
   ports:
   # Lie le port 80 du container ui sur le port 81 de la machine hôte
-   - "81:80"
+   - "80:80"
 
 # Interface Applicative
 api:
   build: ./api
   ports:
   # Lie le port 80 du container api sur le port 80 de la machine hôte
-   - "80:80"
+   - "81:80"
   links:
    - db:db
 
