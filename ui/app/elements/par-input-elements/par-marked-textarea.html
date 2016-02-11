@@ -4,30 +4,39 @@
 
 <dom-module id="par-marked-textarea">
   <template>
-    <div class="layout horizontal end">
+    <paper-tabs selected="{{_selected}}">
+      <paper-tab>[[label]]</paper-tab>
+      <paper-tab>
+        Prévisualiser
+        <paper-icon-button icon="icons:help-outline" toggles active="{{_showSandbox}}"></paper-icon-button>
+      </paper-tab>
+    </paper-tabs>
 
-      <paper-textarea class="flex" label="[[label]]" char-counter maxlength="{{maxlength}}" value="{{value}}"></paper-textarea>
-
-      <paper-icon-button icon$="[[_computeIcon(showPreview)]]" alt="" title$="[[_computeTitle(showPreview)]]" on-tap="_togglePreview"></paper-icon-button>
-    </div>
-
-
-    <paper-dialog opened="{{showPreview}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
-      <h2>Aperçu [[label]]</h2>
+    <paper-dialog id="sandboxDialog" opened="{{_showSandbox}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <h2>Aide / Bac à sable</h2>
       <paper-dialog-scrollable>
-        <marked-element markdown="{{value}}">
+        <par-marked-sandbox id="sandbox" on-sandbox-changed="_refit"></par-marked-sandbox>
+      </paper-dialog-scrollable>
+      <div class="buttons">
+        <paper-button on-tap="_rechargerTap">Recharger l'aide</paper-button>
+        <paper-button on-tap="_nettoyerTap">Nettoyer le bac à sable</paper-button>
+        <paper-button dialog-dismiss>Fermer</paper-button>
+      </div>
+    </paper-dialog>
+
+    <iron-pages selected="{{_selected}}">
+      <div>
+        <paper-textarea class="flex" label="[[label]]" no-label-float char-counter maxlength="{{maxlength}}" value="{{value}}"></paper-textarea>
+      </div>
+
+      <div>
+        <marked-element markdown="{{_markdown(value)}}">
           <div class="markdown-html"></div>
         </marked-element>
-      </paper-dialog-scrollable>
-<!--       <div class="buttons">
-      <paper-button dialog-dismiss>Cancel</paper-button>
-      <paper-button dialog-confirm>Accept</paper-button>
-    </div>
-     -->    
-   </paper-dialog>
+      </div>
 
-    <template is="dom-if" if="{{showPreview}}">
-    </template>
+    </iron-pages>
+
   </template>
 
 
@@ -51,31 +60,28 @@
         maxlength: {
           type: Number,
           value: 4000
-        },
-
-        showPreview: {
-          type: Boolean,
-          value: false,
-          observer: '_showPreviewChanged'
         }
       },
 
-      _computeIcon: function(showPreview) {
-        return showPreview ? 'icons:visibility-off' : 'icons:visibility';
+      ready: function() {
+        this._selected = 0;
+        this.value = '';
       },
 
-      _computeTitle: function(showPreview) {
-        return showPreview ? 'Masquer l\'aperçu' : 'Afficher l\'aperçu';
+      _markdown: function(value) {
+        return value ? value : '*Rien à visualiser*';
       },
 
-      _togglePreview: function() {
-        console.log('_togglePreview');
-        this.showPreview = !this.showPreview;
+      _rechargerTap: function() {
+        this.$.sandbox.reload();
       },
 
-      _showPreviewChanged: function(/*preview*/) {
-        // console.log('_showPreviewChanged', preview);
+      _nettoyerTap: function() {
+        this.$.sandbox.clear();
+      },
 
+      _refit: function() {
+        this.$.sandboxDialog.refit();
       }
 
     });
