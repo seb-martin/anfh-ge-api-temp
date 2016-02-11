@@ -25,9 +25,10 @@
             Axe [[axe.num]] : [[axe.intitule]]
           </paper-icon-item>
         </template>
+
         <template is="dom-if" if="{{_computeShowRemoveAxe(required, value)}}">
           <paper-icon-item class="without-item">
-            <iron-icon icon="icons:highlight-off" item-icon></iron-icon>
+            <iron-icon icon="icons:block" item-icon></iron-icon>
             Sans {{label}}
           </paper-icon-item>
         </template>
@@ -81,19 +82,29 @@
               this._selected = idx;
             }
           } else {
-            this._selected = null;
+            if (this._selected !== null) {
+              this._selected = null;
+            }
           }
         },
 
         _selectedChanged: function(evt) {
-          var index = evt.detail.value;
-          if (index >= 0 && index < this.axes.length) {
-            if (this.axes[index]._id !== this.value) {
-              this.value = this.axes[index]._id;
+
+          // On définit value de manière asynchrone
+          // pour laisser au dropdown-menu l'opportunité de se fermer correctement
+          this.async(function() {
+
+            var index = evt.detail.value;
+            if (index >= 0 && index < this.axes.length) {
+              if (typeof index === 'number' && this.axes[index]._id !== this.value) {
+                this.value = this.axes[index]._id;
+              }
+            } else {
+              this.value = null;
             }
-          } else {
-            this.value = null;
-          }
+
+          });
+
         },
 
         _computeShowRemoveAxe: function(required, value) {

@@ -21,8 +21,9 @@
         <template is="dom-repeat" items="[[_typos]]" as="_typo">
           <paper-item>[[_typo.libelle]]</paper-item>
         </template>
+
         <template is="dom-if" if="{{_computeShowRemoveTypo(required, value)}}">
-          <paper-item class="without-item">Sans {{label}}</paper-item>
+          <paper-item class="without-item" >Sans {{label}}</paper-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
@@ -98,7 +99,9 @@
               this._selected = idx;
             }
           } else {
-            this._selected = null;
+            if (this._selected !== null) {
+              this._selected = null;
+            }
           }
 
           if (this.autoValidate) {
@@ -110,15 +113,21 @@
         },
 
         _selectedChanged: function(evt) {
-          var index = evt.detail.value;
-          // var typoIndex = this.required ? index : index - 1;
-          if (index >= 0 && index < this._typos.length) {
-            if (this._typos[index].code !== this.value) {
-              this.value = this._typos[index].code;
+          // On définit value de manière asynchrone
+          // pour laisser au dropdown-menu l'opportunité de se fermer correctement
+          this.async(function() {
+
+            var index = evt.detail.value;
+            if (typeof index === 'number' && index >= 0 && index < this._typos.length) {
+              if (this._typos[index].code !== this.value) {
+                this.value = this._typos[index].code;
+              }
+            } else {
+              this.value = null;
             }
-          } else {
-            this.value = null;
-          }
+
+          });
+
         },
 
         _computeShowRemoveTypo: function(required, value) {
