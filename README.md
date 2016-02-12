@@ -40,6 +40,27 @@ Tirer les images Docker "de base", construire les images du projet et exécuter 
 docker-compose up -d
 ```
 
+## Mise à jour
+
+Récupérer les modification.
+
+```sh
+cd anfh-ge-api-temp
+git pull
+```
+
+Reconstruire les images `Docker` du projet.
+
+```sh
+docker-compose build api ui
+```
+
+Arrêter, détruire et recréer les services.
+
+```sh
+docker-compose up --no-deps -d api ui
+```
+
 ## Interfaces
 
 - L'API écoute sur le port 80
@@ -52,6 +73,12 @@ Les données de Elasticsearch sont situées dans le répertoire `/data` de la ma
 
 ## Peuplement
 
+Supprimer les données existantes.
+
+```sh
+curl -X DELETE http://localhost:9200/par?pretty
+```
+
 Créer le mapping.
 
 ```sh
@@ -62,6 +89,12 @@ Peupler les régions de formation.
 
 ```sh
 curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@db/init/par/regions.json"
+```
+
+Peupler les actions de formation.
+
+```sh
+curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@recovery/es-bulk/actions.json"
 ```
 
 # Machine Virtuelle
