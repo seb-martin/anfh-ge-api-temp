@@ -1,5 +1,5 @@
 {
-  "name": "ge-api-temp:api",
+  "name": "ge-api-temp-api",
   "version": "0.0.0",
   "description": "Interface applicative exposant les plans d'accès régionaux",
   "dependencies": {
