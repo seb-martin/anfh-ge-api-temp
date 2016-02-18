@@ -169,7 +169,6 @@
 
   // ROUTES FOR OUR API
   // ==========================================================================
-  var router = express.Router();       // get an instance of the express Router
 
   var catchError = function(res, error){
     console.trace(error.message);
@@ -421,6 +420,8 @@
 
   // Routes
 
+  var router = express.Router();       // get an instance of the express Router
+
   router.get('/par/regions', [
     prepareSearchParams,
     prepareSearchRegionsParams,
@@ -463,11 +464,17 @@
     getAction
   ]);
 
-  // more routes for our API will happen here
+  var rootRouter = express.Router();       // get another instance of the express Router
+  rootRouter.get('/', function(req, res) {
+    var s = 'Bienvenue sur l\'API temporaire de Gesform Evolution. '
+    s += 'SVP, visitez https://goo.gl/WCe8cR pour plus d\'informations sur cette API.'
+    res.send(s);
+  });
 
   // REGISTER OUR ROUTES -------------------------------
   // all of our routes will be prefixed with /api/v1
   app.use('/api/v1', router);
+  app.use('/', rootRouter);
 
   // START THE SERVER
   // =============================================================================
