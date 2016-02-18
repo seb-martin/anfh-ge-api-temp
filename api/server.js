@@ -22,7 +22,11 @@
   app.use(bodyParser.json());
 
   // Dictionnaire des typologies FPTLV
-  var typologiesFPTLV = {
+  var typologies = {
+    '0': {
+      'code': '0',
+      'libelle': 'Développement professionnel continu'
+    },
     '1': {
       'code': '1',
       'libelle': 'Formation professionnelle initiale'
@@ -115,7 +119,7 @@
 
     // Remplace le code de typologigie par la typologie FPTLV
     if (action.typologie) {
-      action.typologie = typologiesFPTLV[action.typologie];
+      action.typologie = typologies[action.typologie];
     }
 
     // Remplace l'id d'axe par l'axe de formation
