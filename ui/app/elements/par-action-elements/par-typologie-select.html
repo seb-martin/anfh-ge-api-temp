@@ -156,9 +156,9 @@
         _selectedChanged: function(evt) {
           // On définit value de manière asynchrone
           // pour laisser au dropdown-menu l'opportunité de se fermer correctement
+          var index = evt.detail.value;
           this.async(function() {
 
-            var index = evt.detail.value;
             if (typeof index === 'number' && index >= 0 && index < this._typos.length) {
               if (this._typos[index].code !== this.value) {
                 this.value = this._typos[index].code;
