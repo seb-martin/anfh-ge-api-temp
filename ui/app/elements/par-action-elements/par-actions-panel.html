@@ -43,7 +43,6 @@
       width: 100%;
     }
 
-
     paper-icon-item {
       height: 80px;
 
@@ -73,6 +72,10 @@ font-weight: 400;
 
     paper-icon-button:hover {
       color: var(--accent-color);
+    }
+
+    .error {
+      color: red;
     }
 
     </style>
@@ -111,6 +114,10 @@ font-weight: 400;
                 </div>
               </template>
               <div>
+                <paper-icon-button icon="icons:content-copy" on-tap="_duplicateTap"></paper-icon-button>
+                <paper-tooltip position="right">Dupliquer cette action</paper-tooltip>
+              </div>
+              <div>
                 <paper-icon-button icon="icons:delete" on-tap="_deleteTap"></paper-icon-button>
                 <paper-tooltip position="right">Supprimer cette action</paper-tooltip>
               </div>
@@ -128,6 +135,55 @@ font-weight: 400;
       <div class="buttons">
         <paper-button dialog-confirm autofocus on-tap="_confirmDeleteTap">Oui</paper-button>
         <paper-button dialog-dismiss on-tap="_cancelDeleteTap">Non</paper-button>
+      </div>
+    </paper-dialog>
+
+    <paper-dialog id="duplication" opened="{{_toBeDuplicated}}" style="max-width: 600px">
+
+      <par-regions-data id="regionsData" regions="{{_regions}}"></par-regions-data>
+      <par-exercices-data id="exercicesData" exercices="{{_exercices}}"></par-exercices-data>
+
+      <h2>Dupliquer</h2>
+      <p>
+        Sur le plan d'action de quelle région et pour quel exercice désirez-vous
+        dupliquer l'action <em>{{_actionOriginale.intitule}}</em> ?
+      </p>
+
+      <p id="validationError" class="error">
+
+      </p>
+
+      <form is="iron-form" id="duplicateForm" class="layout vertical">
+        <paper-input label="Nouvel intitulé" value="{{_toBeDuplicated.intitule}}" required auto-validate></paper-input>
+
+        <paper-dropdown-menu id="regionDropdown" label="Région" required>
+          <paper-listbox id="regionListbox" class="dropdown-content" selected="{{_selectedRegion}}" on-selected-changed="_regionChanged">
+            <template is="dom-repeat" items="[[_regions]]" as="region">
+              <paper-item>[[region.denomination]]</paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+
+        <paper-dropdown-menu id="exerciceDropdown" label="Exercice" required>
+          <paper-listbox id="exerciceListbox" class="dropdown-content" selected="{{_selectedExercice}}" on-selected-changed="_exerciceChanged">
+            <template is="dom-repeat" items="[[_exercices]]" as="exercice">
+              <paper-item>
+                [[exercice]]
+              </paper-item>
+            </template>
+          </paper-listbox>
+        </paper-dropdown-menu>
+      </form>
+      <!-- <paper-dialog-scrollable>
+        <div class="layout vertical">
+
+        </div>
+      </paper-dialog-scrollable> -->
+      <div class="buttons">
+        <!-- <paper-button dialog-confirm autofocus on-tap="_okDuplicateTap">OK</paper-button>
+        <paper-button dialog-dismiss on-tap="_cancelDuplicateTap">Annuler</paper-button> -->
+        <paper-button autofocus on-tap="_okDuplicateTap">OK</paper-button>
+        <paper-button on-tap="_cancelDuplicateTap">Annuler</paper-button>
       </div>
     </paper-dialog>
 
@@ -175,10 +231,114 @@ font-weight: 400;
         this._toBeDeleted = null;
       },
 
+      _duplicateTap: function(evt) {
+        evt.stopPropagation();
+        this._actionOriginale = this.querySelector('#actionList').itemForElement(evt.target);
+
+        // On effectue une copie partielle de l'action originale
+        this._toBeDuplicated = {
+          // L'id n'est pas à répliquer
+          // _id: undefined,
+          // On ne publie pas automatiquement le duplicat,
+          // même si l'action originale l'est
+          _publie: false,
+          // Par défaut, l'action est dupliquée sur la même région
+          region: this._actionOriginale.region,
+          // Par défaut, l'action est dupliquée sur le même exercice
+          exercice: this._actionOriginale.exercice,
+          // L'axe pourra être conservé SSI le duplicat a
+          // - la même région
+          // - le même exercice
+          axe: this._actionOriginale.axe,
+          intitule: this._actionOriginale.intitule,
+          contexte: this._actionOriginale.contexte,
+          objectifs: this._actionOriginale.objectifs,
+          typologie: this._actionOriginale.typologie,
+          titulaire: this._actionOriginale.titulaire,
+          nature: this._actionOriginale.nature,
+          publics: [],
+          modules: [],
+          calendrier: []
+        };
+
+        if (Array.isArray(this._actionOriginale.publics)) {
+          this._toBeDuplicated.publics = this._actionOriginale.publics.map(function(p) {
+            return p;
+          });
+        }
+
+        if (Array.isArray(this._actionOriginale.modules)) {
+          this._toBeDuplicated.modules = this._actionOriginale.modules.map(
+            function(m) {
+              return {
+                intitule: m.intitule,
+                contexte: m.contexte,
+                objectifs: m.objectifs,
+                programme: m.programme,
+                duree: m.duree,
+                formateur: m.formateur,
+                publics: m.publics.map(function(p) {
+                  return p;
+                })
+              };
+            }
+          );
+        }
+
+        // Dupliquer le calendrier n'est pas pertinent :
+        // - Si le duplicat est sur la même région et sur le même exercice,
+        //   l'action est sans doute à adapter (sinon, il n'y a pas d'inétrêt à dupliquer)
+        // - Si le duplicat est sur un autre exercice/région, les dates et lieus seront différents
+
+        // On définit l'index sélectionné des listes déroulantes.
+        var self = this;
+        this._regions.forEach(function(r, index) {
+          if (r.code === self._toBeDuplicated.region) {
+            self.$.regionListbox.select(index);
+          }
+        });
+
+        this._exercices.forEach(function(e, index) {
+          if (e === self._toBeDuplicated.exercice) {
+            self.$.exerciceListbox.select(index);
+          }
+        });
+
+      },
+
+      _okDuplicateTap: function() {
+        if (this.$.duplicateForm.validate()) {
+          var action = this._toBeDuplicated;
+          this._toBeDuplicated = null;
+
+          if (
+            action.region !== this._actionOriginale.region ||
+            action.exercice !== this._actionOriginale.exercice
+          ) {
+            // La référence à l'axe de formation ne peut pas être repris
+            delete action.axe;
+          }
+
+          this.fire('duplicate', {action: action});
+        }
+
+      },
+
+      _cancelDuplicateTap: function() {
+        this._toBeDuplicated = null;
+      },
+
+      _regionChanged: function(evt) {
+        this._toBeDuplicated.region = this._regions[evt.detail.value].code;
+      },
+
+      _exerciceChanged: function(evt) {
+        this._toBeDuplicated.exercice = this._exercices[evt.detail.value];
+      },
+
       _computePublicationIconClass: function(action) {
         return action._publie ? 'publie' : '';
       }
-
     });
   })();
   </script>

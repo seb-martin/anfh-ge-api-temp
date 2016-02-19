@@ -54,8 +54,6 @@
 
     </style>
 
-    <par-axes-data id="axesData" code-region="[[action.region]]" exercice="[[action.exercice]]" axes="{{_axes}}"></par-axes-data>
-
     <div class="back-zone">
       <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
       <paper-tooltip position="bottom">Retour à la liste des actions</paper-tooltip>
@@ -89,7 +87,7 @@
             </paper-material>
 
             <paper-material elevation="1">
-              <par-axe-select label="Axe" axes="[[_axes]]" value="{{_dirty.axe}}"></par-axe-select>
+              <par-axe-select label="Axe" axes="[[axes]]" value="{{_dirty.axe}}"></par-axe-select>
             </paper-material>
 
             <paper-material elevation="1">
@@ -97,7 +95,7 @@
             </paper-material>
 
             <paper-material elevation="1">
-              <par-typologie-select label="Typologie FPTLV" value="{{_dirty.typologie}}"></par-typologie-select>
+              <par-typologie-select label="Typologie" value="{{_dirty.typologie}}"></par-typologie-select>
             </paper-material>
 
             <paper-material elevation="1">
@@ -263,6 +261,11 @@
           type: Object,
           notify: true,
           observer: '_actionChanged'
+        },
+
+        axes: {
+          type: Array,
+          notify: true
         }
       },
 

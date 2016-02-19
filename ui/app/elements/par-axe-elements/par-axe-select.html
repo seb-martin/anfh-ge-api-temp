@@ -75,6 +75,7 @@
             for (i ; i < this.axes.length ; i++) {
               if (this.axes[i]._id === axe) {
                 idx = i;
+                break;
               }
             }
 
@@ -92,11 +93,11 @@
 
           // On définit value de manière asynchrone
           // pour laisser au dropdown-menu l'opportunité de se fermer correctement
+          var index = evt.detail.value;
           this.async(function() {
 
-            var index = evt.detail.value;
-            if (index >= 0 && index < this.axes.length) {
-              if (typeof index === 'number' && this.axes[index]._id !== this.value) {
+            if (typeof index === 'number' && index >= 0 && index < this.axes.length) {
+              if (this.axes[index]._id !== this.value) {
                 this.value = this.axes[index]._id;
               }
             } else {

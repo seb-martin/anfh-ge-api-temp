@@ -14,16 +14,50 @@
       paper-dropdown-menu {
         width:100%
       }
+
+
+      paper-listbox paper-item {
+
+      }
+      paper-icon-item par-pastille {
+        --par-pastille-mixin: {
+          font-family: 'Roboto', 'Noto', sans-serif;
+          -webkit-font-smoothing: antialiased;
+          text-rendering: optimizeLegibility;
+          font-weight: 400;
+          background-color: black;
+          color: #ffffff;
+          width: 24px;
+          height: 24px;
+          line-height: 24px;
+        };
+      }
+
+      par-pastille.fptlv {
+        font-size: 8px;
+      }
+
+      par-pastille.dpc {
+        font-size: 10px;
+      }
+
+
     </style>
 
     <paper-dropdown-menu id="dropdown" label="[[label]]" required="[[required]]">
       <paper-listbox class="dropdown-content" selected="{{_selected}}" on-selected-changed="_selectedChanged">
         <template is="dom-repeat" items="[[_typos]]" as="_typo">
-          <paper-item>[[_typo.libelle]]</paper-item>
+          <paper-icon-item>
+            <iron-icon icon$="{{_computeTypoIcon(_typo)}}" item-icon></iron-icon>
+            [[_typo.libelle]]
+          </paper-icon-item>
         </template>
 
         <template is="dom-if" if="{{_computeShowRemoveTypo(required, value)}}">
-          <paper-item class="without-item" >Sans {{label}}</paper-item>
+          <paper-icon-item class="without-item">
+            <iron-icon icon="icons:block" item-icon></iron-icon>
+            Sans {{label}}
+          </paper-icon-item>
         </template>
       </paper-listbox>
     </paper-dropdown-menu>
@@ -36,12 +70,19 @@
 
       var typologies = [
         {
+          code: '0',
+          libelle: 'Développement professionnel continu'
+        },
+        {
           code: '1',
           libelle: 'Formation professionnelle initiale'
         },
         {
           code: '2',
-          libelle: 'Formation continue ou Développement des connaissances et des compétences'
+          libelle: [
+            'Formation continue ou Développement',
+            'des connaissances et des compétences'
+          ].join(' ')
         },
         {
           code: '3',
@@ -115,9 +156,9 @@
         _selectedChanged: function(evt) {
           // On définit value de manière asynchrone
           // pour laisser au dropdown-menu l'opportunité de se fermer correctement
+          var index = evt.detail.value;
           this.async(function() {
 
-            var index = evt.detail.value;
             if (typeof index === 'number' && index >= 0 && index < this._typos.length) {
               if (this._typos[index].code !== this.value) {
                 this.value = this._typos[index].code;
@@ -136,6 +177,10 @@
           } else {
             return true;
           }
+        },
+
+        _computeTypoIcon: function(typo) {
+          return typo.code === '0' ? 'par:dpc' : 'par:fptlv';
         }
 
       });

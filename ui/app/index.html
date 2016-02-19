@@ -67,6 +67,11 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-localstorage id="localStorage" name="userRegion" value={{_region}}></iron-localstorage>
 
+    <par-regions-data regions="{{_regions}}" loading="{{_regionsLoading}}"></par-regions-data>
+    <par-exercices-data exercices="{{_exercices}}"></par-exercices-data>
+    <par-axes-data id="axesData" code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}"></par-axes-data>
+    <par-actions-data id="actionsData" code-region="[[_region.code]]" exercice="[[_exercice]]" actions="{{_actions}}" loading="{{_actionsLoading}}"></par-actions-data>
+
     <paper-drawer-panel id="paperDrawerPanel">
       <!-- Drawer Scroll Header Panel -->
       <paper-scroll-header-panel drawer fixed>
@@ -114,8 +119,6 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <section data-route="regions">
 
-              <par-regions-data regions="{{_regions}}" loading="{{_regionsLoading}}"></par-regions-data>
-
               <par-regions-panel id="regionsPane" regions="[[_regions]]"
                                   on-show-region="showRegion"></par-regions-panel>
 
@@ -123,19 +126,15 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
             <section data-route="region">
 
-              <par-exercices-data exercices="{{_exercices}}"></par-exercices-data>
-
-              <par-region-panel region="[[_region]]" exercices="[[_exercices]]" 
+              <par-region-panel region="[[_region]]" exercices="[[_exercices]]"
                                 selected-exercice="{{_exercice}}"
                                 on-show-axes="showAxes" on-show-actions="showActions"></par-region-panel>
-              
+
             </section>
 
             <section data-route="axes">
 
-              <par-axes-data id="axesData" code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}"></par-axes-data>
-
-              <par-axes-panel id="axesPane" axes="[[_axes]]" 
+              <par-axes-panel id="axesPane" axes="[[_axes]]"
                                 on-back="showRegion" on-new="newAxe" on-edit="editAxe" on-delete="deleteAxe"></par-axes-panel>
 
             </section>
@@ -145,14 +144,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
             </section>
 
             <section data-route="actions">
-              <par-actions-data id="actionsData" code-region="[[_region.code]]" exercice="[[_exercice]]" actions="{{_actions}}" loading="{{_actionsLoading}}"></par-actions-data>
-
               <par-actions-panel id="actionsPane" actions="[[_actions]]"
-                                  on-back="showRegion" on-new="newAction" on-edit="editAction" on-delete="deleteAction"></par-actions-panel>
+                                  on-back="showRegion" on-new="newAction" on-edit="editAction" on-delete="deleteAction" on-duplicate="duplicateAction"></par-actions-panel>
             </section>
 
             <section data-route="action">
-              <par-action-panel id="actionPane" action="[[_action]]" on-back="showActions" on-create="createAction" on-update="updateAction" on-cancel="showActions"></par-action-panel>
+              <par-action-panel id="actionPane" axes="[[_axes]]" action="[[_action]]" on-back="showActions" on-create="createAction" on-update="updateAction" on-cancel="showActions"></par-action-panel>
             </section>
 
           </iron-pages>
