@@ -12,7 +12,8 @@ Vagrant.configure(2) do |config|
   # vagrant-docker-compose plugin first. It should also solve the
   # "The '' provisioner could not be found." error:
   # $ vagrant plugin install vagrant-docker-compose
-  config.vm.provision :docker_compose, rebuild: true, run: "always", yml: "/vagrant/docker-compose.yml"
+  # c. https://github.com/leighmcculloch/vagrant-docker-compose
+  config.vm.provision :docker_compose, run: "always", yml: "/vagrant/docker-compose.yml"
 
   # Create a forwarded port mapping which allows access to a specific port
   # within the machine from a port on the host machine. In the example below,
