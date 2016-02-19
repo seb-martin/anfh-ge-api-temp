@@ -187,4 +187,34 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.showActions(evt);
   };
 
+  app.duplicateAction = function(evt) {
+    app._action = evt.detail.action;
+    app.$.actionsData.creer(app._action);
+
+    // On ne change de vue que si la région ou l'exercice a changé
+    if (
+      app._region.code !== app._action.region ||
+      app._exercice !== app._action.exercice
+    ) {
+      // On change de région, si nécessaire
+      if (app._region.code !== app._action.region) {
+        for (var i = 0 ; i < app._regions.length ; i++) {
+          if (app._regions[i].code === app._action.region) {
+            app._region = app._regions[i];
+            break;
+          }
+        }
+      }
+
+      // On change d'exercice, si nécessaire
+      if (app._exercice !== app._action.exercice) {
+        app._exercice = app._action.exercice;
+      }
+
+      // On change de vue
+      this.showActions(evt);
+    }
+
+  };
+
 })(document);
