@@ -3,24 +3,33 @@ ui:
   build: ./ui
   ports:
   # Lie le port 80 du container ui sur le port 81 de la machine hôte
-   - "80:80"
+    - "80:80"
 
 # Interface Applicative
 api:
   build: ./api
   ports:
   # Lie le port 80 du container api sur le port 80 de la machine hôte
-   - "81:80"
+    - "81:80"
   links:
-   - db:db
+    - db:db
 
 # Base de données
 db:
   image: elasticsearch:2.2.0
   ports:
   # Lie les ports 9200 et 9300 du container db sur les ports 9200 et 9300 de la machine hôte
-   - "9200:9200"
-   - "9300:9300"
+    - "9200:9200"
+    - "9300:9300"
   volumes:
     - ./db/config:/usr/share/elasticsearch/config
     - /data:/usr/share/elasticsearch/data
+
+mgmt:
+  build: ./mgmt
+  ports:
+    - "5601:5601"
+  environment:
+    - ELASTICSEARCH_URL=http://db:9200
+  links:
+    - db
