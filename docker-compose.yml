@@ -24,6 +24,7 @@ db:
   volumes:
     - ./db/config:/usr/share/elasticsearch/config
     - /data:/usr/share/elasticsearch/data
+    - /backups:/usr/share/elasticsearch/backups
 
 mgmt:
   build: ./mgmt
