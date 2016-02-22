@@ -16,8 +16,8 @@
       <iron-icon icon="icons:date-range" item-icon></iron-icon>
 
       <paper-item-body class="layout horizontal">
-        <par-date-input label="Du" style="margin-right: 5px" value="{{value.debut}}"></par-date-input>
-        <par-date-input label="Au" style="margin-right: 5px" value="{{value.fin}}"></par-date-input>
+        <par-date-input label="Du" style="margin-right: 5px" value="{{value.debut}}" on-value-changed="_dateDebChanged"></par-date-input>
+        <par-date-input label="Au" style="margin-right: 5px" value="{{value.fin}}" on-value-changed="_dateFinChanged"></par-date-input>
         <paper-input label="Ville" class="flex" value={{value.ville}}>
           <!-- Hack pour que la hauteur du paper-input soit identique à celle des par-date-input -->
           <paper-icon-button suffix icon="icons:add-circle" style="visibility: hidden"></paper-icon-button>
@@ -47,7 +47,16 @@
         }
       },
 
-      ready: function() {
+      _dateDebChanged: function(evt) {
+        if (this.value && moment(evt.detail.value).isAfter(moment(this.value.fin), 'day')) {
+          this.set('value.fin', evt.detail.value);
+        }
+      },
+
+      _dateFinChanged: function(evt) {
+        if (this.value && moment(evt.detail.value).isBefore(moment(this.value.debut), 'day')) {
+          this.set('value.debut', evt.detail.value);
+        }
       },
 
       _addTap: function() {
