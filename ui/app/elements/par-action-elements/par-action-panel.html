@@ -79,7 +79,7 @@
 
             <div class="layout horizontal">
               <span class="flex"></span>
-              <paper-toggle-button checked="{{_dirty._publie}}">Publiée</paper-toggle-button>
+              <paper-toggle-button checked="{{_dirty._publie}}" on-change="_publieChanged">Publiée</paper-toggle-button>
             </div>
 
             <paper-material elevation="1">
@@ -288,8 +288,12 @@
 
       _createTap: function() {
         if (this.$.actionForm.validate()) {
-          this.action = this._dirty;
-          this.fire('create', {action: this.action});
+
+          if (this._checkPublication()) {
+            this.action = this._dirty;
+            this.fire('create', {action: this.action});
+          }
+
         } else {
           this.$.toast.text = 'Création l\'action refusée.';
           this.$.toast.text += ' Le formulaire comporte des données invalides';
@@ -299,8 +303,12 @@
 
       _updateTap: function() {
         if (this.$.actionForm.validate()) {
-          this.action = this._dirty;
-          this.fire('update', {action: this.action});
+
+          if (this._checkPublication()) {
+            this.action = this._dirty;
+            this.fire('update', {action: this.action});
+          }
+
         } else {
           this.$.toast.text = 'Modification de l\'action refusée.';
           this.$.toast.text += ' Le formulaire comporte des données invalides';
@@ -318,6 +326,33 @@
       _removeModule: function(evt) {
         var model = evt.model;
         this.splice('_dirty.modules', model.index, 1);
+      },
+
+      _publieChanged: function() {
+        if (!this._checkPublication()) {
+          this.set('_dirty._publie', false);
+        }
+      },
+
+      _checkPublication: function() {
+        var contexteEmpty =
+          !this._dirty.contexte || !this._dirty.contexte.trim();
+        var objectifsEmpty =
+          !this._dirty.objectifs || !this._dirty.objectifs.trim();
+
+        var check = !this._dirty._publie || !(contexteEmpty || objectifsEmpty);
+
+        if (!check) {
+          this.$.toast.text = [
+            'Publication de l\'action refusée.',
+            'L\'action requiert un contexte ET des objectifs',
+            'pour être publiée.'
+          ].join(' ');
+
+          this.$.toast.open();
+        }
+
+        return check;
       }
     });
   })();
