@@ -19,12 +19,12 @@
 
     <paper-input-container attr-for-value="date" always-float-label>
       <label>{{label}}</label>
-      <input is="iron-input" type="text" value="{{_computeShortDate(date)}}" readonly
+      <input is="iron-input" type="text" value="{{_computeShortDate(value)}}" readonly
         on-tap="_openDialog">
       <paper-icon-button suffix icon="icons:event" toggles active="{{dialogOpened}}"></paper-icon-button>
     </paper-input-container>
 
-    <paper-dialog id="dialog" class="paper-date-picker-dialog" modal opened="{{dialogOpened}}" >
+    <paper-dialog id="dialog" class="paper-date-picker-dialog" modal opened="{{dialogOpened}}" on-iron-overlay-closed="_dialogClosing">
       <paper-date-picker
       id="datepicker"
       class="paper-input-input"
@@ -36,6 +36,7 @@
 
       <div class="buttons">
         <paper-button dialog-confirm>OK</paper-button>
+        <paper-button dialog-dismiss>Annuler</paper-button>
       </div>
     </paper-dialog>
 
@@ -73,10 +74,6 @@
         },
 
         _dateChanged: function(date) {
-          if (!this.value || !date.isSame(moment(this.value), 'day')) {
-            this.value = date.format('YYYY-MM-DD');
-          }
-
           if (!this.$.datepicker.date ||
             !date.isSame(moment(this.$.datepicker.date), 'day')) {
 
@@ -102,12 +99,26 @@
           }
         },
 
-        _computeShortDate: function(date) {
-          return moment(date).format('DD/MM/YYYY');
+        _computeShortDate: function(dateIso) {
+          return moment(dateIso).format('DD/MM/YYYY');
         },
 
         _openDialog: function() {
           this.$.dialog.open();
+        },
+
+        _dialogClosing: function(evt) {
+          if (evt.detail.confirmed) {
+            if (!this.value || !this.date.isSame(moment(this.value), 'day')) {
+              this.value = this.date.format('YYYY-MM-DD');
+            }
+          } else {
+            if (this.value) {
+              this._setDate(moment(this.value).startOf('day'));
+            } else {
+              this._setDate(moment());
+            }
+          }
         }
 
       });
