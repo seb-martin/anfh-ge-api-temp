@@ -65,7 +65,27 @@
   var fields = {
     regions: ['code', 'denomination'],
     axes: ['region', 'exercice', 'num', 'intitule'],
-    actions: ['region', 'exercice', 'axe', 'typologie']
+    actions: ['region', 'exercice', 'axe', 'typologie', 'intitule']
+  };
+
+  var na_fields = {
+    regions: {
+      'code': 'code',
+      'denomination': 'denomination.denomination_na'
+    },
+    axes: {
+      'region': 'region',
+      'exercice': 'exercice',
+      'num': 'num',
+      'intitule': 'intitule.intitule_na'
+    },
+    actions: {
+      'region': 'region',
+      'exercice': 'exercice',
+      'axe': 'axe',
+      'typologie': 'typologie',
+      'intitule': 'intitule.intitule_na'
+    }
   };
 
   // Procède à un ping du serveur elasticsearch
@@ -254,18 +274,21 @@
   var prepareSearchRegionsParams = function(req, res, next) {
     req.searchParams.type = 'regions'
     req.fields = fields.regions;
+    req.na_fields = na_fields.regions;
     next();
   };
 
   var prepareSearchAxesParams = function(req, res, next) {
     req.searchParams.type = 'axes'
     req.fields = fields.axes;
+    req.na_fields = na_fields.axes;
     next();
   };
 
   var prepareSearchActionsParams = function(req, res, next) {
     req.searchParams.type = 'actions'
     req.fields = fields.actions;
+    req.na_fields = na_fields.actions;
     next();
   };
 
@@ -295,7 +318,7 @@
       req.searchParams.body.sort = req.query.sortedBy.split(',').map(function(field) {
         return field.trim();
       }).map(function(signedfield) {
-        var order , field;
+        var order, field;
         var result = {};
 
         if (signedfield.slice(0, 1) === '-'){
@@ -307,7 +330,7 @@
         }
 
         if (req.fields.indexOf(field) >= 0) {
-          result[field] = {order: order};
+          result[req.na_fields[field]] = {order: order};
 
           return result;
         } else {

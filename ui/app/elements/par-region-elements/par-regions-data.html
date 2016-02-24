@@ -48,10 +48,10 @@
           this._url = this.$.globals.esHost + '/par/regions/_search';
 
           this._body = JSON.stringify({
-            from: 0,
-            size: 30,
-            sort: {
-              denomination: 'asc'
+            'from': 0,
+            'size': 30,
+            'sort': {
+              'denomination.denomination_na': 'asc'
             }
           });
         },
