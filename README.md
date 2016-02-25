@@ -27,22 +27,49 @@ Le système est distribué sous la forme d'images [Docker](https://www.docker.co
 
 ## Installation
 
-Cloner le projet.
+Cloner la branche `master`du projet.
 
 ```sh
-git clone https://github.com/seb-martin/anfh-ge-api-temp.git
+git clone --branch master https://github.com/seb-martin/anfh-ge-api-temp.git
 cd anfh-ge-api-temp
 ```
 
-Tirer les images Docker "de base", construire les images du projet et exécuter les containers du système.
+Tirer les images Docker "de base" et construire les images du projet.
+
+```sh
+docker-compose build
+```
+
+# Exécution, Arrêt
+
+Exécuter les containers du système en mode *détaché*.
 
 ```sh
 docker-compose up -d
 ```
 
+Lister les containers en cours d'exécution.
+
+```sh
+docker-compose ps
+```
+
+Suivre les logs du système.
+
+```sh
+docker-compose logs
+```
+
+Stopper les containers du système.
+
+```sh
+docker-compose stop
+```
+
+
 ## Mise à jour
 
-Récupérer les modification.
+Récupérer les dernières modifications.
 
 ```sh
 cd anfh-ge-api-temp
@@ -52,13 +79,13 @@ git pull
 Reconstruire les images `Docker` du projet.
 
 ```sh
-docker-compose build api ui
+docker-compose build
 ```
 
-Arrêter, détruire et recréer les services.
+Redémarrer les services du système.
 
 ```sh
-docker-compose up --no-deps -d api ui
+docker-compose restart
 ```
 
 ## Interfaces
@@ -66,6 +93,7 @@ docker-compose up --no-deps -d api ui
 - L'API écoute sur le port 80
 - L'UI écoute sur le port 81
 - Elasticsearch écoute sur les ports 9200 et 9300
+- Kibana écoute sur le port 5601
 
 ## Stockage
 
@@ -97,6 +125,68 @@ Peupler les actions de formation.
 curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@recovery/es-bulk/actions.json"
 ```
 
+## Sauvegarde et restauration
+
+### Référentiel de sauvegardes
+
+Les référentiels de sauvegardes de Elasticsearch sont situées dans le répertoire `/backups` de la machine hôte.
+
+Idéalement, le répertoire des référentiels devrait être le répertoire partagé
+d'un serveur de sauvegarde distant monté sur `/backups`.
+
+
+Créer un référentiel de sauvegarde `par_backup`.
+
+```sh
+curl -XPUT 'http://localhost:9200/_snapshot/par_backup' -d '{
+    "type": "fs",
+    "settings": {
+        "location": "par_backup",
+        "compress": true
+    }
+}'
+```
+
+Supprimer le référentiel `par_backup`.
+
+```sh
+curl -XDELETE 'http://localhost:9200/_snapshot/par_backup'
+```
+
+
+### Instantanés (*Snapshots*)
+
+Créer un instantané.
+
+```sh
+curl -XPUT 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap?pretty&wait_for_completion=true' -d '{
+  "indices": ["par"],
+  "ignore_unavailable": true,
+  "include_global_state": false
+}'
+```
+
+Lister les instantanés ; infos concernant un instantané.
+
+```sh
+curl -XGET 'http://localhost:9200/_snapshot/par_backup/_all?pretty'
+curl -XGET 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-*-snap?pretty'
+curl -XGET 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap?pretty'
+```
+
+Restaurer un instantané.
+
+```sh
+curl -XPOST 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap/_restore?pretty'
+```
+
+Supprimer un instantané.
+
+```sh
+curl -XDELETE 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap?pretty'
+```
+
+
 # Machine Virtuelle
 
 Pour le développement, une machine virtuelle (VM) [Vagrant](https://www.vagrantup.com/), testée avec [Virtual Box](https://www.virtualbox.org/), est disponible.
@@ -120,7 +210,7 @@ Se connecter à la VM avec SSH.
 vagrant ssh
 ```
 
-- L'API écoute sur le port 8080
-- L'UI écoute sur le port 8081
+- L'UI écoute sur le port 8080
+- L'API écoute sur le port 8081
 - Elasticsearch écoute sur les ports 9200 et 9300
 - SSH écoute sur le port 2222
