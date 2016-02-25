@@ -16,16 +16,16 @@ api:
 
 # Base de données
 db:
-  image: elasticsearch:2.2.0
+  build: ./db
   ports:
   # Lie les ports 9200 et 9300 du container db sur les ports 9200 et 9300 de la machine hôte
     - "9200:9200"
     - "9300:9300"
   volumes:
-    - ./db/config:/usr/share/elasticsearch/config
     - /data:/usr/share/elasticsearch/data
     - /backups:/usr/share/elasticsearch/backups
 
+# Gestion
 mgmt:
   build: ./mgmt
   ports:
