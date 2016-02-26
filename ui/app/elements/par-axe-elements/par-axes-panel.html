@@ -12,27 +12,29 @@
       display: block;
     }
 
-    #backFab {
+    .back-zone {
       position: fixed;
       z-index: 4;
-      @apply(--shadow-elevation-6dp);
     }
 
-    #newFab {
+    .new-zone {
       margin: 5px;
       position:fixed;
       bottom: 60px;
-      right:60px;
+      right: 60px;
       z-index: 4;
+    }
+
+    #backFab, #newFab {
       @apply(--shadow-elevation-6dp);
     }
 
     .content {
-      max-width: 800px; 
+      max-width: 800px;
       margin-left: auto;
       margin-right: auto
     }
-    
+
     paper-card {
       width: 100%;
     }
@@ -67,8 +69,14 @@ font-weight: 400;
 
     </style>
 
-    <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
-    <paper-fab id="newFab" icon="icons:create" on-tap="_newTap"></paper-fab>
+    <div class="back-zone">
+      <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+      <paper-tooltip position="bottom">Retour au plan de formation</paper-tooltip>
+    </div>
+    <div class="new-zone">
+      <paper-fab id="newFab" icon="icons:create" on-tap="_newTap"></paper-fab>
+      <paper-tooltip position="top">Nouvel axe de formation</paper-tooltip>
+    </div>
 
     <div class="content">
 
@@ -143,7 +151,7 @@ font-weight: 400;
       _confirmDeleteTap: function() {
         var axe = this._toBeDeleted;
         this._toBeDeleted = null;
-        this.fire('delete', {axe: axe});  
+        this.fire('delete', {axe: axe});
       },
 
       _cancelDeleteTap: function() {
