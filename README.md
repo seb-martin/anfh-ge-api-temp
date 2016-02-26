@@ -9,9 +9,12 @@ La mise en production de ANFH.fr est cependant prévue avant celle du déploieme
 L'API temporaire est un système permettant de fournir temporairement l'API des Plans d'Actions Régionaux au site ANFH.fr.
 Il est composé de
 
-- une application présentant les ressources Région Formation, Axe Formation et Action Formation décritent dans le document [Gesform Evolution - API v1](https://docs.google.com/document/d/1mGhBQKpE_jTKBTFomEtEWp3L7fZFS5dYFgcQWklF6lk/edit?usp=sharing).
-- une application présentant une interface utilisateur permettant la saisie des axes et actions de formation.
+- une interface applicative présentant les ressources Région Formation, Axe Formation et Action Formation décritent dans le document [Gesform Evolution - API v1](https://docs.google.com/document/d/1mGhBQKpE_jTKBTFomEtEWp3L7fZFS5dYFgcQWklF6lk/edit?usp=sharing).
+- une interface utilisateur permettant la saisie des axes et actions de formation constituant les plans d'accès régionaux.
+- une interface de gestion facilitant l'administration
+- un système de gestion des sauvegardes
 
+![Grande Image](https://docs.google.com/drawings/d/1onNFcb48k0se2HZ8gixBZAmRFtIPicQ6yFP3nTkTjHA/pub?w=960&h=720)
 
 ## Prérequis
 
