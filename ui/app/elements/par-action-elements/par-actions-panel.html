@@ -104,7 +104,7 @@ font-weight: 400;
 
               <paper-item-body class="flex" two-line>
                 <div>{{action.intitule}}</div>
-                <div secondary>{{action.contexte}}</div>
+                <div secondary>{{_clearMarkdownSigns(action.contexte)}}</div>
               </paper-item-body>
 
               <template is="dom-if" if="{{action._publie}}">
@@ -338,6 +338,11 @@ font-weight: 400;
 
       _computePublicationIconClass: function(action) {
         return action._publie ? 'publie' : '';
+      },
+
+      _clearMarkdownSigns: function(text) {
+        // Se contente de retirer les '*' et '_';
+        return text.replace(/[*_]/g, '').trim();
       }
     });
   })();
