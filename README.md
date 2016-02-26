@@ -82,10 +82,11 @@ Reconstruire les images `Docker` du projet.
 docker-compose build
 ```
 
-Redémarrer les services du système.
+Détruire et exécuter les nouveaux containers du système.
 
 ```sh
-docker-compose restart
+docker-compose down
+docker-compose up -d
 ```
 
 ## Interfaces
