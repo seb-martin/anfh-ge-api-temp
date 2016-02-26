@@ -35,12 +35,21 @@
         <iron-icon icon="icons:date-range" item-icon></iron-icon>
 
         <paper-item-body two-line>
-          <div>
-            Du
-            <strong>{{_format(value.debut)}}</strong> au
-            <strong>{{_format(value.fin)}}</strong><span hidden$="{{!value.ville}}">, {{value.ville}}</span>
-          </div>
-          <div secondary>{{_fromNow(value.debut)}}</div>
+          <template is="dom-if" if="{{_oneDay(value.debut, value.fin)}}">
+            <div>
+              Le
+              <strong>{{_format(value.debut)}}</strong><span hidden$="{{!value.ville}}">, {{value.ville}}</span>
+            </div>
+          </template>
+          <template is="dom-if" if="{{!_oneDay(value.debut, value.fin)}}">
+            <div>
+              Du
+              <strong>{{_format(value.debut)}}</strong> au
+              <strong>{{_format(value.fin)}}</strong><span hidden$="{{!value.ville}}">, {{value.ville}}</span>
+            </div>
+          </template>
+
+          <div secondary>{{_fromNow(value.debut, value.fin)}}</div>
         </paper-item-body>
         <paper-icon-button icon="icons:remove-circle" on-tap="_removeTap"></paper-icon-button>
 
@@ -103,8 +112,24 @@
         return moment(dateISO).format('D MMMM YYYY');
       },
 
-      _fromNow: function(dateISO) {
-        return moment(dateISO).fromNow();
+      _fromNow: function(debutISO, finISO) {
+        var now = moment();
+        var debut = moment(debutISO);
+        var fin = moment(finISO);
+
+        var fromNow;
+        if (now.isBefore(debut, 'day')) {
+          fromNow = 'Démarre ' + debut.set('hour', 8).fromNow();
+        } else if (now.isAfter(debut, 'day')) {
+          fromNow = 'Terminé ' + fin.set('hour', 17).fromNow();
+        } else {
+          fromNow = 'En ce moment';
+        }
+        return fromNow;
+      },
+
+      _oneDay: function(debutISO, finISO) {
+        return debutISO === finISO;
       },
 
       _computePeriode: function(debut, fin) {
