@@ -24,6 +24,12 @@
           return content;
         }
       },
+      {
+        filter: 'u',
+        replacement: function(content) {
+          return content;
+        }
+      }
     ]
   };
 
@@ -265,10 +271,15 @@
         Il n'existe pas de notion d'exercice dans les données reprise.
 
         On détermine l'exercice en prenant la plus petite date de début dans le calendrier
-        A défaut de date dans le calendrier, on utilise le champ 'revision_timestamp'
+        A défaut de date dans le calendrier, on cherche un exercice dans l'intitulé de l'action
+        A défaut d'exercice dans l'intitulé, on utilise le champ 'revision_timestamp'
         http://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
         */
-        var exercice
+
+
+        var intituleMatch = srctgt.target.action.intitule.match(/(201[0-9])/g);
+
+        var exercice;
         if (srctgt.target.action.calendrier.length > 0) {
           exercice = srctgt.target.action.calendrier.map(function(calendrier) {
             return parseInt(calendrier.debut.substring(0, 'YYYY'.length));
@@ -276,6 +287,8 @@
             return m < exe ? exe : m;
           });
 
+        } else if (intituleMatch){
+          exercice = intituleMatch[0];
         } else {
           // Utilisation du revision_timestamp
           exercice = new Date(parseInt(srctgt.src.revision_timestamp[0]) * 1000).getFullYear();
