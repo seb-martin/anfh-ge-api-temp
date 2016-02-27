@@ -27,6 +27,7 @@ Le système est distribué sous la forme d'images [Docker](https://www.docker.co
 
 **Consulter la page [Installation Prérequis Centos 7](https://github.com/seb-martin/anfh-ge-api-temp/wiki/Installation-Pr%C3%A9requis-Centos-7)**
 
+![Stack](https://docs.google.com/drawings/d/1xRADlH5Yt5OSGaYKf5wEVhjSMrGvlMHQJ8lbqzwaMYE/pub?w=960&h=720)
 
 ## Installation
 
