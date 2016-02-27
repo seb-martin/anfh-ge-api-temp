@@ -31,20 +31,54 @@ Le système est distribué sous la forme d'images [Docker](https://www.docker.co
 
 ## Installation
 
-Cloner la branche `master`du projet.
+Cloner la branche `master` du référentiel GitHub du projet.
 
 ```sh
 git clone --branch master https://github.com/seb-martin/anfh-ge-api-temp.git
 cd anfh-ge-api-temp
 ```
 
-Tirer les images Docker "de base" et construire les images du projet.
+Tirer les images Docker "de base" et construire les images du système.
 
 ```sh
 docker-compose build
 ```
 
-# Exécution, Arrêt
+## Configuration par défaut
+
+### Ports d'écoute
+
+- L'UI écoute sur le port 8080
+- L'API écoute sur le port 8081
+- Elasticsearch écoute sur les ports 9200 et 9300
+- Kibana écoute sur le port 5601
+
+### Volumes de stockage
+
+- Les données de Elasticsearch sont situées dans le répertoire `/data` de la machine hôte.
+- Les référentiels de sauvegardes de Elasticsearch sont situées dans le répertoire `/backups` de la machine hôte.
+
+> Idéalement, le répertoire des référentiels (par défaut `/backups`) devrait être le répertoire partagé
+d'un serveur de sauvegarde distant monté sur la machine hôte.
+
+
+## Personnaliser la configuration
+
+Par défaut, *Docker Compose* lit deux fichiers, `docker-compose.yml` et `docker-compose.override.yml`.
+`docker-compose.yml` contient la configuration de base.
+`docker-compose.override.yml` contient la configuration par défaut décrite dans la section *Configuration par défaut*.
+
+Il est possible d'utiliser une configuration alternative (prod, recette, ...).
+Le fichier `docker-compose.sample.yml` est un exemple de configuration alternative.
+
+L'option `-f` permet d'indiquer à *Docker Compose* la configuration alternative à utiliser.
+Par exemple :
+
+```sh
+docker-compose -f docker-compose.yml -f docker-compose.sample.yml up -d
+```
+
+## Exécution, Arrêt
 
 Exécuter les containers du système en mode *détaché*.
 
@@ -93,17 +127,6 @@ docker-compose down
 docker-compose up -d
 ```
 
-## Interfaces
-
-- L'API écoute sur le port 80
-- L'UI écoute sur le port 81
-- Elasticsearch écoute sur les ports 9200 et 9300
-- Kibana écoute sur le port 5601
-
-## Stockage
-
-Les données de Elasticsearch sont situées dans le répertoire `/data` de la machine hôte.
-
 ## Peuplement
 
 Supprimer les données existantes.
@@ -133,11 +156,6 @@ curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@recovery/es-bulk/
 ## Sauvegarde et restauration
 
 ### Référentiel de sauvegardes
-
-Les référentiels de sauvegardes de Elasticsearch sont situées dans le répertoire `/backups` de la machine hôte.
-
-Idéalement, le répertoire des référentiels devrait être le répertoire partagé
-d'un serveur de sauvegarde distant monté sur `/backups`.
 
 
 Créer un référentiel de sauvegarde `par_backup`.
@@ -197,7 +215,19 @@ curl -XDELETE 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap?pr
 Pour le développement, une machine virtuelle (VM) [Vagrant](https://www.vagrantup.com/), testée avec [Virtual Box](https://www.virtualbox.org/), est disponible.
 
 
-Installer le plugin `vagrant-docker-compose`
+
+Installer le plugin `vagrant-vbguest`.
+Ce plugin permet d'installer automatiquement les *VirtualBox Guest Additions* de la machine hôte sur le système invité (ie la VM).
+Plus d'infos sur le [repo GitHub du plugin](https://github.com/dotless-de/vagrant-vbguest).
+
+```sh
+vagrant plugin install vagrant-vbguest
+```
+
+
+Installer le plugin `vagrant-docker-compose`.
+Ce plugin permet de provisionner la VM avec Docker Compose.
+Plus d'infos sur le [repo GitHub du plugin](https://github.com/leighmcculloch/vagrant-docker-compose).
 
 ```sh
 vagrant plugin install vagrant-docker-compose
