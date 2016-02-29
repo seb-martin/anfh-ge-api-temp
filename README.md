@@ -129,25 +129,30 @@ docker-compose up -d
 
 ## Peuplement
 
-Supprimer les données existantes.
+Dans cette section, `<index name>` fait référence à un nom d'index (ie de base de données).
+Le choix de ce nom est arbitraire (`par_1`, `par_v1`, ...) mais ne doit pas être `par`.
 
-```sh
-curl -X DELETE http://localhost:9200/par?pretty
-```
+`par` est utilisé comme nom d'alias pour l'index qui va être créé.
+L'utilisation d'un alias laisse l'opportunité de réindexer les données
+sans mettre à jour les applications.
+Voir [Reindexing Your Data](https://www.elastic.co/guide/en/elasticsearch/guide/current/reindex.html)
+et [Index Aliases and Zero Downtime](https://www.elastic.co/guide/en/elasticsearch/guide/current/index-aliases.html) sur ce sujet.
+
+Supprimer les données existantes.
 
 Créer le mapping.
 
 ```sh
-curl -X PUT http://localhost:9200/par?pretty -d @db/init/par/par-mappings.json
+curl -X PUT http://localhost:9200/<index name>?pretty -d @db/init/par/par-mappings.json
 ```
 
-Peupler les régions de formation.
+Peupler les régions de formation. Utilise l'alias `par`.
 
 ```sh
 curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@db/init/par/regions.json"
 ```
 
-Peupler les actions de formation.
+Peupler les actions de formation. Utilise l'alias `par`.
 
 ```sh
 curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@recovery/es-bulk/actions.json"
