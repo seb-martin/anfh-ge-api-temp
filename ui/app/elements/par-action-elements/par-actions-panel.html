@@ -338,7 +338,7 @@ font-weight: 400;
 
       _clearMarkdownSigns: function(text) {
         // Se contente de retirer les '*' et '_';
-        return text.replace(/[*_]/g, '').trim();
+        return text ? text.replace(/[*_]/g, '').trim() : text;
       }
     });
   })();
