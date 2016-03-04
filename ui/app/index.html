@@ -69,7 +69,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <par-regions-data regions="{{_regions}}" loading="{{_regionsLoading}}"></par-regions-data>
     <par-exercices-data exercices="{{_exercices}}"></par-exercices-data>
-    <par-axes-data id="axesData" code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}"></par-axes-data>
+    <par-axes-data id="axesData" code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}" on-actions-updated="refreshActions"></par-axes-data>
     <par-actions-data id="actionsData" code-region="[[_region.code]]" exercice="[[_exercice]]" actions="{{_actions}}" loading="{{_actionsLoading}}"></par-actions-data>
 
     <paper-drawer-panel id="paperDrawerPanel">
@@ -98,10 +98,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
           <!-- Toolbar icons -->
           <!-- <paper-icon-button icon="refresh"></paper-icon-button> -->
           <paper-spinner-lite active="{{computeLoading(_regionsLoading, _axesLoading, _actionsLoading)}}"></paper-spinner-lite>
-<!--           <paper-spinner-lite active="{{_regionsLoading}}"></paper-spinner-lite>
-          <paper-spinner-lite active="{{_axesLoading}}"></paper-spinner-lite>
-          <paper-spinner-lite active="{{_actionsLoading}}"></paper-spinner-lite>
-           -->          <!-- Application name -->
+
+          <!-- Application name -->
           <div class="middle middle-container center horizontal layout">
             <div class="app-name">{{titre}}</div>
           </div>

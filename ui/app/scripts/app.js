@@ -143,6 +143,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app.showAxes(evt);
   };
 
+  app.refreshActions = function() {
+    app.$.actionsData.refresh();
+  };
+
   app.showActions = function(evt) {
     if (evt.detail.exercice) {
       app._exercice = evt.detail.exercice;
