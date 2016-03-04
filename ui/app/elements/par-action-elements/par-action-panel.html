@@ -66,6 +66,20 @@
       </template>
     </div>
 
+    <!-- Boite de dialogue de confirmation de suppression de module -->
+    <paper-dialog id="confirmDeleteModule">
+      <h2>Confirmation</h2>
+      <p>
+        Etes-vous sûr fr vouloir supprimer le module <em>{{_computeIntituleModule(_indexModuleToBeRemoved)}}</em>
+        de l'action <em>{{_dirty.intitule}}</em> ?
+      </p>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus on-tap="_confirmRemoveModuleTap">Oui</paper-button>
+        <paper-button dialog-dismiss on-tap="_cancelRemoveModuleTap">Non</paper-button>
+      </div>
+    </paper-dialog>
+
+
 
     <div class="content">
 
@@ -320,8 +334,22 @@
       },
 
       _removeModule: function(evt) {
-        var model = evt.model;
-        this.splice('_dirty.modules', model.index, 1);
+        this._indexModuleToBeRemoved = evt.model.index;
+        this.$.confirmDeleteModule.open();
+      },
+
+      _computeIntituleModule: function(idx) {
+        return this._dirty.modules[idx].intitule;
+      },
+
+      _confirmRemoveModuleTap: function() {
+        this.splice('_dirty.modules', this._indexModuleToBeRemoved, 1);
+        delete this._indexModuleToBeRemoved;
+        this.$.confirmDeleteModule.close();
+      },
+
+      _cancelRemoveModuleTap: function() {
+        delete this._indexModuleToBeRemoved;
       },
 
       _publieChanged: function() {
