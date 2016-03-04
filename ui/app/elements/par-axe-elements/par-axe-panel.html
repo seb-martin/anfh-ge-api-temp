@@ -6,21 +6,32 @@
   <template>
 
     <style include="shared-styles"></style>
-    
+
     <style>
     :host {
       display: block;
     }
 
-    #backFab {
+    .back-zone {
       position: fixed;
-      z-index: 100;
+      z-index: 4;
+    }
+
+    .commands-zone {
+      margin: 5px;
+      position:fixed;
+      bottom: 60px;
+      right: 60px;
+      z-index: 4;
+    }
+
+    #backFab, #createFab, #updateFab {
       @apply(--shadow-elevation-6dp);
     }
 
     .content {
-      max-width: 800px; 
-      margin-left: auto; 
+      max-width: 800px;
+      margin-left: auto;
       margin-right: auto;
     }
 
@@ -31,7 +42,21 @@
 
     </style>
 
-    <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+    <div class="back-zone">
+      <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
+      <paper-tooltip position="bottom">Retour à la liste des axes</paper-tooltip>
+    </div>
+
+    <div class="commands-zone">
+      <template is="dom-if" if="{{!_dirty._id}}">
+        <paper-fab id="createFab" icon="icons:add" on-tap="_createTap"></paper-fab>
+        <paper-tooltip position="top">Ajouter cet axe au plan</paper-tooltip>
+      </template>
+      <template is="dom-if" if="{{_dirty._id}}">
+        <paper-fab id="updateFab" icon="icons:check" on-tap="_updateTap"></paper-fab>
+        <paper-tooltip position="top">Mettre à jour cet axe</paper-tooltip>
+      </template>
+    </div>
 
     <div class="content">
 
@@ -41,17 +66,6 @@
           <div class="card-content">
             <paper-input name="num" type="number" label="Numéro" min="1" required auto-validate value="{{_dirty.num}}"></paper-input>
             <paper-input name="intitule" label="Intitulé" required char-counter maxlength="250" auto-validate value="{{_dirty.intitule}}"></paper-input>
-          </div>
-
-          <div class="card-actions layout horizontal">
-            <div class="flex"></div>
-            <template is="dom-if" if="{{!_dirty._id}}">
-              <paper-button raised on-tap="_createTap">Créer</paper-button>
-            </template>
-            <template is="dom-if" if="{{_dirty._id}}">
-              <paper-button raised on-tap="_updateTap">Modifier</paper-button>
-            </template>
-            <paper-button on-tap="_cancelTap">Annuler</paper-button>
           </div>
 
         </form>
@@ -77,7 +91,7 @@
             dirty[attr] = axe[attr];
           }
         }
-        
+
       } else {
         dirty = null;
       }
@@ -104,11 +118,6 @@
       _backTap: function() {
         this._dirty = null;
         this.fire('back');
-      },
-
-      _cancelTap: function() {
-        this._dirty = null;
-        this.fire('cancel');
       },
 
       _createTap: function() {

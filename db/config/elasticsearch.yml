@@ -1,6 +1,16 @@
+# ---------------------------------- Cluster -----------------------------------
+#
+cluster.name: anfh-ge-api-temp
+
+# ----------------------------------- Paths ------------------------------------
+#
+path.repo: ["/usr/share/elasticsearch/backups"]
+
+# ---------------------------------- Network -----------------------------------
+#
 # Requis pour fonctionner au sein d'un container Docker
 network.host: 0.0.0.0
-
+#
 http.cors.enabled: true
 http.cors.allow-origin: '*'
 

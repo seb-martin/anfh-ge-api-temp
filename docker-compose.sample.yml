@@ -1,0 +1,26 @@
+# Interface Utilisateur
+ui:
+  ports:
+  # Lie le port 80 du container ui au le port 80 de la machine hôte
+    - "80:80"
+
+# Interface Applicative
+api:
+  ports:
+  # Lie le port 80 du container api au port 8081 de la machine hôte
+    - "8081:80"
+
+# Base de données
+db:
+  ports:
+  # Lie le port 9200 du container db au port 9200 de la machine hôte
+    - "9200:9200"
+  volumes:
+  # Monte les volumes de données et de sauvegarde
+    - /data:/usr/share/elasticsearch/data
+    - /backups:/usr/share/elasticsearch/backups
+
+# Gestion
+mgmt:
+  ports:
+    - "5601:5601"

@@ -10,10 +10,10 @@
       auto
       method="POST"
       url="{{_searchUrl}}"
-      contentType="application/json"
+      content-type="application/json"
       body="{{_bodyString(codeRegion, exercice, from, size)}}"
-      debounceDuration="300"
-      handleAs="json"
+      debounce-duration="300"
+      handle-as="json"
       on-loading-changed="_handleLoading"
       on-response="_handleResponse"
       ></iron-ajax>
@@ -23,8 +23,8 @@
       method="POST"
       url="{{_baseUrl}}",
       params="{{_computeCreateParams()}}"
-      contentType="application/json"
-      handleAs="json"
+      content-type="application/json"
+      handle-as="json"
       on-loading-changed="_handleLoading"
       on-response="_handleCreateResponse"
       ></iron-ajax>
@@ -33,8 +33,8 @@
       id="axesUpdate"
       method="PUT"
       params="{{_computeUpdateParams()}}"
-      contentType="application/json"
-      handleAs="json"
+      content-type="application/json"
+      handle-as="json"
       on-loading-changed="_handleLoading"
       on-response="_handleUpdateResponse"
       ></iron-ajax>
@@ -43,11 +43,38 @@
       id="axesDelete"
       method="DELETE"
       params="{{_computeDeleteParams()}}"
-      contentType="application/json"
-      handleAs="json"
+      content-type="application/json"
+      handle-as="json"
       on-loading-changed="_handleLoading"
       on-response="_handleDeleteResponse"
       ></iron-ajax>
+
+    <iron-ajax
+      id="actionsScroll"
+      method="POST"
+      content-type="application/json"
+      handle-as="json"
+      on-loading-changed="_handleLoading"
+      on-response="_handleActionsScrollResponse"
+      ></iron-ajax>
+
+    <iron-ajax
+      id="actionsScrollNext"
+      content-type="application/json"
+      method="POST"
+      handle-as="json"
+      on-loading-changed="_handleLoading"
+      on-response="_handleActionsScrollResponse"
+      ></iron-ajax>
+
+    <iron-ajax
+      id="actionsUpdateBulk"
+      method="POST"
+      content-type="application/json"
+      handle-as="json"
+      on-loading-changed="_handleLoading"
+      ></iron-ajax>
+
 
   </template>
 
@@ -69,11 +96,13 @@
           },
 
           codeRegion: {
-            type: Object
+            type: Object,
+            value: null
           },
 
           exercice: {
-            type: Number
+            type: Number,
+            value: null
           },
 
           from: {
@@ -97,6 +126,7 @@
         ready: function() {
           this._baseUrl = this.$.globals.esHost + '/par/axes';
           this._searchUrl = this._baseUrl + '/_search';
+          this._actionsBaseUrl = this.$.globals.esHost + '/par/actions';
         },
 
         _bodyString: function(codeRegion, exercice, from, size) {
@@ -221,6 +251,43 @@
             throw 'L\'argument axe est requis';
           }
 
+          var actionsScroll = this.$.actionsScroll;
+
+          // Sélectionne dans un scroll les actions où l'axe doit être retiré
+          actionsScroll.url = this._actionsBaseUrl + '/_search';
+          actionsScroll.params = {scroll: '1m'};
+          actionsScroll.body = JSON.stringify({
+            query: {
+              bool: {
+                must: [
+                  {
+                    match: {
+                      region: axe.region
+                    }
+                  },
+                  {
+                    match: {
+                      exercice: axe.exercice
+                    }
+                  },
+                  {
+                    match: {
+                      axe: axe._id
+                    }
+                  }
+                ]
+              }
+            },
+            sort: [
+              '_doc'
+            ]
+          });
+
+          actionsScroll.generateRequest();
+          // La sélection des actions référençant l'axe est lancée
+          // La réponse sera "attrapée" par la méthode _handleActionsScrollResponse
+
+          // On supprime l'axe
           this.$.axesDelete.url = this._baseUrl + '/' + axe._id;
           this.$.axesDelete.generateRequest();
 
@@ -229,6 +296,48 @@
         _handleDeleteResponse: function() {
           // Un axe a été supprimé, on rafraîchit la liste des axes
           this.refresh();
+        },
+
+        _handleActionsScrollResponse: function(evt) {
+          var response = evt.detail.response;
+          // jshint camelcase: false
+          var scrollId = response._scroll_id; // jscs:disable
+          var hits = response.hits.hits;
+          var actionsScrollNext = this.$.actionsScrollNext;
+          var actionsUpdateBulk = this.$.actionsUpdateBulk;
+
+          if (hits.length > 0) {
+
+            var bulk = hits.map(function(hit) {
+              return JSON.stringify({
+                update: {
+                  _index: 'par',
+                  _type: 'actions',
+                  _id: hit._id
+                }
+              }) + '\n' + JSON.stringify({
+                doc: {
+                  axe: null
+                }
+              }) + '\n';
+            }).join('');
+
+            actionsUpdateBulk.url = this.$.globals.esHost + '/_bulk';
+            actionsUpdateBulk.body = bulk;
+            actionsUpdateBulk.generateRequest();
+
+            actionsScrollNext.url = this.$.globals.esHost + '/_search/scroll';
+            actionsScrollNext.body = JSON.stringify({
+              scroll: '1m',
+              'scroll_id': scrollId
+            });
+
+            actionsScrollNext.generateRequest();
+
+          } else {
+            this.fire('actions-updated');
+          }
+
         }
 
       });
