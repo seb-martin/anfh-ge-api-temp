@@ -187,7 +187,7 @@ curl -XDELETE 'http://localhost:9200/_snapshot/par_backup'
 Créer un instantané.
 
 ```sh
-curl -XPUT 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap?pretty&wait_for_completion=true' -d '{
+curl -XPUT 'http://localhost:9200/_snapshot/par_backup/par-YYYY-MM-DD-snap?pretty&wait_for_completion=true' -d '{
   "indices": ["par"],
   "ignore_unavailable": true,
   "include_global_state": false
