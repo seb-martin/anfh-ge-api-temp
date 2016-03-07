@@ -93,6 +93,10 @@
             </div>
 
             <paper-material elevation="1">
+              <paper-input name="code" label="Référence régionale" char-counter maxlength="10" auto-validate value="{{_dirty.code}}"></paper-input>
+            </paper-material>
+
+            <paper-material elevation="1">
               <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{_dirty.intitule}}"></paper-input>
             </paper-material>
 
@@ -118,6 +122,10 @@
 
             <paper-material elevation="1">
               <par-marked-textarea label="Objectifs" value="{{_dirty.objectifs}}" maxlength="600"></par-marked-textarea>
+            </paper-material>
+
+            <paper-material elevation="1">
+              <par-marked-textarea label="Autre" value="{{_dirty.autre}}" maxlength="600"></par-marked-textarea>
             </paper-material>
 
           </div>
@@ -207,10 +215,12 @@
         _publie: action._publie,
         region: action.region,
         exercice: action.exercice,
+        code: action.code,
         axe: action.axe,
         intitule: action.intitule,
         contexte: action.contexte,
         objectifs: action.objectifs,
+        autre: action.autre,
         typologie: action.typologie,
         titulaire: action.titulaire,
         nature: action.nature,

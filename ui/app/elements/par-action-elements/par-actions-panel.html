@@ -99,7 +99,10 @@ font-weight: 400;
               <iron-icon icon="icons:group-work" item-icon></iron-icon>
 
               <paper-item-body class="flex" two-line>
-                <div>{{action.intitule}}</div>
+                <div>
+                  <code hidden$="{{!action.code}}">[{{action.code}}]</code>
+                  <em>{{action.intitule}}</em>
+                </div>
                 <div secondary>{{_clearMarkdownSigns(action.contexte)}}</div>
               </paper-item-body>
 
