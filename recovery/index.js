@@ -210,13 +210,15 @@
         return srctgt;
       })
       .map(function(srctgt) {
-        // Calendrier
+        // Planifications & Calendriers
+
 
         /*
         On ne reprend ici que les dates de début et de fin
         La ville (ie le lieu) est repris ensuite
         */
-        srctgt.target.action.calendrier = Object.getOwnPropertyNames(srctgt.src.field_date_evt[0]).filter(function(nodeName) {
+
+        srctgt.target.action.planifications = Object.getOwnPropertyNames(srctgt.src.field_date_evt[0]).filter(function(nodeName) {
           return nodeName !== '$';
         }).map(function(nodeName) {
           var n = srctgt.src.field_date_evt[0][nodeName][0];
@@ -232,10 +234,12 @@
           }
         }).filter(function(itemCalendrier) {
           return itemCalendrier;
-        }).sort(function(item1, item2) {
-          if (item1.debut < item2.debut) {
+        }).map(function(itemCalendrier) {
+          return {calendrier: [itemCalendrier]};
+        }).sort(function(plan1, plan2) {
+          if (plan1.calendrier[0].debut < plan2.calendrier[0].debut) {
             return -1;
-          } else if (item1.debut > item2.debut) {
+          } else if (plan1.calendrier[0].debut > plan2.calendrier[0].debut) {
             return 1;
           } else {
             return 0;
@@ -258,8 +262,9 @@
 
         if (typeof srctgt.src.field_lieu_formation[0].n0[0].value[0] === 'string') {
           var lieu = srctgt.src.field_lieu_formation[0].n0[0].value[0];
-          srctgt.target.action.calendrier.forEach(function(evenement) {
-            evenement.ville = lieu;
+
+          srctgt.target.action.planifications.forEach(function(planif) {
+            planif.calendrier[0].ville = lieu;
           });
         }
         return srctgt;
@@ -281,9 +286,10 @@
         var intituleMatch = srctgt.target.action.intitule.match(/(201[0-9])/g);
 
         var exercice;
-        if (srctgt.target.action.calendrier.length > 0) {
-          exercice = srctgt.target.action.calendrier.map(function(calendrier) {
-            return parseInt(calendrier.debut.substring(0, 'YYYY'.length));
+
+        if (srctgt.target.action.planifications.length > 0) {
+          exercice = srctgt.target.action.planifications.map(function(planif) {
+            return parseInt(planif.calendrier[0].debut.substring(0, 'YYYY'.length));
           }).reduce(function(m, exe) {
             return m < exe ? exe : m;
           });
