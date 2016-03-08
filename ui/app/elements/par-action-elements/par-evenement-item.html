@@ -16,13 +16,16 @@
       <paper-icon-item id="editionItem">
         <iron-icon icon="icons:date-range" item-icon></iron-icon>
 
-        <paper-item-body class="layout horizontal">
-          <par-date-input label="Du" style="margin-right: 5px" value="{{_dirty.debut}}"></par-date-input>
-          <par-date-input label="Au" style="margin-right: 5px" value="{{_dirty.fin}}"></par-date-input>
-          <paper-input label="Ville" class="flex" value={{_dirty.ville}}>
-            <!-- Hack pour que la hauteur du paper-input soit identique à celle des par-date-input -->
-            <paper-icon-button suffix icon="icons:check-circle" style="visibility: hidden"></paper-icon-button>
-          </paper-input>
+        <paper-item-body class="layout vertical">
+          <div class="layout horizontal">
+            <par-date-input label="Du" style="margin-right: 5px" value="{{_dirty.debut}}"></par-date-input>
+            <par-date-input label="Au" style="margin-right: 5px" value="{{_dirty.fin}}"></par-date-input>
+            <paper-input label="Ville" class="flex" value={{_dirty.ville}}>
+              <!-- Hack pour que la hauteur du paper-input soit identique à celle des par-date-input -->
+              <paper-icon-button suffix icon="icons:check-circle" style="visibility: hidden"></paper-icon-button>
+            </paper-input>
+          </div>
+          <paper-input label="Détail" class="flex" value="{{_dirty.detail}}"></paper-input>
         </paper-item-body>
         <paper-icon-button icon="icons:check-circle" disabled="{{_computeUpdateDisabled(_dirty.debut, _dirty.fin)}}" on-tap="_updateTap"></paper-icon-button>
         <paper-icon-button icon="icons:cancel" on-tap="_cancelTap"></paper-icon-button>
@@ -38,18 +41,22 @@
           <template is="dom-if" if="{{_oneDay(value.debut, value.fin)}}">
             <div>
               Le
-              <strong>{{_format(value.debut)}}</strong><span hidden$="{{!value.ville}}">, {{value.ville}}</span>
+              <strong>{{_format(value.debut)}}</strong>
+              ({{_fromNow(value.debut, value.fin)}})
+              <span hidden$="{{!value.ville}}">, {{value.ville}}</span>
             </div>
           </template>
           <template is="dom-if" if="{{!_oneDay(value.debut, value.fin)}}">
             <div>
               Du
               <strong>{{_format(value.debut)}}</strong> au
-              <strong>{{_format(value.fin)}}</strong><span hidden$="{{!value.ville}}">, {{value.ville}}</span>
+              <strong>{{_format(value.fin)}}</strong>
+              ({{_fromNow(value.debut, value.fin)}})
+              <span hidden$="{{!value.ville}}">, {{value.ville}}</span>
             </div>
           </template>
 
-          <div secondary>{{_fromNow(value.debut, value.fin)}}</div>
+          <div secondary>{{value.detail}}</div>
         </paper-item-body>
         <paper-icon-button icon="icons:remove-circle" on-tap="_removeTap"></paper-icon-button>
 
@@ -71,7 +78,8 @@
       return {
         debut: evenement.debut,
         fin: evenement.fin,
-        ville: evenement.ville
+        ville: evenement.ville,
+        detail: evenement.detail
       };
     };
 
