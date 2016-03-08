@@ -178,6 +178,7 @@
         --> On reprend les données programme et durée ensuite
         */
         srctgt.target.action.modules = [{
+          num: 1,
           intitule: srctgt.target.action.intitule,
           // contexte: srctgt.target.action.contexte,
           // objectifs: srctgt.target.action.objectifs,
