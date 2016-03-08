@@ -98,7 +98,7 @@
       })
       .map(function(srctgt) {
         // ID
-        srctgt.target._id = srctgt.src.nid[0];
+        srctgt.target.action_id = srctgt.src.nid[0];
         return srctgt;
       })
       .map(function(srctgt) {
@@ -288,7 +288,7 @@
           });
 
         } else if (intituleMatch){
-          exercice = intituleMatch[0];
+          exercice = parseInt(intituleMatch[0]);
         } else {
           // Utilisation du revision_timestamp
           exercice = new Date(parseInt(srctgt.src.revision_timestamp[0]) * 1000).getFullYear();
@@ -298,28 +298,265 @@
         return srctgt;
       })
       .map(function(srctgt) {
+        var action = srctgt.target.action;
+
+        if (action.region === 'ALP') {
+          // Aucune action
+        } else if(action.region === 'ALS') {
+          // Aucune action
+        } else if(action.region === 'AQU') {
+          if (action.exercice === 2015) {
+
+            var r = /(Gpe\s[0-9])(\s\-\sAFR\s\/\s)(.*)/;
+            var rr = r.exec(action.intitule);
+
+            // action.code = rr[1];
+            action.intitule = rr[3];
+
+          } else if (action.exercice === 2016) {
+            var r = /AXE\s([0-9])\s\/\s(.*)\s[\-:]\s*(.*)/;
+            var rr = r.exec(action.intitule);
+
+            srctgt.target.axe = {
+              region: action.region,
+              exercice: action.exercice,
+              num: parseInt(rr[1]),
+              intitule: rr[2]
+            };
+
+            srctgt.target.axe_id = [
+              'AXE',
+              action.region,
+              action.exercice,
+              rr[1]
+            ].join('/');
+
+            action.axe = srctgt.target.axe_id;
+
+            action.intitule = rr[3] ? rr[3] : rr[2];
+          } else if (action.exercice === 2017) {
+            // Aucune action
+          }
+        } else if(action.region === 'AUV') {
+          if (action.exercice === 2015) {
+            // Aucune action
+          } else if (action.exercice === 2016) {
+            var r = /(AF[CR]\s[0-9]*)\s{0,1}\-\s{0,1}(.*)/;
+            var rr = r.exec(action.intitule);
+
+            action.code = rr[1];
+            action.intitule = rr[2];
+          } else if (action.exercice === 2017) {
+            // Aucune action
+          }
+        } else if(action.region === 'BAS') {
+          // Aucune action
+        } else if(action.region === 'BGN') {
+          // Pas d'amélioration
+        } else if(action.region === 'BRE') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'CEN') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'CHA') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'COR') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'FRA') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'DGY') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'HAU') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'IDF') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'LAN') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'LIM') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'LOR') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'DMA') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'MID') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'NOR') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'REU') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'PAY') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'PIC') {
+          if (action.exercice === 2015) {
+            // Pas d'action
+          } else if (action.exercice === 2016) {
+            var r = /(PIC\/AF[RNC][0-9]+)?\s*(.*)/;
+            var rr = r.exec(action.intitule);
+
+            action.code = rr[1];
+            action.intitule = rr[2];
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'POI') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'PRO') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        } else if(action.region === 'RHO') {
+          if (action.exercice === 2015) {
+
+          } else if (action.exercice === 2016) {
+
+          } else if (action.exercice === 2017) {
+
+          }
+        }
+
+        return srctgt;
+      })
+      .map(function(srctgt) {
         return srctgt.target;
       })
       .filter(function(target) {
         // Rejet des actions sans code région
         if (!target.action.region) {
-          console.warn('Action d\'ID ' + target._id + ' (' + target.action.intitule + ') rejetéé : Impossible de déterminer la région');
+          console.warn('Action d\'ID ' + target.action_id + ' (' + target.action.intitule + ') rejetéé : Impossible de déterminer la région');
         }
         return target.action.region;
       })
       .filter(function(target) {
         // Rejet des actions sans exercice
         if (!target.action.exercice) {
-          console.warn('Action d\'ID ' + target._id + ' (' + target.action.intitule + ') rejetéé : Impossible de déterminer l\'exercice');
+          console.warn('Action d\'ID ' + target.action_id + ' (' + target.action.intitule + ') rejetéé : Impossible de déterminer l\'exercice');
         }
         return target.action.exercice;
       })
       .map(function(target) {
 
-        return [
-          JSON.stringify({index: {_index: 'par', _type: 'actions', _id: target._id}}),
-          JSON.stringify(target.action)
-        ];
+        var bulkArray = [];
+        if (target.axe) {
+          var axeId = [
+            'AXE',
+            target.axe.region,
+            target.axe.exercice,
+            target.axe.num
+          ].join('/');
+
+          bulkArray.push(JSON.stringify({index: {_index: 'par', _type: 'axes', _id: axeId}}));
+          bulkArray.push(JSON.stringify(target.axe));
+        }
+
+        bulkArray.push(JSON.stringify({index: {_index: 'par', _type: 'actions', _id: target.action_id}}));
+        bulkArray.push(JSON.stringify(target.action));
+
+        return bulkArray;
       }).map(function(bulkArray) {
         return bulkArray.join('\n');
       }).join('\n');
