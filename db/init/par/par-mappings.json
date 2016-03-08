@@ -49,6 +49,7 @@
         "titulaire": { "type": "string" },
         "modules": {
           "properties": {
+            "num": { "type": "integer", "index":"not_analyzed" },
             "intitule": {
               "type": "multi_field",
               "fields": {
