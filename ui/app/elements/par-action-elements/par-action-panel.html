@@ -141,6 +141,9 @@
 
           <paper-card heading="{{module.intitule}}">
             <div class="card-content layout vertical">
+              <paper-material elevation="1">
+                <paper-input name="num" type="number" label="Numéro" min="1" value="{{module.num}}"></paper-input>
+              </paper-material>
 
               <paper-material elevation="1">
                 <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{module.intitule}}"></paper-input>
@@ -238,6 +241,7 @@
       if (Array.isArray(action.modules)) {
         action.modules.forEach(function(m) {
           var moduleClone = {
+            num: m.num,
             intitule: m.intitule,
             contexte: m.contexte,
             objectifs: m.objectifs,
@@ -301,15 +305,29 @@
         this.fire('back');
       },
 
-      _cancelTap: function() {
-        this._dirty = null;
-        this.fire('cancel');
+      _sortModules: function() {
+        this._dirty.modules = this._dirty.modules.sort(function(m1, m2) {
+          if (m1.num && m2.num) {
+            if (m1.num !== m2.num) {
+              return m1.num - m2.num : ;
+            } else {
+              return m1.intitule < m2.intitule ? -1 : 1;
+            }
+          } else if (m1.num) {
+            return 1;
+          } else if (m2.num) {
+            return -1;
+          } else {
+            return m1.intitule < m2.intitule ? -1 : 1;
+          }
+        });
       },
 
       _createTap: function() {
         if (this.$.actionForm.validate()) {
 
           if (this._checkPublication()) {
+            this._sortModules();
             this.action = this._dirty;
             this.fire('create', {action: this.action});
           }
@@ -325,6 +343,7 @@
         if (this.$.actionForm.validate()) {
 
           if (this._checkPublication()) {
+            this._sortModules();
             this.action = this._dirty;
             this.fire('update', {action: this.action});
           }
@@ -340,7 +359,15 @@
         if (!Array.isArray(this._dirty.modules)) {
           this.set('_dirty.modules', []);
         }
-        this.push('_dirty.modules', {intitule: 'Nouveau module', duree: 'P1D'});
+
+        var num = this._dirty.modules.reduce(function(mem, module) {
+          return Math.max(mem, module.num);
+        }, 0) + 1;
+
+        this.push(
+          '_dirty.modules',
+          {num: num, intitule: 'Nouveau module', duree: 'P1D'}
+        );
       },
 
       _removeModule: function(evt) {
