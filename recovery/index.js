@@ -308,12 +308,6 @@
         } else if(action.region === 'AQU') {
           if (action.exercice === 2015) {
 
-            var r = /(Gpe\s[0-9])(\s\-\sAFR\s\/\s)(.*)/;
-            var rr = r.exec(action.intitule);
-
-            // action.code = rr[1];
-            action.intitule = rr[3];
-
           } else if (action.exercice === 2016) {
             var r = /AXE\s([0-9])\s\/\s(.*)\s[\-:]\s*(.*)/;
             var rr = r.exec(action.intitule);
@@ -330,11 +324,12 @@
               action.region,
               action.exercice,
               rr[1]
-            ].join('/');
+            ].join('-');
 
             action.axe = srctgt.target.axe_id;
 
             action.intitule = rr[3] ? rr[3] : rr[2];
+            action.modules[0].intitule = action.intitule;
           } else if (action.exercice === 2017) {
             // Aucune action
           }
@@ -543,14 +538,7 @@
 
         var bulkArray = [];
         if (target.axe) {
-          var axeId = [
-            'AXE',
-            target.axe.region,
-            target.axe.exercice,
-            target.axe.num
-          ].join('/');
-
-          bulkArray.push(JSON.stringify({index: {_index: 'par', _type: 'axes', _id: axeId}}));
+          bulkArray.push(JSON.stringify({index: {_index: 'par', _type: 'axes', _id: target.axe_id}}));
           bulkArray.push(JSON.stringify(target.axe));
         }
 
