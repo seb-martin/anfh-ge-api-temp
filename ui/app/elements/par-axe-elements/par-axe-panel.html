@@ -39,6 +39,10 @@
       width: 100%;
     }
 
+    paper-material {
+      padding: 0 20px;
+      margin: 10px 0;
+    }
 
     </style>
 
@@ -63,9 +67,13 @@
       <paper-card heading="{{axe.intitule}}">
         <form is="iron-form" id="axeForm">
 
-          <div class="card-content">
-            <paper-input name="num" type="number" label="Numéro" min="1" required auto-validate value="{{_dirty.num}}"></paper-input>
-            <paper-input name="intitule" label="Intitulé" required char-counter maxlength="250" auto-validate value="{{_dirty.intitule}}"></paper-input>
+          <div class="card-content layout vertical">
+            <paper-material elevation="1">
+              <paper-input name="num" type="number" label="Numéro" min="1" required auto-validate value="{{_dirty.num}}"></paper-input>
+            </paper-material>
+            <paper-material elevation="1">
+              <paper-input name="intitule" label="Intitulé" required char-counter maxlength="250" auto-validate value="{{_dirty.intitule}}"></paper-input>
+            </paper-material>
           </div>
 
         </form>

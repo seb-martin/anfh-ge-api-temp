@@ -99,7 +99,10 @@ font-weight: 400;
               <iron-icon icon="icons:group-work" item-icon></iron-icon>
 
               <paper-item-body class="flex" two-line>
-                <div>{{action.intitule}}</div>
+                <div>
+                  <code hidden$="{{!action.code}}">[{{action.code}}]</code>
+                  <em>{{action.intitule}}</em>
+                </div>
                 <div secondary>{{_clearMarkdownSigns(action.contexte)}}</div>
               </paper-item-body>
 
@@ -242,6 +245,7 @@ font-weight: 400;
           region: this._actionOriginale.region,
           // Par défaut, l'action est dupliquée sur le même exercice
           exercice: this._actionOriginale.exercice,
+          code: this._actionOriginale.code,
           // L'axe pourra être conservé SSI le duplicat a
           // - la même région
           // - le même exercice
@@ -249,12 +253,13 @@ font-weight: 400;
           intitule: this._actionOriginale.intitule,
           contexte: this._actionOriginale.contexte,
           objectifs: this._actionOriginale.objectifs,
+          autre: this._actionOriginale.autre,
           typologie: this._actionOriginale.typologie,
           titulaire: this._actionOriginale.titulaire,
           nature: this._actionOriginale.nature,
           publics: [],
           modules: [],
-          calendrier: []
+          planifications: []
         };
 
         if (Array.isArray(this._actionOriginale.publics)) {
@@ -267,6 +272,7 @@ font-weight: 400;
           this._toBeDuplicated.modules = this._actionOriginale.modules.map(
             function(m) {
               return {
+                num: m.num,
                 intitule: m.intitule,
                 contexte: m.contexte,
                 objectifs: m.objectifs,
