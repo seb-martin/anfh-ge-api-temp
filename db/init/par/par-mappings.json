@@ -72,7 +72,8 @@
               "properties": {
                 "debut": { "type": "date", "format": "yyyy-MM-dd" },
                 "fin": { "type": "date", "format": "yyyy-MM-dd" },
-                "ville": { "type": "string" }
+                "ville": { "type": "string" },
+                "detail": { "type": "string" }
               }
             }
           }
