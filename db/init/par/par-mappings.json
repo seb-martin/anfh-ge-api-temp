@@ -65,14 +65,18 @@
             "publics": { "type": "string" }
           }
         },
-        "calendrier": {
+
+        "planifications": {
           "properties": {
-            "debut": { "type": "date", "format": "yyyy-MM-dd" },
-            "fin": { "type": "date", "format": "yyyy-MM-dd" },
-            "ville": { "type": "string" }
+            "calendrier": {
+              "properties": {
+                "debut": { "type": "date", "format": "yyyy-MM-dd" },
+                "fin": { "type": "date", "format": "yyyy-MM-dd" },
+                "ville": { "type": "string" }
+              }
+            }
           }
         }
-
       }
     }
   },
