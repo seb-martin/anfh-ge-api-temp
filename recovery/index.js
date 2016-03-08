@@ -486,6 +486,7 @@
 
             action.code = rr[1];
             action.intitule = rr[2];
+            action.modules[0].intitule = action.intitule;
           } else if (action.exercice === 2017) {
 
           }
