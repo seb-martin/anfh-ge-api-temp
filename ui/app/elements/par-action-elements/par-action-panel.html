@@ -43,8 +43,12 @@
       margin: 10px 0;
     }
 
-    #addModuleFab {
+    #addModuleFab, #addPlanificationFab {
       margin-left: 5px;
+    }
+
+    .add-module, .add-planification {
+      margin-bottom: 10px;
     }
 
 
@@ -76,6 +80,19 @@
       <div class="buttons">
         <paper-button dialog-confirm autofocus on-tap="_confirmRemoveModuleTap">Oui</paper-button>
         <paper-button dialog-dismiss on-tap="_cancelRemoveModuleTap">Non</paper-button>
+      </div>
+    </paper-dialog>
+
+    <!-- Boite de dialogue de confirmation de suppression d'une planification' -->
+    <paper-dialog id="confirmDeletePlanification">
+      <h2>Confirmation</h2>
+      <p>
+        Etes-vous sûr fr vouloir supprimer la planification
+        de l'action <em>{{_dirty.intitule}}</em> ?
+      </p>
+      <div class="buttons">
+        <paper-button dialog-confirm autofocus on-tap="_confirmRemovePlanificationTap">Oui</paper-button>
+        <paper-button dialog-dismiss on-tap="_cancelRemovePlanificationTap">Non</paper-button>
       </div>
     </paper-dialog>
 
@@ -183,17 +200,31 @@
 
         </template>
 
-        <div class="layout horizontal center">
+        <div class="add-module layout horizontal center">
           <span class="flex"></span>
           <span>Ajouter un module &#8594;</span>
           <paper-fab id="addModuleFab" mini icon="icons:create" title="Ajouter un nouveau module" on-tap="_addModule"></paper-fab>
         </div>
 
-        <paper-card heading="Calendrier">
-          <div class="card-content">
-            <par-evenement-list evenements="{{_dirty.calendrier}}"></par-evenement-list>
-          </div>
-        </paper-card>
+
+        <template is="dom-repeat" items="{{_dirty.planifications}}" as="planification">
+          <paper-card heading="{{_computePlanifHeader(index)}}">
+            <div class="card-content">
+              <par-evenement-list evenements="{{planification.calendrier}}"></par-evenement-list>
+            </div>
+            <div class="card-actions layout horizontal">
+              <span class="flex"></span>
+              <paper-fab mini icon="icons:delete" on-tap="_removePlanification"></paper-fab>
+            </div>
+          </paper-card>
+        </template>
+
+        <div class="add-planification layout horizontal center">
+          <span class="flex"></span>
+          <span>Ajouter une planification &#8594;</span>
+          <paper-fab id="addPlanificationFab" mini icon="icons:create" title="Ajouter une nouvelle planification" on-tap="_addPlanification"></paper-fab>
+        </div>
+
 
       </form>
 
@@ -229,7 +260,7 @@
         nature: action.nature,
         publics: [],
         modules: [],
-        calendrier: []
+        planifications: []
       };
 
       if (Array.isArray(action.publics)) {
@@ -261,17 +292,22 @@
         });
       }
 
-      if (Array.isArray(action.calendrier)) {
-        clone.calendrier = action.calendrier.map(function(evenement) {
+      if (Array.isArray(action.planifications)) {
+        clone.planifications = action.planifications.map(function(planif) {
           return {
-            debut: evenement.debut,
-            fin: evenement.fin,
-            ville: evenement.ville
-          };
+            calendrier: planif.calendrier.map(function(evenement) {
+              return {
+                debut: evenement.debut,
+                fin: evenement.fin,
+                ville: evenement.ville
+              };
+            })
+          }
+
         });
 
       } else {
-        clone.calendrier = action.calendrier;
+        // clone.calendrier = action.calendrier;
       }
 
       return clone;
@@ -309,7 +345,7 @@
         this._dirty.modules = this._dirty.modules.sort(function(m1, m2) {
           if (m1.num && m2.num) {
             if (m1.num !== m2.num) {
-              return m1.num - m2.num : ;
+              return m1.num - m2.num;
             } else {
               return m1.intitule < m2.intitule ? -1 : 1;
             }
@@ -323,11 +359,26 @@
         });
       },
 
+      _sortPlanifications: function() {
+        this._dirty.planifications = this._dirty.planifications.sort(
+          function(p1, p2) {
+            if (p1.calendrier[0].debut < p2.calendrier[0].debut) {
+              return -1;
+            } else if (p1.calendrier[0].debut > p2.calendrier[0].debut) {
+              return 1;
+            } else {
+              return 0;
+            }
+          }
+        );
+      },
+
       _createTap: function() {
         if (this.$.actionForm.validate()) {
 
-          if (this._checkPublication()) {
+          if (this._checkPlanifications() && this._checkPublication()) {
             this._sortModules();
+            this._sortPlanifications();
             this.action = this._dirty;
             this.fire('create', {action: this.action});
           }
@@ -342,8 +393,9 @@
       _updateTap: function() {
         if (this.$.actionForm.validate()) {
 
-          if (this._checkPublication()) {
+          if (this._checkPlanifications() && this._checkPublication()) {
             this._sortModules();
+            this._sortPlanifications();
             this.action = this._dirty;
             this.fire('update', {action: this.action});
           }
@@ -389,6 +441,33 @@
         delete this._indexModuleToBeRemoved;
       },
 
+      _addPlanification: function() {
+        if (!Array.isArray(this._dirty.planifications)) {
+          this.set('_dirty.planifications', []);
+        }
+
+        this.push('_dirty.planifications', {});
+      },
+
+      _removePlanification: function(evt) {
+        this._indexPlanificationToBeRemoved = evt.model.index;
+        this.$.confirmDeletePlanification.open();
+      },
+
+      _confirmRemovePlanificationTap: function() {
+        this.splice('_dirty.planifications', this._indexPlanificationToBeRemoved, 1);
+        delete this._indexModuleToBeRemoved;
+        this.$.confirmDeletePlanification.close();
+      },
+
+      _cancelRemovePlanificationTap: function() {
+        delete this._indexPlanificationToBeRemoved;
+      },
+
+      _computePlanifHeader: function(index) {
+        return 'Planification ' + (index + 1);
+      },
+
       _publieChanged: function() {
         if (!this._checkPublication()) {
           this.set('_dirty._publie', false);
@@ -408,6 +487,24 @@
             'Publication de l\'action refusée.',
             'L\'action requiert un contexte ET des objectifs',
             'pour être publiée.'
+          ].join(' ');
+
+          this.$.toast.open();
+        }
+
+        return check;
+      },
+
+      _checkPlanifications: function() {
+        // Toutes les planifications doivent comporter un événement
+        var check = this._dirty.planifications.reduce(function(mem, planif) {
+          return mem && planif.calendrier && planif.calendrier.length > 0;
+        }, true);
+
+        if (!check) {
+          this.$.toast.text = [
+            'Enregistrement de l\'action refusée.',
+            'Les planifications doivent comporter au moins un événement'
           ].join(' ');
 
           this.$.toast.open();
