@@ -175,24 +175,14 @@
         - durée
 
         --> On crée UN module
+        --> On lui affecte le numéro 1
         --> On réplique des infos de l'action :
             - intitulé du module = intitulé de l'action
-            - Formateur module = Titulaire de l'action
-            - /!\ NON (Issue #24) : Contexte module = contexte action
-            - /!\ NON (Issue #24) : Objectifs module = objectifs action
-            - Publics module = publics action
         --> On reprend les données programme et durée ensuite
         */
         srctgt.target.action.modules = [{
           num: 1,
-          intitule: srctgt.target.action.intitule,
-          // contexte: srctgt.target.action.contexte,
-          // objectifs: srctgt.target.action.objectifs,
-          formateur: srctgt.target.action.titulaire,
-          publics: srctgt.target.action.publics.map(function(p) {
-            // Réalise une copie des éléments du tableau
-            return p;
-          })
+          intitule: srctgt.target.action.intitule
         }];
         return srctgt;
       })
