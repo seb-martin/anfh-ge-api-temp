@@ -63,6 +63,8 @@
       },
 
       _addTap: function() {
+        this.value.ville = this.value.ville ? this.value.ville.trim() : this.value.ville;
+        this.value.detail = this.value.detail ? this.value.detail.trim() : this.value.detail;
         this.fire('add-evenement', {evenement: this.value});
       },
 

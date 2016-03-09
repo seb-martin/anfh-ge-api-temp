@@ -314,6 +314,64 @@
       return clone;
     };
 
+    var safeTrim = function(val) {
+      return val ? val.trim() : val;
+    };
+
+    var improveAction = function(action) {
+
+      action.code = safeTrim(action.code);
+      action.intitule = safeTrim(action.intitule);
+      action.contexte = safeTrim(action.contexte);
+      action.objectifs = safeTrim(action.objectifs);
+      action.autre = safeTrim(action.autre);
+      action.titulaire = safeTrim(action.titulaire);
+
+      // Inutile : trim effectuer par les composants de public
+      /*
+      if (Array.isArray(action.publics)) {
+        for (var k1 in action.publics) {
+          action.publics[k1] = safeTrim(action.publics[k1]);
+        }
+      }
+      */
+
+      if (Array.isArray(action.modules)) {
+        action.modules.forEach(function(m) {
+          m.intitule = safeTrim(m.intitule);
+          m.contexte = safeTrim(m.contexte);
+          m.objectifs = safeTrim(m.objectifs);
+          m.programme = safeTrim(m.programme);
+          m.formateur = safeTrim(m.formateur);
+
+          // Inutile : trim effectuer par les composants de public
+          /*
+          if (Array.isArray(m.publics)) {
+            for (var k2 in m.publics) {
+              m.publics[k2] = safeTrim(m.publics[k2]);
+            }
+          }
+          */
+        });
+      }
+
+      // Inutile : trim effectuer par les composants des événements
+      /*
+      if (Array.isArray(action.planifications)) {
+        action.planifications.forEach(function(p) {
+          if (Array.isArray(p.calendrier)) {
+            p.calendrier.forEach(function(evenement) {
+              evenement.ville = safeTrim(evenement.ville);
+              evenement.detail = safeTrim(evenement.detail);
+            });
+          }
+        });
+      }
+      */
+
+      return action;
+    };
+
     Polymer({
       is: 'par-action-panel',
 
@@ -375,6 +433,8 @@
       },
 
       _createTap: function() {
+        improveAction(this._dirty);
+
         if (this.$.actionForm.validate()) {
 
           if (this._checkPlanifications() && this._checkPublication()) {
@@ -392,6 +452,8 @@
       },
 
       _updateTap: function() {
+        improveAction(this._dirty);
+
         if (this.$.actionForm.validate()) {
 
           if (this._checkPlanifications() && this._checkPublication()) {
@@ -419,7 +481,7 @@
 
         this.push(
           '_dirty.modules',
-          {num: num, intitule: 'Nouveau module', duree: 'P1D'}
+          {num: num, intitule: 'Nouveau module', duree: 'P1D', publics: []}
         );
       },
 

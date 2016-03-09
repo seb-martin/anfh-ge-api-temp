@@ -91,20 +91,27 @@
     'use strict';
 
     var cloneAxe = function(axe) {
-      var dirty;
+      var clone;
       if (axe) {
-        dirty = {};
+        clone = {};
         for (var attr in axe) {
           if (axe.hasOwnProperty(attr)) {
-            dirty[attr] = axe[attr];
+            clone[attr] = axe[attr];
           }
         }
 
       } else {
-        dirty = null;
+        clone = null;
       }
 
-      return dirty;
+      return clone;
+    };
+
+    var improveAxe = function(axe) {
+      if (axe) {
+        axe.intitule = axe.intitule ? axe.intitule.trim() : axe.intitule;
+      }
+      return axe;
     };
 
     Polymer({
@@ -129,6 +136,8 @@
       },
 
       _createTap: function() {
+        improveAxe(this._dirty);
+
         if (this.$.axeForm.validate()) {
           this.axe = this._dirty;
           this.fire('create', {axe: this.axe});
@@ -140,6 +149,8 @@
       },
 
       _updateTap: function() {
+        improveAxe(this._dirty);
+
         if (this.$.axeForm.validate()) {
           this.axe = this._dirty;
           this.fire('update', {axe: this.axe});

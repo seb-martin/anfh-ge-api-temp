@@ -165,6 +165,8 @@
       },
 
       _updateTap: function() {
+        this._dirty.ville = this._dirty.ville ? this._dirty.ville.trim() : this._dirty.ville;
+        this._dirty.detail = this._dirty.detail ? this._dirty.detail.trim() : this._dirty.detail;
         this.fire('update-evenement', {evenement: this._dirty});
         this.edition = false;
       },
