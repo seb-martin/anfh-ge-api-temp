@@ -29,6 +29,12 @@
         replacement: function(content) {
           return content;
         }
+      },
+      {
+        filter: 'font',
+        replacement: function(content) {
+          return content;
+        }
       }
     ]
   };
