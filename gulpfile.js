@@ -26,6 +26,12 @@ gulp.task('bump-recovery', function(){
   .pipe(gulp.dest('./recovery'));
 });
 
+gulp.task('bump-admin', function(){
+  gulp.src('./admin/src/package.json')
+  .pipe(bump({version: argv.version}))
+  .pipe(gulp.dest('./admin/src'));
+});
+
 gulp.task('bump-project', function(){
   gulp.src('./package.json')
   .pipe(bump({version: argv.version}))
@@ -33,7 +39,7 @@ gulp.task('bump-project', function(){
 });
 
 // Run the gulp tasks
-gulp.task('bump', ['check-vesrion-arg', 'bump-project', 'bump-api', 'bump-ui', 'bump-recovery']);
+gulp.task('bump', ['check-vesrion-arg', 'bump-project', 'bump-api', 'bump-ui', 'bump-admin', 'bump-recovery']);
 
 gulp.task('default', function() {
   console.log('Usage: gulp bump --version=1.0.0');
