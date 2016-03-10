@@ -160,60 +160,63 @@ curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@recovery/es-bulk/
 
 ## Sauvegarde et restauration
 
-### Référentiel de sauvegardes
-
-
-Créer un référentiel de sauvegarde `par_backup`.
+Lister les commandes de sauvegarde et restauration.
 
 ```sh
-curl -XPUT 'http://localhost:9200/_snapshot/par_backup' -d '{
-    "type": "fs",
-    "settings": {
-        "location": "par_backup",
-        "compress": true
-    }
-}'
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin
 ```
 
-Supprimer le référentiel `par_backup`.
+### Initialisation du référentiel des sauvegardes
+
+Initialiser le référentiel de sauvegarde `par_backup`.
 
 ```sh
-curl -XDELETE 'http://localhost:9200/_snapshot/par_backup'
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-init
 ```
-
 
 ### Instantanés (*Snapshots*)
 
 Créer un instantané.
 
 ```sh
-curl -XPUT 'http://localhost:9200/_snapshot/par_backup/par-YYYY-MM-DD-snap?pretty&wait_for_completion=true' -d '{
-  "indices": ["par"],
-  "ignore_unavailable": true,
-  "include_global_state": false
-}'
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-snapshot --snapshot nom_snapshot
 ```
 
-Lister les instantanés ; infos concernant un instantané.
+Lister les instantanés
 
 ```sh
-curl -XGET 'http://localhost:9200/_snapshot/par_backup/_all?pretty'
-curl -XGET 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-*-snap?pretty'
-curl -XGET 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap?pretty'
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-list
+```
+
+```sh
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-list --filter nom_*
 ```
 
 Restaurer un instantané.
 
 ```sh
-curl -XPOST 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap/_restore?pretty'
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-restore --snapshot nom_snapshot
 ```
 
 Supprimer un instantané.
 
 ```sh
-curl -XDELETE 'http://localhost:9200/_snapshot/par_backup/PAR-YYYY-MM-DD-snap?pretty'
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-delete --snapshot nom_snapshot
 ```
 
+### Destruction du référentiel des sauvegardes
+
+> Attention, cette opération détruira le  référentiel et tous les instantanés qu'il contient.
+
+Détruire le référentiel `par_backup`.
+
+```sh
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-detroy
+```
+
+```sh
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-detroy --force
+```
 
 # Machine Virtuelle
 
