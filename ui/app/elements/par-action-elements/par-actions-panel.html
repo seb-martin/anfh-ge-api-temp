@@ -74,6 +74,10 @@ font-weight: 400;
       color: red;
     }
 
+    code {
+      font-weight: bold;
+    }
+
     </style>
 
     <div class="back-zone">
@@ -100,8 +104,8 @@ font-weight: 400;
 
               <paper-item-body class="flex" two-line>
                 <div>
-                  <code hidden$="{{!action.code}}">[{{action.code}}]</code>
-                  <em>{{action.intitule}}</em>
+                  <code hidden$="{{!action.code}}">{{action.code}}</code>
+                  <span>{{action.intitule}}</span>
                 </div>
                 <div secondary>{{_clearMarkdownSigns(action.contexte)}}</div>
               </paper-item-body>
