@@ -3,6 +3,7 @@
   var gulp = require('gulp');
   var bump = require('gulp-bump');
   var filter = require('gulp-filter');
+  var git = require('gulp-git');
   var tag_version = require('gulp-tag-version');
   var argv = require('minimist')(process.argv.slice(2));
 
@@ -27,7 +28,7 @@
       src: ['./admin/src/package.json'],
       dst: './admin/src'
     },
-  }
+  };
 
   var ver = function(subproject, semver) {
 
@@ -41,7 +42,6 @@
 
   var inc = function(subproject, importance) {
 
-    // get all the files to bump version in
     return gulp.src(subproject.src)
         // bump the version number in those files
         .pipe(bump({type: importance}))
@@ -50,11 +50,22 @@
   };
 
   var tag = function(reference) {
+    // Construit un tableau comprenant toutes les src
+    var src = Object.getOwnPropertyNames(srcdst).map(function(name) {
+      return srcdst[name].src;
+    }).reduce(function(mem, arr) {
+    	Array.prototype.push.apply(mem, arr);
+    	return mem;
+    }, []);
+
+
     // read only one reference file to get the version number
-    return gulp.src(reference)
+    return gulp.src(src)
         // commit the changed version number
         .pipe(git.commit('bumps package version'))
 
+        // read only one file to get the version number
+        .pipe(filter(reference))
         // **tag it in the repository**
         .pipe(tag_version());
   };
@@ -68,89 +79,89 @@
   });
 
   gulp.task('bump-project-version', function(){
-    ver(srcdst.project, argv.version);
+    return ver(srcdst.project, argv.version);
   });
 
   gulp.task('bump-api-version', function(){
-    ver(srcdst.api, argv.version);
+    return ver(srcdst.api, argv.version);
   });
 
   gulp.task('bump-ui-version', function(){
-    ver(srcdst.ui, argv.version);
+    return ver(srcdst.ui, argv.version);
   });
 
   gulp.task('bump-recovery-version', function(){
-    ver(srcdst.recovery, argv.version);
+    return ver(srcdst.recovery, argv.version);
   });
 
   gulp.task('bump-admin-version', function(){
-    ver(srcdst.admin, argv.version);
+    return ver(srcdst.admin, argv.version);
   });
 
   // Major subtasks
 
   gulp.task('bump-project-major', [], function() {
-    inc(srcdst.project, 'major');
+    return inc(srcdst.project, 'major');
   });
 
   gulp.task('bump-api-major', [], function() {
-    inc(srcdst.api, 'major');
+    return inc(srcdst.api, 'major');
   });
 
   gulp.task('bump-ui-major', [], function() {
-    inc(srcdst.ui, 'major');
+    return inc(srcdst.ui, 'major');
   });
 
   gulp.task('bump-recovery-major', [], function() {
-    inc(srcdst.recovery, 'major');
+    return inc(srcdst.recovery, 'major');
   });
 
   gulp.task('bump-admin-major', [], function() {
-    inc(srcdst.admin, 'major');
+    return inc(srcdst.admin, 'major');
   });
 
   // Minor subtasks
 
   gulp.task('bump-project-minor', [], function() {
-    inc(srcdst.project, 'minor');
+    return inc(srcdst.project, 'minor');
   });
 
   gulp.task('bump-api-minor', [], function() {
-    inc(srcdst.api, 'minor');
+    return inc(srcdst.api, 'minor');
   });
 
   gulp.task('bump-ui-minor', [], function() {
-    inc(srcdst.ui, 'minor');
+    return inc(srcdst.ui, 'minor');
   });
 
   gulp.task('bump-recovery-minor', [], function() {
-    inc(srcdst.recovery, 'minor');
+    return inc(srcdst.recovery, 'minor');
   });
 
   gulp.task('bump-admin-minor', [], function() {
-    inc(srcdst.admin, 'minor');
+    return inc(srcdst.admin, 'minor');
   });
 
   // Patch subtasks
 
   gulp.task('bump-project-patch', [], function() {
-    inc(srcdst.project, 'patch');
+    return inc(srcdst.project, 'patch');
   });
 
   gulp.task('bump-api-patch', [], function() {
-    inc(srcdst.api, 'patch');
+    return inc(srcdst.api, 'patch');
   });
 
   gulp.task('bump-ui-patch', [], function() {
-    inc(srcdst.ui, 'patch');
+    return inc(srcdst.ui, 'patch');
   });
 
   gulp.task('bump-recovery-patch', [], function() {
-    inc(srcdst.recovery, 'patch');
+    return inc(srcdst.recovery, 'patch');
   });
 
   gulp.task('bump-admin-patch', [], function() {
-    inc(srcdst.admin, 'patch');
+    return inc(srcdst.admin, 'patch');
   });
 
   // MAIN TASKS
