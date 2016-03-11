@@ -88,7 +88,7 @@
       },
 
       _updateTap: function() {
-        this.fire('update-public', {public: this._copy});
+        this.fire('update-public', {public: this._copy.trim()});
         this.edition = false;
       },
 

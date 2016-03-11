@@ -1,0 +1,16 @@
+{
+  "name": "ge-api-temp-admin",
+  "version": "0.1.4",
+  "description": "",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "elasticsearch": "^10.1.3",
+    "gulp": "^3.9.1",
+    "minimist": "^1.2.0"
+  }
+}

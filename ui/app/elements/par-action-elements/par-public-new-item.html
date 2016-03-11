@@ -17,7 +17,7 @@
       <paper-item-body>
         <paper-input label="Public" value="{{value}}" on-keydown="_inputKeydown"></paper-input>
       </paper-item-body>
-      <paper-icon-button icon="icons:add-circle" disabled="{{!value}}" on-tap="_addTap" alt="Ajouter" title="Ajouter"></paper-icon-button>
+      <paper-icon-button icon="icons:add-circle" disabled="{{_computeAddDisabled(value)}}" on-tap="_addTap" alt="Ajouter" title="Ajouter"></paper-icon-button>
     </paper-icon-item>
   </template>
 
@@ -36,6 +36,10 @@
         }
       },
 
+      _computeAddDisabled: function(val) {
+        return !(val && val.trim());
+      },
+
       _inputKeydown: function(evt) {
         if (evt.keyCode === 13) {
           // 'Enter'
@@ -44,7 +48,7 @@
 
       },
       _addTap: function() {
-        this.fire('add-public', {public: this.value});
+        this.fire('add-public', {public: this.value.trim()});
       }
 
     });

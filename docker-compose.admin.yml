@@ -1,0 +1,5 @@
+# Outils d'administration
+admin:
+  build: ./admin
+  links:
+    - db:db

@@ -39,6 +39,10 @@
       width: 100%;
     }
 
+    paper-material {
+      padding: 0 20px;
+      margin: 10px 0;
+    }
 
     </style>
 
@@ -63,9 +67,13 @@
       <paper-card heading="{{axe.intitule}}">
         <form is="iron-form" id="axeForm">
 
-          <div class="card-content">
-            <paper-input name="num" type="number" label="Numéro" min="1" required auto-validate value="{{_dirty.num}}"></paper-input>
-            <paper-input name="intitule" label="Intitulé" required char-counter maxlength="250" auto-validate value="{{_dirty.intitule}}"></paper-input>
+          <div class="card-content layout vertical">
+            <paper-material elevation="1">
+              <paper-input name="num" type="number" label="Numéro" min="1" required auto-validate value="{{_dirty.num}}"></paper-input>
+            </paper-material>
+            <paper-material elevation="1">
+              <paper-input name="intitule" label="Intitulé" required char-counter maxlength="250" auto-validate value="{{_dirty.intitule}}"></paper-input>
+            </paper-material>
           </div>
 
         </form>
@@ -83,20 +91,27 @@
     'use strict';
 
     var cloneAxe = function(axe) {
-      var dirty;
+      var clone;
       if (axe) {
-        dirty = {};
+        clone = {};
         for (var attr in axe) {
           if (axe.hasOwnProperty(attr)) {
-            dirty[attr] = axe[attr];
+            clone[attr] = axe[attr];
           }
         }
 
       } else {
-        dirty = null;
+        clone = null;
       }
 
-      return dirty;
+      return clone;
+    };
+
+    var improveAxe = function(axe) {
+      if (axe) {
+        axe.intitule = axe.intitule ? axe.intitule.trim() : axe.intitule;
+      }
+      return axe;
     };
 
     Polymer({
@@ -121,6 +136,8 @@
       },
 
       _createTap: function() {
+        improveAxe(this._dirty);
+
         if (this.$.axeForm.validate()) {
           this.axe = this._dirty;
           this.fire('create', {axe: this.axe});
@@ -132,6 +149,8 @@
       },
 
       _updateTap: function() {
+        improveAxe(this._dirty);
+
         if (this.$.axeForm.validate()) {
           this.axe = this._dirty;
           this.fire('update', {axe: this.axe});
