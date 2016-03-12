@@ -7,27 +7,30 @@
   var tag_version = require('gulp-tag-version');
   var argv = require('minimist')(process.argv.slice(2));
 
-  var srcdst = {
-    project: {
-      src: ['./package.json'],
-      dst: './'
+  var paths = {
+    versionToBump: {
+      project: {
+        src: ['./package.json'],
+        dst: './'
+      },
+      api: {
+        src: ['./api/package.json'],
+        dst: './api'
+      },
+      ui: {
+        src: ['./ui/package.json'],
+        dst: './ui'
+      },
+      recovery: {
+        src: ['./recovery/package.json'],
+        dst: './recovery'
+      },
+      admin: {
+        src: ['./admin/src/package.json'],
+        dst: './admin/src'
+      },
     },
-    api: {
-      src: ['./api/package.json'],
-      dst: './api'
-    },
-    ui: {
-      src: ['./ui/package.json'],
-      dst: './ui'
-    },
-    recovery: {
-      src: ['./recovery/package.json'],
-      dst: './recovery'
-    },
-    admin: {
-      src: ['./admin/src/package.json'],
-      dst: './admin/src'
-    },
+    versionToCheck: 'package.json'
   };
 
   var ver = function(subproject, semver) {
@@ -49,10 +52,10 @@
         .pipe(gulp.dest(subproject.dst));
   };
 
-  var tag = function(reference) {
+  var tag = function() {
     // Construit un tableau comprenant toutes les src
-    var src = Object.getOwnPropertyNames(srcdst).map(function(name) {
-      return srcdst[name].src;
+    var src = Object.getOwnPropertyNames(paths.versionToBump).map(function(name) {
+      return paths.versionToBump[name].src;
     }).reduce(function(mem, arr) {
     	Array.prototype.push.apply(mem, arr);
     	return mem;
@@ -65,7 +68,7 @@
         .pipe(git.commit('bumps package version'))
 
         // read only one file to get the version number
-        .pipe(filter(reference))
+        .pipe(filter(paths.versionToCheck))
         // **tag it in the repository**
         .pipe(tag_version());
   };
@@ -79,107 +82,107 @@
   });
 
   gulp.task('bump-project-version', function(){
-    return ver(srcdst.project, argv.version);
+    return ver(paths.versionToBump.project, argv.version);
   });
 
   gulp.task('bump-api-version', function(){
-    return ver(srcdst.api, argv.version);
+    return ver(paths.versionToBump.api, argv.version);
   });
 
   gulp.task('bump-ui-version', function(){
-    return ver(srcdst.ui, argv.version);
+    return ver(paths.versionToBump.ui, argv.version);
   });
 
   gulp.task('bump-recovery-version', function(){
-    return ver(srcdst.recovery, argv.version);
+    return ver(paths.versionToBump.recovery, argv.version);
   });
 
   gulp.task('bump-admin-version', function(){
-    return ver(srcdst.admin, argv.version);
+    return ver(paths.versionToBump.admin, argv.version);
   });
 
   // Major subtasks
 
   gulp.task('bump-project-major', [], function() {
-    return inc(srcdst.project, 'major');
+    return inc(paths.versionToBump.project, 'major');
   });
 
   gulp.task('bump-api-major', [], function() {
-    return inc(srcdst.api, 'major');
+    return inc(paths.versionToBump.api, 'major');
   });
 
   gulp.task('bump-ui-major', [], function() {
-    return inc(srcdst.ui, 'major');
+    return inc(paths.versionToBump.ui, 'major');
   });
 
   gulp.task('bump-recovery-major', [], function() {
-    return inc(srcdst.recovery, 'major');
+    return inc(paths.versionToBump.recovery, 'major');
   });
 
   gulp.task('bump-admin-major', [], function() {
-    return inc(srcdst.admin, 'major');
+    return inc(paths.versionToBump.admin, 'major');
   });
 
   // Minor subtasks
 
   gulp.task('bump-project-minor', [], function() {
-    return inc(srcdst.project, 'minor');
+    return inc(paths.versionToBump.project, 'minor');
   });
 
   gulp.task('bump-api-minor', [], function() {
-    return inc(srcdst.api, 'minor');
+    return inc(paths.versionToBump.api, 'minor');
   });
 
   gulp.task('bump-ui-minor', [], function() {
-    return inc(srcdst.ui, 'minor');
+    return inc(paths.versionToBump.ui, 'minor');
   });
 
   gulp.task('bump-recovery-minor', [], function() {
-    return inc(srcdst.recovery, 'minor');
+    return inc(paths.versionToBump.recovery, 'minor');
   });
 
   gulp.task('bump-admin-minor', [], function() {
-    return inc(srcdst.admin, 'minor');
+    return inc(paths.versionToBump.admin, 'minor');
   });
 
   // Patch subtasks
 
   gulp.task('bump-project-patch', [], function() {
-    return inc(srcdst.project, 'patch');
+    return inc(paths.versionToBump.project, 'patch');
   });
 
   gulp.task('bump-api-patch', [], function() {
-    return inc(srcdst.api, 'patch');
+    return inc(paths.versionToBump.api, 'patch');
   });
 
   gulp.task('bump-ui-patch', [], function() {
-    return inc(srcdst.ui, 'patch');
+    return inc(paths.versionToBump.ui, 'patch');
   });
 
   gulp.task('bump-recovery-patch', [], function() {
-    return inc(srcdst.recovery, 'patch');
+    return inc(paths.versionToBump.recovery, 'patch');
   });
 
   gulp.task('bump-admin-patch', [], function() {
-    return inc(srcdst.admin, 'patch');
+    return inc(paths.versionToBump.admin, 'patch');
   });
 
   // MAIN TASKS
 
   gulp.task('bump-version', ['check-version-arg', 'bump-project-version', 'bump-api-version', 'bump-ui-version', 'bump-admin-version', 'bump-recovery-version'], function() {
-    return tag(srcdst.project.src[0]);
+    return tag(paths.versionToBump.project.src[0]);
   });
 
   gulp.task('bump-major', ['bump-project-major', 'bump-api-major', 'bump-ui-major', 'bump-recovery-major', 'bump-admin-major'], function() {
-    return tag(srcdst.project.src[0]);
+    return tag(paths.versionToBump.project.src[0]);
   });
 
   gulp.task('bump-minor', ['bump-project-minor', 'bump-api-minor', 'bump-ui-minor', 'bump-recovery-minor', 'bump-admin-minor'], function() {
-    return tag(srcdst.project.src[0]);
+    return tag(paths.versionToBump.project.src[0]);
   });
 
   gulp.task('bump-patch', ['bump-project-patch', 'bump-api-patch', 'bump-ui-patch', 'bump-recovery-patch', 'bump-admin-patch'], function() {
-    return tag(srcdst.project.src[0]);
+    return tag();
   });
 
   gulp.task('default', function() {
