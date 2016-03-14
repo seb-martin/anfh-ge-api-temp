@@ -52,27 +52,6 @@
         .pipe(gulp.dest(subproject.dst));
   };
 
-  var tag = function() {
-    // Construit un tableau comprenant toutes les src
-    var src = Object.getOwnPropertyNames(paths.versionToBump).map(function(name) {
-      return paths.versionToBump[name].src;
-    }).reduce(function(mem, arr) {
-    	Array.prototype.push.apply(mem, arr);
-    	return mem;
-    }, []);
-
-
-    // read only one reference file to get the version number
-    return gulp.src(src)
-        // commit the changed version number
-        .pipe(git.commit('bumps package version'))
-
-        // read only one file to get the version number
-        .pipe(filter(paths.versionToCheck))
-        // **tag it in the repository**
-        .pipe(tag_version());
-  };
-
   // Version subtasks
 
   gulp.task('check-version-arg', function(){
@@ -169,20 +148,33 @@
 
   // MAIN TASKS
 
-  gulp.task('bump-version', ['check-version-arg', 'bump-project-version', 'bump-api-version', 'bump-ui-version', 'bump-admin-version', 'bump-recovery-version'], function() {
-    return tag(paths.versionToBump.project.src[0]);
-  });
+  gulp.task('bump-version', ['check-version-arg', 'bump-project-version', 'bump-api-version', 'bump-ui-version', 'bump-admin-version', 'bump-recovery-version']);
 
-  gulp.task('bump-major', ['bump-project-major', 'bump-api-major', 'bump-ui-major', 'bump-recovery-major', 'bump-admin-major'], function() {
-    return tag(paths.versionToBump.project.src[0]);
-  });
+  gulp.task('bump-major', ['bump-project-major', 'bump-api-major', 'bump-ui-major', 'bump-recovery-major', 'bump-admin-major']);
 
-  gulp.task('bump-minor', ['bump-project-minor', 'bump-api-minor', 'bump-ui-minor', 'bump-recovery-minor', 'bump-admin-minor'], function() {
-    return tag(paths.versionToBump.project.src[0]);
-  });
+  gulp.task('bump-minor', ['bump-project-minor', 'bump-api-minor', 'bump-ui-minor', 'bump-recovery-minor', 'bump-admin-minor']);
 
-  gulp.task('bump-patch', ['bump-project-patch', 'bump-api-patch', 'bump-ui-patch', 'bump-recovery-patch', 'bump-admin-patch'], function() {
-    return tag();
+  gulp.task('bump-patch', ['bump-project-patch', 'bump-api-patch', 'bump-ui-patch', 'bump-recovery-patch', 'bump-admin-patch']);
+
+  gulp.task('tag', function() {
+    // Construit un tableau comprenant toutes les src
+    var src = Object.getOwnPropertyNames(paths.versionToBump).map(function(name) {
+      return paths.versionToBump[name].src;
+    }).reduce(function(mem, arr) {
+    	Array.prototype.push.apply(mem, arr);
+    	return mem;
+    }, []);
+
+
+    // read only one reference file to get the version number
+    return gulp.src(src)
+        // commit the changed version number
+        .pipe(git.commit('bumps package version'))
+
+        // read only one file to get the version number
+        .pipe(filter(paths.versionToCheck))
+        // **tag it in the repository**
+        .pipe(tag_version());
   });
 
   gulp.task('default', function() {
@@ -191,5 +183,6 @@
     console.info('gulp bump-major');
     console.info('gulp bump-minor');
     console.info('gulp bump-patch');
+    console.info('gulp tag');
   });
 })();
