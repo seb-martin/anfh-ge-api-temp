@@ -346,6 +346,10 @@
             var r = /(AF[CR]\s[0-9]*)\s{0,1}\-\s{0,1}(.*)/;
             var rr = r.exec(action.intitule);
 
+            if (rr[1].substr(0, 3) === 'AFC') {
+              action.nature = 'C';
+            }
+
             action.code = rr[1];
             action.intitule = rr[2];
             action.modules[0].intitule = action.intitule;
@@ -365,6 +369,8 @@
 
             if (rr[1].substr(0, 3) === 'AFN') {
               action.nature = 'N';
+            } else if (rr[1].substr(0, 3) === 'AFC') {
+              action.nature = 'C';
             }
 
             action.intitule = rr[3];
@@ -406,7 +412,10 @@
 
             if ('AFN' === rr[1]) {
               action.nature = 'N';
+            } else if ('AC' === rr[1]) {
+              action.nature = 'C';
             }
+
             action.intitule = rr[2];
             action.modules[0].intitule = action.intitule;
           } else if (action.exercice === 2017) {
@@ -435,7 +444,10 @@
 
           if (rr[1] === 'AFN') {
             action.nature = 'N';
+          } else if (rr[1] === 'AC') {
+            action.nature = 'C';
           }
+
           action.intitule = rr[2];
           action.modules[0].intitule = action.intitule;
 
@@ -453,7 +465,10 @@
 
           if (rr[1] === 'AFN') {
             action.nature = 'N';
+          } else if (rr[1] === 'AIE') {
+            action.nature = 'C';
           }
+
           action.intitule = rr[2];
           action.modules[0].intitule = action.intitule;
 
@@ -636,7 +651,10 @@
             if (rr) {
               if ('AFN' === rr[1]) {
                 action.nature = 'N';
+              } else if ('PIE' === rr[1]) {
+                action.nature = 'C';
               }
+              
               action.intitule = rr[2];
               action.modules[0].intitule = action.intitule;
             }
