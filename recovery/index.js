@@ -598,6 +598,14 @@
             var r = /PIC\/(AF[RNC][0-9]+)?\s*(.*)/;
             var rr = r.exec(action.intitule);
 
+            if (rr[1]) {
+              if (rr[1].substr(0, 3) === 'AFN') {
+                action.nature = 'N';
+              } else if (rr[1].substr(0, 3) === 'AFC') {
+                action.nature = 'C';
+              }
+            }
+
             action.code = rr[1];
             action.intitule = rr[2];
             action.modules[0].intitule = action.intitule;
@@ -654,7 +662,7 @@
               } else if ('PIE' === rr[1]) {
                 action.nature = 'C';
               }
-              
+
               action.intitule = rr[2];
               action.modules[0].intitule = action.intitule;
             }
