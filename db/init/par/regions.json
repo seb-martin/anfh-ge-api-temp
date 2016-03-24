@@ -37,7 +37,7 @@
 {"index":{"_index":"par", "_type":"regions", "_id":"MID"}}
 { "code": "MID", "denomination": "Midi-Pyrénées" }
 {"index":{"_index":"par", "_type":"regions", "_id":"NOR"}}
-{ "code": "NOR", "denomination": "Nord-Pas-De-Calais" }
+{ "code": "NOR", "denomination": "Nord-Pas de Calais" }
 {"index":{"_index":"par", "_type":"regions", "_id":"PAY"}}
 { "code": "PAY", "denomination": "Pays de la Loire" }
 {"index":{"_index":"par", "_type":"regions", "_id":"PIC"}}
@@ -45,7 +45,7 @@
 {"index":{"_index":"par", "_type":"regions", "_id":"POI"}}
 { "code": "POI", "denomination": "Poitou-Charentes" }
 {"index":{"_index":"par", "_type":"regions", "_id":"PRO"}}
-{ "code": "PRO", "denomination": "Provence-Côte-D'Azur" }
+{ "code": "PRO", "denomination": "Provence-Alpes-Côte-d'Azur" }
 {"index":{"_index":"par", "_type":"regions", "_id":"REU"}}
 { "code": "REU", "denomination": "Océan Indien" }
 {"index":{"_index":"par", "_type":"regions", "_id":"RHO"}}
