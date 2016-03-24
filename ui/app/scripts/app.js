@@ -116,7 +116,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       region: app._region.code,
       exercice: app._exercice,
       num: maxNum + 1,
-      intitule: 'Nouvel Axe'
+      intitule: 'Nouvel axe'
     };
 
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/axes/nouveau');
@@ -160,7 +160,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     app._action = {
       region: app._region.code,
       exercice: app._exercice,
-      intitule: 'Nouvelle Action',
+      intitule: 'Nouvelle action',
       nature: 'R',
       publics: [],
       modules: [],
