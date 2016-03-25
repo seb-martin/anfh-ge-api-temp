@@ -90,19 +90,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/', redirectRegion, function() {
-      app.titre = 'Plans d\'Actions Régionaux';
+      app.titre = 'Plans d\'actions régionaux';
       app.sstitre = 'des délégations régionales ANFH';
       app.route = 'regions';
     });
 
     page(app.baseUrl, redirectRegion, function() {
-      app.titre = 'Plans d\'Actions Régionaux';
+      app.titre = 'Plans d\'actions régionaux';
       app.sstitre = 'des délégations régionales ANFH';
       app.route = 'regions';
     });
 
     page('/:reg', selectRegion, function(data) {
-      app.titre = 'Plans d\'Actions Régional';
+      app.titre = 'Plans d\'actions régional';
       app.sstitre = 'de la délégation ' + app._region.denomination;
       app.route = 'region';
       app.params = data.params;
@@ -110,8 +110,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     page('/:reg/:exe/axes', selectRegion, selectExercice, function(data) {
 
-      app.titre = 'Axes de Formation';
-      app.sstitre = 'du plan de formation :exe de la délégation :reg'
+      app.titre = 'Axes de formation';
+      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
       app.route = 'axes';
@@ -120,8 +120,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/actions', selectRegion, selectExercice, function(data) {
-      app.titre = 'Actions de Formation';
-      app.sstitre = 'du plan de formation :exe de la délégation :reg'
+      app.titre = 'Actions de formation';
+      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
       app.route = 'actions';
@@ -129,8 +129,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/axes/nouveau', selectRegion, selectExercice, function(data) {
-      app.titre = 'Créer un Axe';
-      app.sstitre = 'du plan de formation :exe de la délégation :reg'
+      app.titre = 'Créer un axe';
+      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
       app.route = 'axe';
@@ -138,8 +138,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/axes/:idaxe', selectRegion, selectExercice, selectAxe, function(data) {
-      app.titre = 'Modifier un Axe';
-      app.sstitre = 'du plan de formation :exe de la délégation :reg'
+      app.titre = 'Modifier un axe';
+      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
       app.route = 'axe';
@@ -148,8 +148,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/actions/nouveau', selectRegion, selectExercice, function(data) {
-      app.titre = 'Créer une Action';
-      app.sstitre = 'du plan de formation :exe de la délégation :reg'
+      app.titre = 'Créer une action';
+      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
       app.route = 'action';
@@ -158,8 +158,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/:reg/:exe/actions/:idact', selectRegion, selectExercice, selectAction, function(data) {
-      app.titre = 'Modifier une Action';
-      app.sstitre = 'du plan de formation :exe de la délégation :reg'
+      app.titre = 'Modifier une action';
+      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
         .replace(':exe', app._exercice)
         .replace(':reg', app._region.denomination);
       app.route = 'action';
