@@ -4,6 +4,8 @@
   "description": "Interface applicative exposant les plans d'accès régionaux",
   "dependencies": {
     "body-parser": "^1.14.1",
+    "compression": "^1.6.1",
+    "cors": "^2.7.1",
     "elasticsearch": "^10.0.1",
     "express": "^4.13.3",
     "promise": "^7.1.1"
