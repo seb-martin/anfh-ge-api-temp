@@ -83,7 +83,7 @@
   }
 
 
-  fs.readFile(__dirname + '/export-supersoniks/export_formations.xml', function(err, data) {
+  fs.readFile(__dirname + '/export-supersoniks/offres_formations_apartirde_2014.xml', function(err, data) {
     parser.parseString(data, function (err, result) {
 
       // Juste pour voir
@@ -707,7 +707,7 @@
       }).join('\n');
 
 
-      fs.writeFile('es-bulk/actions.json', bulksData, function(err) {
+      fs.writeFile('es-bulk/actions-apartirde-2014.json', bulksData, function(err) {
         if (err) {
           throw err;
         }
