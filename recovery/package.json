@@ -1,6 +1,6 @@
 {
   "name": "ge-api-temp:recovery",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "Reprise des données de ANFH.fr livrées par Supersoniks",
   "main": "recovery.js",
   "scripts": {
