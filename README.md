@@ -168,7 +168,7 @@ docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin
 
 ### Initialisation du référentiel des sauvegardes
 
-Initialiser le référentiel de sauvegarde `par_backup`.
+Initialiser le référentiel de sauvegarde `par_repo`.
 
 ```sh
 docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-init
@@ -208,7 +208,7 @@ docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backu
 
 > Attention, cette opération détruira le  référentiel et tous les instantanés qu'il contient.
 
-Détruire le référentiel `par_backup`.
+Détruire le référentiel `par_repo`.
 
 ```sh
 docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-detroy

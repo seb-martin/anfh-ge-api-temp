@@ -3,7 +3,7 @@ FROM node:5.5.0
 # Installe Bower, Gulp et Http-Server
 ################################
 
-RUN npm install -g bower gulp http-server
+RUN npm install -g bower gulp
 
 RUN mkdir -p /usr/src
 WORKDIR /usr/src
@@ -36,4 +36,4 @@ RUN gulp
 
 EXPOSE 80
 
-CMD [ "http-server", "dist", "-p", "80" ]
+CMD [ "node", "server.js" ]
