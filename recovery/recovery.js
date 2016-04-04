@@ -1,97 +1,38 @@
 (function() {
   // File System : Permet de faire des lectures/écritures sur le système de fichiers
-  var fs     = require('fs');
+  var fs = require('fs');
+  var path = require('path');
   // Simple XML to JavaScript object converter
   var xml2js = require('xml2js');
-  // An HTML to Markdown converter written in JavaScript.
-  var toMarkdown = require('to-markdown');
   // Parse, validate, manipulate, and display dates in JavaScript.
   var moment = require('moment');
+  // An HTML to Markdown converter written in JavaScript.
+  var toMarkdown = require('to-markdown');
+  var toMarkdownOptions = require('./to-markdown-options.js');
+
+  // Dictionnaire associant au nom d'une région son code ANFH
+  var regionCodes = require('./regions.js');
+
+  var recoveryHelpers = require('./recovery-helpers.js');
 
   var parser = new xml2js.Parser();
 
-  var toMarkdownOptions = {
-    converters: [
-      {
-        filter: 'div',
-        replacement: function(content) {
-          return '\n\n' + content;
-        }
-      },
-      {
-        filter: 'span',
-        replacement: function(content) {
-          return content;
-        }
-      },
-      {
-        filter: 'u',
-        replacement: function(content) {
-          return content;
-        }
-      },
-      {
-        filter: 'font',
-        replacement: function(content) {
-          return content;
-        }
-      }
-    ]
-  };
-
-  // Dictionnaire associant au nom d'une région son code ANFH
-  var regionCodes = {
-    'Alpes':'ALP',
-    'Alsace':'ALS',
-    'Aquitaine':'AQU',
-    'Auvergne':'AUV',
-    'Basse-Normandie':'BAS',
-    'Bourgogne':'BGN',
-    'Bretagne':'BRE',
-    'Centre':'CEN',
-    'Champagne-Ardenne':'CHA',
-    'Corse':'COR',
-    'Franche-Comté':'FRA',
-    'Guyane':'DGY',
-    'Haute-Normandie':'HAU',
-    'Île-de-France':'IDF',
-    'Languedoc-Roussillon':'LAN',
-    'Limousin':'LIM',
-    'Lorraine':'LOR',
-    'MARTINIQUE':'DMA',
-    'Midi-Pyrénées':'MID',
-    'Nord-Pas de Calais':'NOR',
-    'Océan Indien':'REU',
-    'PACA ':'PRO',
-    'Pays de la Loire':'PAY',
-    'Picardie':'PIC',
-    'Poitou-Charentes':'POI',
-    'Rhône':'RHO'
-  };
+  var inputFile = path.join(__dirname, 'export-supersoniks', 'offres_formations_apartirde_2014.xml');
+  var outpoutDirectory = path.join(__dirname, 'es-bulk');
+  var outpoutFile = path.join(outpoutDirectory, 'actions-apartirde-2014.json');
 
   // Crée le répertoire de sortie, s'il n'existe pas
-  try {
-    fs.accessSync('es-bulk');
-    console.log('Répertoire \'es-bulk\' existant');
-  } catch(err) {
-    fs.mkdir('es-bulk', function(err) {
-      if (err) {
-        return console.error('Impossible de créer le répertoire \'es-bulk\'', err);
-      }
-      console.log('Répertoire \'es-bulk\' créé');
-    });
-  }
+  recoveryHelpers.makedir(outpoutDirectory);
 
+  fs.readFile(inputFile, function(err, data) {
+    if (err) {
+      throw err;
+    }
 
-  fs.readFile(__dirname + '/export-supersoniks/offres_formations_apartirde_2014.xml', function(err, data) {
     parser.parseString(data, function (err, result) {
-
-      // Juste pour voir
-      // fs.writeFile('es-bulk/export-supersoniks.json', JSON.stringify(result), function(err) {
-      //   if (err) {
-      //     throw err;
-      //   }
-      // });
+      if (err) {
+        throw err;
+      }
 
       // Itère au travers des actions de formation
       var bulksData = result.node_export.node.map(function(xaction){
@@ -104,203 +45,66 @@
       })
       .map(function(srctgt) {
         // ID
-        srctgt.target.action_id = srctgt.src.nid[0];
+        srctgt.target.action_id = recoveryHelpers.retriveID(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Région
-        var nodeName = Object.getOwnPropertyNames(srctgt.src.og_groups_both[0])[0]
-        var codeReg = regionCodes[srctgt.src.og_groups_both[0][nodeName][0]];
-        if (codeReg) {
-          srctgt.target.action.region = codeReg;
-        }
+        srctgt.target.action.region = recoveryHelpers.retriveCodeRegion(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Publie
-        srctgt.target.action._publie = srctgt.src.og_public[0]._ === 'TRUE';
+        srctgt.target.action._publie = recoveryHelpers.retrivePublie(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Intitulé
-        srctgt.target.action.intitule = srctgt.src.title[0].trim();
+        srctgt.target.action.intitule = recoveryHelpers.retriveIntitule(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Nature
-        // Toutes les actions reprisent sont considérées comme étant régionales
-        srctgt.target.action.nature = 'R';
+        srctgt.target.action.nature = recoveryHelpers.retriveNature(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Contexte
-        if (typeof srctgt.src.field_contexte[0].n0[0].value[0] === 'string') {
-          srctgt.target.action.contexte = toMarkdown(srctgt.src.field_contexte[0].n0[0].value[0], toMarkdownOptions).trim();
-        }
+        srctgt.target.action.contexte = recoveryHelpers.retriveContexte(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Objectifs
-        if (typeof srctgt.src.field_objectif[0].n0[0].value[0] === 'string') {
-          srctgt.target.action.objectifs = toMarkdown(srctgt.src.field_objectif[0].n0[0].value[0], toMarkdownOptions).trim();
-        }
+        srctgt.target.action.objectifs = recoveryHelpers.retriveObjectifs(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Titulaire
-        srctgt.target.action.titulaire = srctgt.src.field_organisateur[0].n0[0].value[0];
+        srctgt.target.action.titulaire = recoveryHelpers.retriveTitulaire(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Publics
-        srctgt.target.action.publics = srctgt.src.field_public.map(function(item) {
-          if (typeof item.n0[0].value[0] === 'string') {
-            return toMarkdown(item.n0[0].value[0], toMarkdownOptions).trim();
-          } else {
-            return null;
-          }
-        })
-        .filter(function(public) {
-          return public;
-        }).sort();
+        srctgt.target.action.publics = recoveryHelpers.retrivePublics(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Modules
-
-        /*
-        Il n'y a pas de notion de module dans les données reprises.
-        Cependant, des informations à reprendre sont situés au niveau du module :
-        - programme
-        - durée
-
-        --> On crée UN module
-        --> On lui affecte le numéro 1
-        --> On réplique des infos de l'action :
-            - intitulé du module = intitulé de l'action
-        --> On reprend les données programme et durée ensuite
-        */
-        srctgt.target.action.modules = [{
-          num: 1,
-          intitule: srctgt.target.action.intitule
-        }];
-        return srctgt;
-      })
-      .map(function(srctgt) {
-        // Programme du module
-        if (typeof srctgt.src.body[0] === 'string') {
-          srctgt.target.action.modules[0].programme = toMarkdown(srctgt.src.body[0], toMarkdownOptions).trim();
-        }
-        return srctgt;
-      })
-      .map(function(srctgt) {
-        // Durée du module
-        if (typeof srctgt.src.field_af_duree[0].n0[0].value[0] === 'string') {
-          try {
-            var nbJours = parseInt(srctgt.src.field_af_duree[0].n0[0].value[0]);
-            srctgt.target.action.modules[0].duree = 'P' + nbJours + 'D'
-          } catch (err) {
-            console.warn('La durée n\'est pas un entier',  srctgt.src.field_af_duree[0].n0[0].value[0], err);
-          }
-        }
+        srctgt.target.action.modules = recoveryHelpers.retriveModules(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
         // Planifications & Calendriers
-
-
-        /*
-        On ne reprend ici que les dates de début et de fin
-        La ville (ie le lieu) est repris ensuite
-        */
-
-        srctgt.target.action.planifications = Object.getOwnPropertyNames(srctgt.src.field_date_evt[0]).filter(function(nodeName) {
-          return nodeName !== '$';
-        }).map(function(nodeName) {
-          var n = srctgt.src.field_date_evt[0][nodeName][0];
-          if (typeof n.value[0] === 'string') {
-            var itemCalendrier = {
-              debut: moment(n.value[0].substring(0, 'YYYY-MM-DD'.length)).format('YYYY-MM-DD'),
-              fin: moment(n.value2[0].substring(0, 'YYYY-MM-DD'.length)).format('YYYY-MM-DD'),
-            };
-
-            return itemCalendrier;
-          } else {
-            return null;
-          }
-        }).filter(function(itemCalendrier) {
-          return itemCalendrier;
-        }).map(function(itemCalendrier) {
-          return {calendrier: [itemCalendrier]};
-        }).sort(function(plan1, plan2) {
-          if (plan1.calendrier[0].debut < plan2.calendrier[0].debut) {
-            return -1;
-          } else if (plan1.calendrier[0].debut > plan2.calendrier[0].debut) {
-            return 1;
-          } else {
-            return 0;
-          }
-        });
-
+        srctgt.target.action.planifications = recoveryHelpers.retriveCalendriers(srctgt.src);
         return srctgt;
-      })
-      .map(function(srctgt) {
-        // Calendrier : ville
-
-        /*
-        Les évènements repris dans le calendrier ne comporte pas de notion
-        de ville ou de lieu.
-
-        Il existe un champs spécifique pour le lieu de formation.
-        --> On récupère ce lieu et on l'affecte comme ville à l'ensemble des
-            dates du calendrier.
-        */
-
-        if (typeof srctgt.src.field_lieu_formation[0].n0[0].value[0] === 'string') {
-          var lieu = srctgt.src.field_lieu_formation[0].n0[0].value[0];
-
-          srctgt.target.action.planifications.forEach(function(planif) {
-            planif.calendrier[0].ville = lieu;
-          });
-        }
-        return srctgt;
-
       })
       .map(function(srctgt) {
         // Exercice
-
-        /*
-        Il n'existe pas de notion d'exercice dans les données reprise.
-
-        on cherche un exercice dans l'intitulé de l'action
-        A défaut, On détermine l'exercice en prenant la plus petite date de début dans le calendrier
-        A défaut d'exercice dans l'intitulé, on utilise le champ 'revision_timestamp'
-        http://stackoverflow.com/questions/847185/convert-a-unix-timestamp-to-time-in-javascript
-        */
-
-
-        var intituleMatch = srctgt.target.action.intitule.match(/(201[0-9])/g);
-
-        var exercice;
-
-        if (intituleMatch) {
-          exercice = parseInt(intituleMatch[0]);
-        } else if (srctgt.target.action.planifications.length > 0) {
-          exercice = srctgt.target.action.planifications.map(function(planif) {
-            return parseInt(planif.calendrier[0].debut.substring(0, 'YYYY'.length));
-          }).reduce(function(m, exe) {
-            return m < exe ? exe : m;
-          });
-        } else {
-          // Utilisation du revision_timestamp
-          exercice = new Date(parseInt(srctgt.src.revision_timestamp[0]) * 1000).getFullYear();
-        }
-
-        srctgt.target.action.exercice = exercice;
-
+        srctgt.target.action.exercice = recoveryHelpers.retriveExercice(srctgt.src);
         return srctgt;
       })
       .map(function(srctgt) {
+        // Amélioration de reprise
         var action = srctgt.target.action;
 
         if (action.region === 'ALP') {
@@ -707,7 +511,7 @@
       }).join('\n');
 
 
-      fs.writeFile('es-bulk/actions-apartirde-2014.json', bulksData, function(err) {
+      fs.writeFile(outpoutFile, bulksData, function(err) {
         if (err) {
           throw err;
         }

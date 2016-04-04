@@ -2,7 +2,7 @@
   "name": "ge-api-temp:recovery",
   "version": "1.0.1",
   "description": "Reprise des données de ANFH.fr livrées par Supersoniks",
-  "main": "index.js",
+  "main": "recovery.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
