@@ -36,4 +36,6 @@ RUN gulp
 
 EXPOSE 80
 
+COPY server.js /usr/src
+
 CMD [ "node", "server.js" ]
