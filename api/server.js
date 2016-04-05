@@ -9,7 +9,7 @@
   var Promise       = require('promise');
   var elasticsearch = require('elasticsearch');
 
-  var port          = process.env.API_PORT_80_TCP_PORT || 8081;   // set our port
+  var port          = process.env.API_PORT_80_TCP_PORT || 80;   // set our port
   var dbHost        = process.env.DB_PORT_9300_TCP_ADDR || 'localhost';
   var dbPort        = process.env.DB_PORT_9200_TCP_PORT || 9200
 
