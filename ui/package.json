@@ -1,6 +1,6 @@
 {
   "name": "ge-api-temp-ui",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "Interface utilisateur permettant de saisir les plans d'accès régionaux",
   "private": true,
   "devDependencies": {
