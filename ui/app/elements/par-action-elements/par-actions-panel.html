@@ -275,18 +275,23 @@ font-weight: 400;
         if (Array.isArray(this._actionOriginale.modules)) {
           this._toBeDuplicated.modules = this._actionOriginale.modules.map(
             function(m) {
-              return {
+              var copieModule = {
                 num: m.num,
                 intitule: m.intitule,
                 contexte: m.contexte,
                 objectifs: m.objectifs,
                 programme: m.programme,
                 duree: m.duree,
-                formateur: m.formateur,
-                publics: m.publics.map(function(p) {
-                  return p;
-                })
+                formateur: m.formateur
               };
+
+              if (Array.isArray(m.publics)) {
+                copieModule.publics = m.publics.map(function(p) {
+                  return p;
+                });
+              }
+
+              return copieModule;
             }
           );
         }
