@@ -480,12 +480,20 @@
           return Math.max(mem, module.num);
         }, 0) + 1;
 
+        // Intitulé du module
+        var intituleModule;
+        if (this._dirty.modules.length < 1 && !!this._dirty.intitule) {
+          // Premier module et l'intitulé de l'action n'est pas vide
+          intituleModule = this._dirty.intitule;
+        } else {
+          intituleModule = 'Module ' + num;
+        }
+
         this.push(
           '_dirty.modules',
           {
             num: num,
-            intitule:
-            'Nouveau module',
+            intitule: intituleModule,
             duree: 'P1D',
             // Recopie les publics de l'action dans le nouveau module
             publics: (this._dirty.publics || []).map(function(p) {
