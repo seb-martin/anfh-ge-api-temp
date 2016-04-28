@@ -51,6 +51,10 @@
       margin-bottom: 10px;
     }
 
+    .yellow-button {
+      text-transform: none;
+      color: #eeff41;
+    }
 
     </style>
 
@@ -230,7 +234,11 @@
 
     </div>
 
-    <paper-toast id="toast"></paper-toast>
+    <paper-toast id="toast" duration="0">
+      <paper-button on-tap="_toggleToast" class="yellow-button">
+        J'ai compris
+      </paper-button>
+    </paper-toast>
 
   </template>
 
@@ -592,6 +600,10 @@
         }
 
         return check;
+      },
+
+      _toggleToast: function() {
+        this.$.toast.toggle();
       }
     });
   })();
