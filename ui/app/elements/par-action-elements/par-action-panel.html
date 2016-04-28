@@ -475,13 +475,23 @@
           this.set('_dirty.modules', []);
         }
 
+        // Numéro du module
         var num = this._dirty.modules.reduce(function(mem, module) {
           return Math.max(mem, module.num);
         }, 0) + 1;
 
         this.push(
           '_dirty.modules',
-          {num: num, intitule: 'Nouveau module', duree: 'P1D', publics: []}
+          {
+            num: num,
+            intitule:
+            'Nouveau module',
+            duree: 'P1D',
+            // Recopie les publics de l'action dans le nouveau module
+            publics: (this._dirty.publics || []).map(function(p) {
+              return p;
+            })
+          }
         );
       },
 
