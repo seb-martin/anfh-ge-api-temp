@@ -46,6 +46,10 @@
         ],
 
         properties: {
+          exercice: {
+            type: Number,
+            value: moment().year()
+          },
           evenements: {
             type: Array,
             value: [],
@@ -55,8 +59,8 @@
 
         ready: function() {
           this._newEvenement = {
-            debut: moment().format('YYYY-MM-DD'),
-            fin: moment().format('YYYY-MM-DD')
+            debut: moment().year(this.exercice).format('YYYY-MM-DD'),
+            fin: moment().year(this.exercice).format('YYYY-MM-DD')
           };
         },
 
@@ -84,8 +88,8 @@
           this.splice('evenements', addIndex, 0, evt.detail.evenement);
 
           this._newEvenement = {
-            debut: moment().format('YYYY-MM-DD'),
-            fin: moment().format('YYYY-MM-DD')
+            debut: moment().year(this.exercice).format('YYYY-MM-DD'),
+            fin: moment().year(this.exercice).format('YYYY-MM-DD')
           };
         },
 

@@ -210,7 +210,7 @@
         <template is="dom-repeat" items="{{_dirty.planifications}}" as="planification">
           <paper-card heading="{{_computePlanifHeader(index)}}">
             <div class="card-content">
-              <par-evenement-list evenements="{{planification.calendrier}}"></par-evenement-list>
+              <par-evenement-list exercice="{{_dirty.exercice}}" evenements="{{planification.calendrier}}"></par-evenement-list>
             </div>
             <div class="card-actions layout horizontal">
               <span class="flex"></span>
