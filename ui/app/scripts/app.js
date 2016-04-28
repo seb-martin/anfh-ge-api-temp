@@ -161,6 +161,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       region: app._region.code,
       exercice: app._exercice,
       intitule: 'Nouvelle action',
+      contexte: '*Sera renseigné ultérieurement*',
+      objectifs: '*Seront renseignés ultérieurement*',
       nature: 'R',
       publics: [],
       modules: [],
