@@ -51,6 +51,10 @@
       margin-bottom: 10px;
     }
 
+    .yellow-button {
+      text-transform: none;
+      color: #eeff41;
+    }
 
     </style>
 
@@ -210,7 +214,7 @@
         <template is="dom-repeat" items="{{_dirty.planifications}}" as="planification">
           <paper-card heading="{{_computePlanifHeader(index)}}">
             <div class="card-content">
-              <par-evenement-list evenements="{{planification.calendrier}}"></par-evenement-list>
+              <par-evenement-list exercice="{{_dirty.exercice}}" evenements="{{planification.calendrier}}"></par-evenement-list>
             </div>
             <div class="card-actions layout horizontal">
               <span class="flex"></span>
@@ -230,7 +234,11 @@
 
     </div>
 
-    <paper-toast id="toast"></paper-toast>
+    <paper-toast id="toast" duration="0">
+      <paper-button on-tap="_toggleToast" class="yellow-button">
+        J'ai compris
+      </paper-button>
+    </paper-toast>
 
   </template>
 
@@ -475,13 +483,31 @@
           this.set('_dirty.modules', []);
         }
 
+        // Numéro du module
         var num = this._dirty.modules.reduce(function(mem, module) {
           return Math.max(mem, module.num);
         }, 0) + 1;
 
+        // Intitulé du module
+        var intituleModule;
+        if (this._dirty.modules.length < 1 && !!this._dirty.intitule) {
+          // Premier module et l'intitulé de l'action n'est pas vide
+          intituleModule = this._dirty.intitule;
+        } else {
+          intituleModule = 'Module ' + num;
+        }
+
         this.push(
           '_dirty.modules',
-          {num: num, intitule: 'Nouveau module', duree: 'P1D', publics: []}
+          {
+            num: num,
+            intitule: intituleModule,
+            duree: 'P1D',
+            // Recopie les publics de l'action dans le nouveau module
+            publics: (this._dirty.publics || []).map(function(p) {
+              return p;
+            })
+          }
         );
       },
 
@@ -574,6 +600,10 @@
         }
 
         return check;
+      },
+
+      _toggleToast: function() {
+        this.$.toast.toggle();
       }
     });
   })();
