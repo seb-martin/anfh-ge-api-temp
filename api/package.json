@@ -8,6 +8,7 @@
     "cors": "^2.7.1",
     "elasticsearch": "^10.0.1",
     "express": "^4.13.3",
+    "morgan": "^1.7.0",
     "promise": "^7.1.1"
   },
   "scripts": {

@@ -8,6 +8,7 @@
   var bodyParser    = require('body-parser');
   var Promise       = require('promise');
   var elasticsearch = require('elasticsearch');
+  var logger        = require('morgan');
 
   var port          = process.env.API_PORT_80_TCP_PORT || 80;   // set our port
   var dbHost        = process.env.DB_PORT_9300_TCP_ADDR || 'localhost';
@@ -25,6 +26,7 @@
   // this will let us get the data from a POST
   app.use(bodyParser.urlencoded({ extended: true }));
   app.use(bodyParser.json());
+  app.use(logger('combined'));
 
   // Dictionnaire des typologies FPTLV
   var typologies = {
