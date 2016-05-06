@@ -15,6 +15,34 @@
       }
     </style>
 
+    <template is="dom-if" if="{{!publics.length}}" >
+      <paper-card elevation="1">
+        <div class="card-content">
+
+          <p>
+            <em>Cette liste de publics est actuellement vide.</em>
+          </p>
+          <p>
+            <em>
+
+              Pour y ajouter un public,
+              <ol>
+                <li>
+                  complétez le nom du public dans le formulaire de saisie ci-dessous
+                  (idéalement, un métier du Répertoire v3 des métiers de la FPH) ;
+                </li>
+                <li>
+                  cliquez sur l'icône <iron-icon icon="icons:add-circle"></iron-icon>
+                  située à droite du formulaire pour ajouter le public à la liste..
+                </li>
+              </ol>
+
+            </em>
+          </p>
+        </div>
+      </paper-card>
+    </template>
+
     <paper-material elevation="1" class="list">
       <template is="dom-repeat" items="{{publics}}" as="public">
         <par-public-item value="{{public}}" class="list-item" style="width: 100%"
