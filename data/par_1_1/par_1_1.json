@@ -3,6 +3,7 @@
     "regions": {
       "properties": {
         "code": { "type": "string", "index":"not_analyzed" },
+        "derniereModif": { "type": "date", "format": "strict_date_time" },
         "denomination": {
           "type": "multi_field",
           "fields":{
@@ -70,8 +71,8 @@
           "properties": {
             "calendrier": {
               "properties": {
-                "debut": { "type": "date", "format": "yyyy-MM-dd" },
-                "fin": { "type": "date", "format": "yyyy-MM-dd" },
+                "debut": { "type": "date", "format": "strict_date" },
+                "fin": { "type": "date", "format": "strict_date" },
                 "ville": { "type": "string" },
                 "detail": { "type": "string" }
               }
