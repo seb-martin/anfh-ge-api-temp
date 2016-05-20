@@ -19,6 +19,16 @@ module.exports = function(configOptions) {
     return client.ping(params);
   };
 
+  var deleteAlias = function(params) {
+    return client.indices.deleteAlias(params);
+    // return client.indices.deleteAlias({index: index, name: alias});
+  };
+
+  var createAlias = function(params) {
+    return client.indices.putAlias(params);
+    // return client.indices.putAlias({ index: index, name: alias });
+  };
+
   var deleteIndex = function(params) {
     return client.indices.delete(params);
   };
@@ -28,47 +38,8 @@ module.exports = function(configOptions) {
     return client.indices.create(params);
   };
 
-  var scroller_ = function(searchParams) {
-    // { index: params.index, type: params.type, scroll: params.scroll, size: params.size }
-
-    var readable = stream.Readable({objectMode: true});
-
-    var pushResponse = function(response) {
-      if (response.hits.hits.length > 0) {
-        readable.scrollId = response._scroll_id;
-        console.log('scrollId with hits', readable.scrollId);
-
-        response.hits.hits.forEach(function(hit) {
-          console.log(hit._source);
-          readable.push(hit._source);
-        })
-      } else {
-        console.log('scrollId without hits', readable.scrollId);
-        readable.scrollId = undefined;
-        readable.push(null);
-      }
-    };
-
-    readable._read = function() {
-      if (!readable.scrollId) {
-        console.log('search');
-        // client.search(searchParams)
-        //   .then(pushResponse);
-
-        client.search(searchParams)
-
-      } else {
-        console.log('scroll');
-        client.scroll({ scrollId: readable.scrollId, scroll: searchParams.scroll, size: searchParams.size })
-          .then(pushResponse);
-      }
-    };
-
-    return readable;
-  };
-
-  var scroller = function(query_opts, optional_fields, stream_opts) {
-    return new ElasticsearchScrollStream(client, query_opts, optional_fields, stream_opts);
+  var scroller = function(query_opts) {
+    return new ElasticsearchScrollStream(client, query_opts, ['_index', '_type', '_id'], {objectMode: true});
   };
 
   var bulker = function(config) {
@@ -123,18 +94,12 @@ module.exports = function(configOptions) {
     deleteIndex: deleteIndex,
     createIndex: createIndex,
     scroller: scroller,
-    bulker: bulker
+    bulker: bulker,
+    createAlias: createAlias,
+    deleteAlias: deleteAlias
   }
 };
 
-
-exports.createAlias = function(index) {
-  return client.indices.putAlias({ index: index, name: alias });
-};
-
-exports.deleteAlias = function(index) {
-  return client.indices.deleteAlias({index: index, name: alias});
-};
 
 exports.search = function(index, type) {
   return client.search({ index: index, type: type, scroll: scroll, size: size });

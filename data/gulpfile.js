@@ -13,6 +13,8 @@ var esHelpers = require('./es-helpers')({
 var par_1_0 = require('./par_1_0')(esHelpers);
 var par_1_1 = require('./par_1_1')(esHelpers);
 
+var ALIAS_NAME = 'par';
+
 // moment.locale('fr');
 
 gulp.task('ping', function(){
@@ -27,7 +29,7 @@ gulp.task('ping', function(){
 });
 
 /*
-Tâches de reprise de données
+Tâches du mapping 1.0 (reprise de données)
 */
 
 gulp.task('delete_1_0', ['ping'], function() {
@@ -52,10 +54,27 @@ gulp.task('recover_actions_starting_2014', ['create_1_0'], function() {
   return par_1_0.recoverActionsStarting2014();
 });
 
-gulp.task('recover_1_0', ['recover_regions_1_0', 'recover_actions_before_2014', 'recover_actions_starting_2014']);
+gulp.task('create_alias_1_0', [
+  'recover_regions_1_0',
+  'recover_actions_before_2014',
+  'recover_actions_starting_2014'
+], function() {
+  return par_1_0.createAlias(ALIAS_NAME);
+});
+
+gulp.task('delete_alias_1_0', function() {
+  return par_1_0.deleteAlias(ALIAS_NAME);
+});
+
+gulp.task('recover_1_0', [
+  'recover_regions_1_0',
+  'recover_actions_before_2014',
+  'recover_actions_starting_2014',
+  'create_alias_1_0'
+]);
 
 /*
-Tâches de migration d'un index source vers un index cible
+Tâches du mapping 1.1 (migration depuis 1.0)
 */
 
 gulp.task('delete_1_1', ['ping'], function() {
@@ -66,15 +85,42 @@ gulp.task('create_1_1', ['ping', 'delete_1_1'], function() {
   return par_1_1.createIndex();
 });
 
-gulp.task('migrate_regions_1_0_to_1_1', function() {
+gulp.task('migrate_regions_1_0_to_1_1', ['create_1_1'], function() {
   return par_1_1.migrationRegions(par_1_0.scrollRegions());
 });
 
-
-
-gulp.task('from_1_0_to_1_1', ['ping', 'create_1_1', 'migrate_1_0_to_1_1', 'alias_1_0_to_1_1', 'delete_1_0'], function(cb){
-  console.info('from_1_0_to_1_1 done');
+gulp.task('migrate_axes_1_0_to_1_1', ['create_1_1'], function() {
+  return par_1_1.migrationAxes(par_1_0.scrollAxes());
 });
 
-gulp.task('default', function(){
+gulp.task('migrate_actions_1_0_to_1_1', ['create_1_1'], function() {
+  return par_1_1.migrationActions(par_1_0.scrollActions());
 });
+
+gulp.task('create_alias_1_1', [
+  'migrate_regions_1_0_to_1_1',
+  'migrate_axes_1_0_to_1_1',
+  'migrate_actions_1_0_to_1_1'
+], function() {
+  return par_1_0.deleteAlias(ALIAS_NAME)
+    .then(function() {
+      return par_1_1.createAlias(ALIAS_NAME);
+    });
+});
+
+gulp.task('delete_alias_1_1', function() {
+  return par_1_1.deleteAlias(ALIAS_NAME);
+});
+
+gulp.task('from_1_0_to_1_1', [
+  'migrate_regions_1_0_to_1_1',
+  'migrate_axes_1_0_to_1_1',
+  'migrate_actions_1_0_to_1_1',
+  'create_alias_1_1'
+]);
+
+/*
+Tâche par défaut (denière tâche majeure de manip des données)
+*/
+
+gulp.task('default', ['from_1_0_to_1_1']);

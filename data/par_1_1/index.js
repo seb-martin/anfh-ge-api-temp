@@ -8,6 +8,7 @@ var esHelpers = require('../es-helpers');
 var INDEX_1_1 = 'par_1_1';
 
 module.exports = function(esHelpers) {
+
   var docModif = function() {
     return through.obj(function(obj, enc, cb) {
       obj._index = INDEX_1_1;
@@ -17,14 +18,17 @@ module.exports = function(esHelpers) {
     });
   };
 
-  var regionsBulk = function() {
-    return esHelpers.bulker()
-      .on('end', function() {
-        console.info('Succès de la migration des régions sur l\'index', INDEX_1_1);
-      })
-      .on('error', function(err) {
-        console.error('Echec de la migration des régions sur l\'index', INDEX_1_1, err);
-      });
+  var migration = function(docsStream, docType) {
+    return docsStream
+      .pipe(docModif())
+      .pipe(esHelpers.bulker())
+        .on('end', function() {
+          console.info('Succès de la migration des documents DOCTYPE sur l\'index'.replace('DOCTYPE', docType), INDEX_1_1);
+        })
+        .on('error', function(err) {
+          console.info('Echec de la migration des documents DOCTYPE sur l\'index'.replace('DOCTYPE', docType), INDEX_1_1);
+        });
+
   };
 
   return {
@@ -53,9 +57,35 @@ module.exports = function(esHelpers) {
     },
 
     migrationRegions: function(regionsStream) {
-      return regionsStream
-        .pipe(docModif())
-        .pipe(regionsBulk());
+      return migration(regionsStream, 'regions');
+    },
+
+    migrationAxes: function(regionsStream) {
+      return migration(regionsStream, 'axes');
+    },
+
+    migrationActions: function(regionsStream) {
+      return migration(regionsStream, 'actions');
+    },
+
+    createAlias: function(alias) {
+      return esHelpers.createAlias({index: INDEX_1_1, name: alias})
+        .then(function(response) {
+          console.info('Succès de création de l\'alias', alias, 'vers l\'index', INDEX_1_1);
+        }).catch(function(err) {
+          console.error('Echec de création de l\'alias', alias, 'vers l\'index', INDEX_1_0, JSON.stringify(mapping), err);
+        });
+    },
+
+    deleteAlias: function(alias) {
+      return esHelpers.deleteAlias({index: INDEX_1_1, name: alias})
+        .then(function(response) {
+          console.info('Succès de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_1);
+        }).catch(function(err) {
+          console.error('Echec de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_1, JSON.stringify(mapping), err);
+        });
     }
+
   }
+
 };

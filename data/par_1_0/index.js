@@ -126,7 +126,43 @@ module.exports = function(esHelpers) {
         type: 'regions',
         scroll: '5s',
         size: 5
-      }, ['_index', '_type', '_id'], {objectMode: true});
+      });
+    },
+
+    scrollAxes: function() {
+      return esHelpers.scroller({
+        index: INDEX_1_0,
+        type: 'axes',
+        scroll: '5s',
+        size: 5
+      });
+    },
+
+    scrollActions: function() {
+      return esHelpers.scroller({
+        index: INDEX_1_0,
+        type: 'actions',
+        scroll: '5s',
+        size: 5
+      });
+    },
+
+    createAlias: function(alias) {
+      return esHelpers.createAlias({index: INDEX_1_0, name: alias})
+        .then(function(response) {
+          console.info('Succès de création de l\'alias', alias, 'vers l\'index', INDEX_1_0);
+        }).catch(function(err) {
+          console.error('Echec de création de l\'alias', alias, 'vers l\'index', INDEX_1_0, JSON.stringify(mapping), err);
+        });
+    },
+
+    deleteAlias: function(alias) {
+      return esHelpers.deleteAlias({index: INDEX_1_0, name: alias})
+        .then(function(response) {
+          console.info('Succès de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_0);
+        }).catch(function(err) {
+          console.error('Echec de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_0, JSON.stringify(mapping), err);
+        });
     }
 
   };
