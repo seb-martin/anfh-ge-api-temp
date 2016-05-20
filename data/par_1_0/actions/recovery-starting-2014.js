@@ -17,7 +17,6 @@ var recoveryHelpers = require('./recovery-helpers.js');
 
 var parser = new xml2js.Parser();
 
-
 module.exports = function(index) {
   return through.obj(function(file, enc, cb) {
     var self = this;
@@ -491,16 +490,20 @@ module.exports = function(index) {
       .forEach(function(target) {
 
         if (target.axe) {
-          bulkArray.push({index: {_index: index, _type: 'axes', _id: target.axe_id}});
-          bulkArray.push(target.axe);
+          target.axe._index = index;
+          target.axe._type = 'axes';
+          target.axe._id = target.axe_id;
+
+          self.push(target.axe);
         }
 
-        bulkArray.push({index: {_index: index, _type: 'actions', _id: target.action_id}});
-        bulkArray.push(target.action);
+        target.action._index = index;
+        target.action._type = 'actions';
+        target.action._id = target.action_id;
 
+        self.push(target.action);
       });
 
-      self.push(bulkArray);
       cb();
     });
   });

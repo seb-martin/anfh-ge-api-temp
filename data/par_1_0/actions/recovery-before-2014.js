@@ -291,12 +291,13 @@ module.exports = function(index) {
       })
       .forEach(function(target) {
 
-        bulkArray.push({index: {_index: index, _type: 'actions', _id: target.action_id}});
-        bulkArray.push(target.action);
-
+        target.action._index = index;
+        target.action._type = 'actions';
+        target.action._id = target.action_id;
+        
+        self.push(target.action);
       });
 
-      self.push(bulkArray);
       cb();
     });
   });

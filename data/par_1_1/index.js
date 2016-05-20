@@ -8,34 +8,24 @@ var esHelpers = require('../es-helpers');
 var INDEX_1_1 = 'par_1_1';
 
 module.exports = function(esHelpers) {
-
-  gulp.task('migrate_1_0_to_1_1', function(cb) {
-    var prevIndex = 'par_1_0';
-    var nextIndex = 'par_1_1';
-
-    esHelpers.searchNbulk(prevIndex, nextIndex, 'regions').then(function() {
-      return searchNbulk(prevIndex, nextIndex, 'axes')
-    }).then(function() {
-      return searchNbulk(prevIndex, nextIndex, 'actions')
-    }).then(function() {
+  var docModif = function() {
+    return through.obj(function(obj, enc, cb) {
+      obj._index = INDEX_1_1;
+      obj.derniereModif = moment().toISOString();;
+      this.push(obj);
       cb();
-    }).catch(function(err) {
-      console.error(err);
-      cb(err);
     });
+  };
 
-  });
-
-  gulp.task('alias_1_0_to_1_1', function(cb) {
-    esHelpers.deleteAlias('par_0_1').then(function() {
-      return createAlias('par_1_1');
-    }).then(function() {
-      cb();
-    }).catch(function(err) {
-      console.error(err);
-      cb(err);
-    });
-  });
+  var regionsBulk = function() {
+    return esHelpers.bulker()
+      .on('end', function() {
+        console.info('Succès de la migration des régions sur l\'index', INDEX_1_1);
+      })
+      .on('error', function(err) {
+        console.error('Echec de la migration des régions sur l\'index', INDEX_1_1, err);
+      });
+  };
 
   return {
     deleteIndex: function() {
@@ -62,24 +52,10 @@ module.exports = function(esHelpers) {
       });
     },
 
-    addDerniereModif: function() {
-      return through.obj(function(obj, enc, cb) {
-        var ts = moment().toISOString();
-        obj.derniereModif = ts;
-        this.push(obj);
-        cb();
-      });
-    },
-    regionsBulk: function() {
-      return esHelpers.bulker({
-        action: function(region) {
-          return {'index': {'_index': INDEX_1_1, '_type': 'regions', '_id': region.code}}
-        }
-      }).on('end', function() {
-        console.info('Succès de la migration des régions sur l\'index', INDEX_1_1);
-      })
-      .on('error', function(err) {
-        console.error('Echec de la migration des régions sur l\'index', INDEX_1_1, err);
-      });
-    }  }
+    migrationRegions: function(regionsStream) {
+      return regionsStream
+        .pipe(docModif())
+        .pipe(regionsBulk());
+    }
+  }
 };

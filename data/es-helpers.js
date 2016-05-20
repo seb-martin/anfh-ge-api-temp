@@ -73,13 +73,16 @@ module.exports = function(configOptions) {
 
   var bulker = function(config) {
     var buffer = [];
-    var bufferSize = config.size ? config.size * 2 : 10;
-    var bulkActionFn = config.action;
+    var bufferSize = config && config.size ? config.size * 2 : 10;
 
     return through.obj(
       function(obj, enc, cb) {
         var self = this;
-        buffer.push(bulkActionFn(obj));
+
+        buffer.push({'index': {'_index': obj._index, '_type': obj._type, '_id': obj._id}});
+        delete obj._index;
+        delete obj._type;
+        delete obj._id;
         buffer.push(obj);
 
         if (buffer.length === bufferSize) {

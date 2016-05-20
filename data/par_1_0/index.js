@@ -24,6 +24,9 @@ module.exports = function(esHelpers) {
     readable._read = function(sizeIsIgnored) {
       while ( this._regions.length ) {
         var region = this._regions.shift();
+        region._index = INDEX_1_0;
+        region._type = 'regions';
+        region._id = region.code;
         var more = this.push(region);
         this.emit('region', region);
         // if (!more) {
@@ -40,25 +43,20 @@ module.exports = function(esHelpers) {
   };
 
   var regionsBulk = function() {
+    return esHelpers.bulker();
+  };
+
+  var actionsBulk = function() {
     return esHelpers.bulker({
-      action: function(region) {
-        return {'index': {'_index': INDEX_1_0, '_type': 'regions', '_id': region.code}}
+      action: function(action) {
+        var _id = action._id;
+        delete action._id;
+
+        return {'index': {'_index': INDEX_1_0, '_type': 'actions', '_id': _id}};
       }
     });
-  }
+  };
 
-
-  gulp.task('recover_actions_before_2014', ['create_1_0'], function() {
-    return gulp.src('par_1_0/actions/offres_formations_avant_2014.xml')
-      .pipe(actionsBefore2014())
-      .pipe(esHelpers.bulk());
-  });
-
-  gulp.task('recover_actions_starting_2014', ['create_1_0'], function() {
-    return gulp.src('par_1_0/actions/offres_formations_apartirde_2014.xml')
-      .pipe(actionsStarting2014())
-      .pipe(esHelpers.bulk());
-  });
 
   return {
     deleteIndex: function() {
@@ -97,13 +95,38 @@ module.exports = function(esHelpers) {
 
     },
 
+    recoverActionsBefore2014: function() {
+      return gulp.src('par_1_0/actions/offres_formations_avant_2014.xml')
+        .pipe(actionsBefore2014(INDEX_1_0))
+        .pipe(actionsBulk())
+        .on('end', function() {
+          console.info('Succès de reprise des actions < 2014 sur l\'index', INDEX_1_0);
+        })
+        .on('error', function(err) {
+          console.error('Echec de reprise des actions < 2014 sur l\'index', INDEX_1_0, err);
+        });
+
+    },
+
+    recoverActionsStarting2014: function() {
+      return gulp.src('par_1_0/actions/offres_formations_apartirde_2014.xml')
+        .pipe(actionsStarting2014(INDEX_1_0))
+        .pipe(actionsBulk())
+        .on('end', function() {
+          console.info('Succès de reprise des actions >= 2014 sur l\'index', INDEX_1_0);
+        })
+        .on('error', function(err) {
+          console.error('Echec de reprise des actions >= 2014 sur l\'index', INDEX_1_0, err);
+        });
+    },
+
     scrollRegions: function() {
       return esHelpers.scroller({
         index: INDEX_1_0,
         type: 'regions',
         scroll: '5s',
         size: 5
-      }, undefined, {objectMode: true});
+      }, ['_index', '_type', '_id'], {objectMode: true});
     }
 
   };
