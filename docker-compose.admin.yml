@@ -3,3 +3,9 @@ admin:
   build: ./admin
   links:
     - db:db
+
+# Utilitaires de gestion des données (reprises, migrations)
+data:
+  build: ./data
+  links:
+    - db:db

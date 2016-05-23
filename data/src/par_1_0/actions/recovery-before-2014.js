@@ -1,38 +1,31 @@
-(function() {
-  // File System : Permet de faire des lectures/écritures sur le système de fichiers
-  var fs = require('fs');
-  var path = require('path');
-  // Simple XML to JavaScript object converter
-  var xml2js = require('xml2js');
-  // Parse, validate, manipulate, and display dates in JavaScript.
-  var moment = require('moment');
-  // An HTML to Markdown converter written in JavaScript.
-  var toMarkdown = require('to-markdown');
-  var toMarkdownOptions = require('./to-markdown-options.js');
+var through = require('through2');
+// Simple XML to JavaScript object converter
+var xml2js = require('xml2js');
+// Parse, validate, manipulate, and display dates in JavaScript.
+var moment = require('moment');
+// An HTML to Markdown converter written in JavaScript.
+var toMarkdown = require('to-markdown');
 
-  // Dictionnaire associant au nom d'une région son code ANFH
-  var regionCodes = require('./regions.js');
+var esHelpers = require('../../es-helpers.js');
 
-  var recoveryHelpers = require('./recovery-helpers.js');
+var toMarkdownOptions = require('./to-markdown-options.js');
 
-  var parser = new xml2js.Parser();
+// Dictionnaire associant au nom d'une région son code ANFH
+var regionCodes = require('./regions.js');
 
-  var inputFile = path.join(__dirname, 'export-supersoniks', 'offres_formations_avant_2014.xml');
-  var outpoutDirectory = path.join(__dirname, 'es-bulk');
-  var outpoutFile = path.join(outpoutDirectory, 'actions-avant-2014.json');
+var recoveryHelpers = require('./recovery-helpers.js');
 
-  // Crée le répertoire de sortie, s'il n'existe pas
-  recoveryHelpers.makedir(outpoutDirectory);
+var parser = new xml2js.Parser();
 
-  fs.readFile(inputFile, function(err, data) {
-    if (err) {
-      throw err;
-    }
-
-    parser.parseString(data, function (err, result) {
+module.exports = function(index) {
+  return through.obj(function(file, enc, cb) {
+    var self = this;
+    parser.parseString(file.contents, function (err, result) {
       if (err) {
         throw err;
       }
+
+      var bulkArray = [];
 
       // Itère au travers des actions de formation
       var bulksData = result.node_export.node.map(function(xaction){
@@ -296,31 +289,17 @@
         }
         return target.action.exercice;
       })
-      .map(function(target) {
+      .forEach(function(target) {
 
-        var bulkArray = [];
-        // if (target.axe) {
-        //   bulkArray.push(JSON.stringify({index: {_index: 'par', _type: 'axes', _id: target.axe_id}}));
-        //   bulkArray.push(JSON.stringify(target.axe));
-        // }
-
-        bulkArray.push(JSON.stringify({index: {_index: 'par', _type: 'actions', _id: target.action_id}}));
-        bulkArray.push(JSON.stringify(target.action));
-
-        return bulkArray;
-      }).map(function(bulkArray) {
-        return bulkArray.join('\n');
-      }).join('\n');
-
-
-      fs.writeFile(outpoutFile, bulksData, function(err) {
-        if (err) {
-          throw err;
-        }
+        target.action._index = index;
+        target.action._type = 'actions';
+        target.action._id = target.action_id;
+        
+        self.push(target.action);
       });
 
+      cb();
     });
   });
 
-
-})();
+};

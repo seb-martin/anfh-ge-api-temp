@@ -1,0 +1,106 @@
+[
+  {
+    "code": "ALS",
+    "denomination": "Alsace"
+  },
+  {
+    "code": "BRE",
+    "denomination": "Bretagne"
+  },
+  {
+    "code": "DMA",
+    "denomination": "Martinique"
+  },
+  {
+    "code": "IDF",
+    "denomination": "Ile-De-France"
+  },
+  {
+    "code": "NOR",
+    "denomination": "Nord-Pas de Calais"
+  },
+  {
+    "code": "POI",
+    "denomination": "Poitou-Charentes"
+  },
+  {
+    "code": "DGY",
+    "denomination": "Guyane"
+  },
+  {
+    "code": "HAU",
+    "denomination": "Haute-Normandie"
+  },
+  {
+    "code": "LIM",
+    "denomination": "Limousin"
+  },
+  {
+    "code": "LOR",
+    "denomination": "Lorraine"
+  },
+  {
+    "code": "REU",
+    "denomination": "Océan Indien"
+  },
+  {
+    "code": "RHO",
+    "denomination": "Rhône"
+  },
+  {
+    "code": "ALP",
+    "denomination": "Alpes"
+  },
+  {
+    "code": "AQU",
+    "denomination": "Aquitaine"
+  },
+  {
+    "code": "BAS",
+    "denomination": "Basse-Normandie"
+  },
+  {
+    "code": "CEN",
+    "denomination": "Centre"
+  },
+  {
+    "code": "CHA",
+    "denomination": "Champagne-Ardenne"
+  },
+  {
+    "code": "COR",
+    "denomination": "Corse"
+  },
+  {
+    "code": "FRA",
+    "denomination": "Franche-Comté"
+  },
+  {
+    "code": "MID",
+    "denomination": "Midi-Pyrénées"
+  },
+  {
+    "code": "PAY",
+    "denomination": "Pays de la Loire"
+  },
+  {
+    "code": "PRO",
+    "denomination": "Provence-Alpes-Côte-d'Azur"
+  },
+  {
+    "code": "AUV",
+    "denomination": "Auvergne"
+  },
+  {
+    "code": "BGN",
+    "denomination": "Bourgogne"
+  },
+  {
+    "code": "LAN",
+    "denomination": "Languedoc-Rousillon"
+  },
+  {
+    "code": "PIC",
+    "denomination": "Picardie"
+  }
+]
