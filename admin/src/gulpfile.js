@@ -2,6 +2,7 @@
   'use strict';
 
   var REPO_NAME = 'par_repo';
+  var ALIAS_NAME = 'par';
 
   var gulp = require('gulp');
   var readline = require('readline');
@@ -182,7 +183,7 @@
         snapshot: snapshot,
         waitForCompletion: true,
         body: {
-          indices: ['par'],
+          indices: [ALIAS_NAME],
           include_global_state: false
         }
       }).then(function(body) {
