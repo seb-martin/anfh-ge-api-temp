@@ -44,7 +44,7 @@ Tirer les images Docker "de base" et construire les images du système.
 docker-compose build
 ```
 
-## Configuration par défaut
+## Configuration par défaut (Développement)
 
 ### Ports d'écoute
 
@@ -129,34 +129,34 @@ docker-compose up -d
 
 ## Peuplement
 
-Dans cette section, `<index name>` fait référence à un nom d'index (ie de base de données).
-Le choix de ce nom est arbitraire (`par_1`, `par_v1`, ...) mais ne doit pas être `par`.
+### Modèle de document 1.0 (Reprise de données)
 
-`par` est utilisé comme nom d'alias pour l'index qui va être créé.
-L'utilisation d'un alias laisse l'opportunité de réindexer les données
-sans mettre à jour les applications.
-Voir [Reindexing Your Data](https://www.elastic.co/guide/en/elasticsearch/guide/current/reindex.html)
-et [Index Aliases and Zero Downtime](https://www.elastic.co/guide/en/elasticsearch/guide/current/index-aliases.html) sur ce sujet.
-
-Supprimer les données existantes.
-
-Créer le mapping.
+- Crée l'index `par_1_0` de mapping 1.0,
+- réalise la reprise des données,
+- crée l'alias `par` vers l'index `par_1_0`.
 
 ```sh
-curl -X PUT http://localhost:9200/<index name>?pretty -d @db/init/par/par-mappings.json
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml data recover_1_0
 ```
 
-Peupler les régions de formation. Utilise l'alias `par`.
+### Modèle de document 1.1 (Migration depuis 1.0)
+
+- Crée l'index `par_1_1` de mapping 1.1,
+- migre les données de l'index `par_1_0` vers l'index `par_1_1`,
+- supprime l'alias `par` vers l'index `par_1_0`,
+- crée l'alias `par` vers l'index `par_1_1`.
 
 ```sh
-curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@db/init/par/regions.json"
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml data from_1_0_to_1_1
 ```
 
-Peupler les actions de formation. Utilise l'alias `par`.
+Supprime l'index `par_1_0`.
+
 
 ```sh
-curl -s -XPOST http://localhost:9200/par/_bulk --data-binary "@recovery/es-bulk/actions.json"
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml data delete_1_0
 ```
+
 
 ## Sauvegarde et restauration
 
