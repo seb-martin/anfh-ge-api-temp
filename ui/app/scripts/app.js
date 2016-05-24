@@ -134,11 +134,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.createAxe = function(evt) {
+    evt.detail.axe.derniereModif = moment().toISOString();
     app.$.axesData.creer(evt.detail.axe);
     app.showAxes(evt);
   };
 
   app.updateAxe = function(evt) {
+    evt.detail.axe.derniereModif = moment().toISOString();
     app.$.axesData.modifier(evt.detail.axe);
     app.showAxes(evt);
   };
@@ -184,17 +186,20 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.createAction = function(evt) {
+    evt.detail.action.derniereModif = moment().toISOString();
     app.$.actionsData.creer(evt.detail.action);
     app.showActions(evt);
   };
 
   app.updateAction = function(evt) {
+    evt.detail.action.derniereModif = moment().toISOString();
     app.$.actionsData.modifier(evt.detail.action);
     app.showActions(evt);
   };
 
   app.duplicateAction = function(evt) {
     app._action = evt.detail.action;
+    app._action.derniereModif = moment().toISOString();
     app.$.actionsData.creer(app._action);
 
     // On ne change de vue que si la région ou l'exercice a changé
