@@ -34,6 +34,7 @@
     </template>
 
     <template is="dom-if" if="{{!edition}}">
+      <!-- <paper-icon-item id="consultationItem" active="{{edition}}" toggles> -->
       <paper-icon-item id="consultationItem" active="{{edition}}" toggles>
         <iron-icon icon="icons:date-range" item-icon></iron-icon>
 
@@ -159,7 +160,9 @@
           // afin de pouvoir annuler les modifications
           this._dirty = clone(this.value);
         } else {
-          this._dirty = null;
+          // Mettre this._dirty à null provoque l'issue #89
+          // cf. https://github.com/seb-martin/anfh-ge-api-temp/issues/89
+          // this._dirty = null;
         }
 
       },
