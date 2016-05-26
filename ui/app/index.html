@@ -70,7 +70,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <par-regions-data regions="{{_regions}}" loading="{{_regionsLoading}}"></par-regions-data>
     <par-exercices-data exercices="{{_exercices}}"></par-exercices-data>
-    <par-axes-data id="axesData" code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}" on-actions-updated="refreshActions"></par-axes-data>
+    <par-axes-data id="axesData"
+                    code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}"
+                    on-actions-updated="refreshActions"></par-axes-data>
     <par-actions-data id="actionsData" code-region="[[_region.code]]" exercice="[[_exercice]]" actions="{{_actions}}" loading="{{_actionsLoading}}"></par-actions-data>
 
     <paper-drawer-panel id="paperDrawerPanel">

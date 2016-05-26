@@ -129,20 +129,41 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.deleteAxe = function(evt) {
-    app.$.axesData.supprimer(evt.detail.axe);
-    app.showAxes(evt);
+    app.$.axesData.supprimer(evt.detail.axe)
+      .then(function() {
+        app.$.toast.text = 'Axe supprimé';
+        app.$.toast.open();
+      })
+      .then(function() {
+        app.showAxes(evt);
+      });
   };
 
   app.createAxe = function(evt) {
-    evt.detail.axe.derniereModif = moment().toISOString();
-    app.$.axesData.creer(evt.detail.axe);
-    app.showAxes(evt);
+    app.$.axesData.creer(evt.detail.axe)
+      .then(function(axe) {
+        app.$.toast.text = 'Axe créé';
+        app.$.toast.open();
+        return axe;
+      })
+      .then(function(axe) {
+        evt.detail.axe = axe;
+        app.editAxe(evt);
+      });
   };
 
   app.updateAxe = function(evt) {
-    evt.detail.axe.derniereModif = moment().toISOString();
-    app.$.axesData.modifier(evt.detail.axe);
-    app.showAxes(evt);
+    app.$.axesData.modifier(evt.detail.axe)
+      .then(function(axe) {
+        app.$.toast.text = 'Axe mis à jour';
+        app.$.toast.open();
+        return axe;
+      })
+      .then(function(axe) {
+        evt.detail.axe = axe;
+        app._axe = axe;
+      });
+
   };
 
   app.refreshActions = function() {
