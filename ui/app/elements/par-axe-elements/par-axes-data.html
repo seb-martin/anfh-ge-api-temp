@@ -189,9 +189,13 @@
           }
 
           var self = this;
-          return resp.hits.hits.map(function(resp) {
-            return self._mapHit(resp);
-          });
+          if (!!resp) {
+            return resp.hits.hits.map(function(resp) {
+              return self._mapHit(resp);
+            });
+          } else {
+            return [];
+          }
         },
 
         _mapHit: function(hit) {

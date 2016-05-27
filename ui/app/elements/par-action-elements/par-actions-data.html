@@ -7,15 +7,13 @@
 
     <iron-ajax
       id="actionsData"
-      auto
       method="POST"
       url="{{_searchUrl}}"
       contentType="application/json"
-      body="{{_bodyString(codeRegion, exercice, from, size)}}"
+      body="{{searchBody(codeRegion, exercice, from, size)}}"
       debounceDuration="300"
       handleAs="json"
       on-loading-changed="_handleLoading"
-      on-response="_handleResponse"
       ></iron-ajax>
 
     <iron-ajax
@@ -26,7 +24,6 @@
       contentType="application/json"
       handleAs="json"
       on-loading-changed="_handleLoading"
-      on-response="_handleCreateResponse"
       ></iron-ajax>
 
     <iron-ajax
@@ -36,7 +33,6 @@
       contentType="application/json"
       handleAs="json"
       on-loading-changed="_handleLoading"
-      on-response="_handleUpdateResponse"
       ></iron-ajax>
 
     <iron-ajax
@@ -46,7 +42,6 @@
       contentType="application/json"
       handleAs="json"
       on-loading-changed="_handleLoading"
-      on-response="_handleDeleteResponse"
       ></iron-ajax>
 
   </template>
@@ -95,12 +90,20 @@
           }
         },
 
+        observers: [
+          '_refresh(codeRegion, exercice, from, size)'
+        ],
+
         ready: function() {
           this._baseUrl = this.$.globals.esHost + '/par/actions';
           this._searchUrl = this._baseUrl + '/_search';
         },
 
-        _bodyString: function(codeRegion, exercice, from, size) {
+        _handleLoading: function(evt) {
+          this._setLoading(evt.detail.value);
+        },
+
+        searchBody: function(codeRegion, exercice, from, size) {
           var body = {
             from: from || 0,
             size: size || 100,
@@ -131,23 +134,31 @@
           return JSON.stringify(body);
         },
 
-        _handleLoading: function(evt) {
-          this._setLoading(evt.detail.value);
-        },
+        _refresh: function(codeRegion, exercice) {
+          if (codeRegion && exercice) {
 
-        _handleResponse: function(evt) {
-          if (!!evt.detail.response) {
-            this._setActions(this._mapSearchResp(evt.detail.response));
-          } else {
-            this._setActions([]);
+            this.refresh();
           }
         },
 
         refresh: function() {
-          this.$.actionsData.generateRequest();
+          var self = this;
+
+          return this.$.actionsData.generateRequest().completes
+            .then(function(ironRequest) {
+              var response = ironRequest.response;
+
+              var actions = self._mapSearchResp(response);
+              self._setActions(actions);
+              return actions;
+            });
         },
 
         _mapSearchResp: function(resp) {
+          if (!resp) {
+            return [];
+          }
+
           var self = this;
 
           if (!!resp) {
@@ -177,14 +188,26 @@
             throw 'L\'argument action est requis';
           }
 
+          var self = this;
+          var actionId;
+
+          action.derniereModif = moment().toISOString();
+
           this.$.actionsCreate.body = JSON.stringify(action);
-          this.$.actionsCreate.generateRequest();
+          return this.$.actionsCreate.generateRequest().completes
+            .then(function(ironRequest) {
+              var response = ironRequest.response;
+              actionId = response._id;
+              // Une action a été créée, on rafraîchit la liste des actions
+              return self.refresh();
+            }).then(function(actions) {
+              // Retourne a nouvelle action créée
+              var action = actions.reduce(function(prev, curr) {
+                return !prev && curr._id === actionId ? curr : prev;
+              }, null);
+              return action;
+            });
 
-        },
-
-        _handleCreateResponse: function() {
-          // Un axe a été créé, on rafraîchit la liste des axes
-          this.refresh();
         },
 
         _computeUpdateParams: function() {
@@ -196,20 +219,29 @@
             throw 'L\'argument action est requis';
           }
 
+          var self = this;
+
           // L'id est retiré du document avant sa mise à jour
           // L'id est conservé pour réaliser l'indexage du document
-          var _id = action._id;
+          var actionId = action._id;
           delete action._id;
 
-          this.$.actionsUpdate.url = this._baseUrl + '/' + _id;
+          action.derniereModif = moment().toISOString();
+
+          this.$.actionsUpdate.url = this._baseUrl + '/' + actionId;
           this.$.actionsUpdate.body = JSON.stringify(action);
-          this.$.actionsUpdate.generateRequest();
 
-        },
+          return this.$.actionsUpdate.generateRequest().completes
+            .then(function() {
+              // Une action a été modifiée, on rafraîchit la liste des actions
+              return self.refresh();
+            }).then(function(axes) {
+              // Retourne l'action modfiée
+              return axes.reduce(function(prev, curr) {
+                return !prev && curr._id === actionId ? curr : prev;
+              }, null);
+            });
 
-        _handleUpdateResponse: function() {
-          // Une action a été modifiée, on rafraîchit la liste des actions
-          this.refresh();
         },
 
         _computeDeleteParams: function() {
@@ -221,13 +253,14 @@
             throw 'L\'argument action est requis';
           }
 
-          this.$.actionsDelete.url = this._baseUrl + '/' + action._id;
-          this.$.actionsDelete.generateRequest();
-        },
+          var self = this;
 
-        _handleDeleteResponse: function() {
-          // Une action a été supprimée, on rafraîchit la liste des actions
-          this.refresh();
+          this.$.actionsDelete.url = this._baseUrl + '/' + action._id;
+          return this.$.actionsDelete.generateRequest().completes
+            .then(function() {
+              // Une action a été supprimée, on rafraîchit la liste des actions
+              return self.refresh();
+            });
         }
 
       });

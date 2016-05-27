@@ -189,7 +189,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       nature: 'R',
       publics: [],
       modules: [],
-      groupes: []
+      planifications: []
     };
 
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/actions/nouveau');
@@ -202,50 +202,66 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.deleteAction = function(evt) {
-    app.$.actionsData.supprimer(evt.detail.action);
-    app.showActions(evt);
+    app.$.actionsData.supprimer(evt.detail.action)
+      .then(function() {
+        app.$.toast.text = 'Action supprimée';
+        app.$.toast.open();
+      })
+      .then(function() {
+        app.showActions(evt);
+      });
   };
 
   app.createAction = function(evt) {
-    evt.detail.action.derniereModif = moment().toISOString();
-    app.$.actionsData.creer(evt.detail.action);
-    app.showActions(evt);
+    app.$.actionsData.creer(evt.detail.action)
+      .then(function(action) {
+        app.$.toast.text = 'Action créée';
+        app.$.toast.open();
+        return action;
+      })
+      .then(function(action) {
+        evt.detail.action = action;
+        app.editAction(evt);
+      });
   };
 
   app.updateAction = function(evt) {
-    evt.detail.action.derniereModif = moment().toISOString();
-    app.$.actionsData.modifier(evt.detail.action);
-    app.showActions(evt);
+    app.$.actionsData.modifier(evt.detail.action)
+      .then(function(action) {
+        app.$.toast.text = 'Action mise à jour';
+        app.$.toast.open();
+        return action;
+      })
+      .then(function(action) {
+        evt.detail.action = action;
+        app._action = action;
+      });
   };
 
   app.duplicateAction = function(evt) {
-    app._action = evt.detail.action;
-    app._action.derniereModif = moment().toISOString();
-    app.$.actionsData.creer(app._action);
-
-    // On ne change de vue que si la région ou l'exercice a changé
-    if (
-      app._region.code !== app._action.region ||
-      app._exercice !== app._action.exercice
-    ) {
-      // On change de région, si nécessaire
-      if (app._region.code !== app._action.region) {
-        for (var i = 0 ; i < app._regions.length ; i++) {
-          if (app._regions[i].code === app._action.region) {
-            app._region = app._regions[i];
-            break;
-          }
-        }
-      }
-
-      // On change d'exercice, si nécessaire
-      if (app._exercice !== app._action.exercice) {
-        app._exercice = app._action.exercice;
-      }
-
-      // On change de vue
-      this.showActions(evt);
+    // On change de région, si nécessaire
+    if (app._region.code !== evt.detail.action.region) {
+      app._region = app._regions.reduce(function(prev, current) {
+        return current.code === evt.detail.action.region ? current : prev;
+      }, null);
     }
+
+    // On change d'exercice, si nécessaire
+    if (app._exercice !== evt.detail.action.exercice) {
+      app._exercice = evt.detail.action.exercice;
+    }
+
+    app.$.actionsData.creer(evt.detail.action)
+      .then(function(action) {
+        app.$.toast.text = 'Action dupliquée';
+        app.$.toast.open();
+        return action;
+      })
+      .then(function(action) {
+        // On change de vue
+        evt.detail.action = action;
+        app.showActions(evt);
+      });
 
   };
 
