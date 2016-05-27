@@ -136,7 +136,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       })
       .then(function() {
         app.showAxes(evt);
-      });
+      }).catch(app.catchError);
   };
 
   app.createAxe = function(evt) {
@@ -149,7 +149,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .then(function(axe) {
         evt.detail.axe = axe;
         app.editAxe(evt);
-      });
+      }).catch(app.catchError);
   };
 
   app.updateAxe = function(evt) {
@@ -162,12 +162,12 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .then(function(axe) {
         evt.detail.axe = axe;
         app._axe = axe;
-      });
+      }).catch(app.catchError);
 
   };
 
   app.refreshActions = function() {
-    app.$.actionsData.refresh();
+    app.$.actionsData.refresh().catch(app.catchError);
   };
 
   app.showActions = function(evt) {
@@ -209,7 +209,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       })
       .then(function() {
         app.showActions(evt);
-      });
+      }).catch(app.catchError);
   };
 
   app.createAction = function(evt) {
@@ -222,7 +222,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .then(function(action) {
         evt.detail.action = action;
         app.editAction(evt);
-      });
+      }).catch(app.catchError);
   };
 
   app.updateAction = function(evt) {
@@ -235,7 +235,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       .then(function(action) {
         evt.detail.action = action;
         app._action = action;
-      });
+      }).catch(app.catchError);
   };
 
   app.duplicateAction = function(evt) {
@@ -261,8 +261,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
         // On change de vue
         evt.detail.action = action;
         app.showActions(evt);
-      });
+      }).catch(app.catchError);
 
+  };
+
+  app.catchError = function(err) {
+    app.$.toastError.text = JSON.stringify(err);
+    app.$.toastError.open();
   };
 
 })(document);

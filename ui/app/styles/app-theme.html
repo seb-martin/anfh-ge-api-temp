@@ -23,7 +23,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
   :root {
 /*
-    // ON UTILISE paper-style ET SON THEME PAR DEFAUT 
+    // ON UTILISE paper-style ET SON THEME PAR DEFAUT
     // https://github.com/PolymerElements/paper-styles/blob/master/default-theme.html
 
     --dark-primary-color: #303F9F;
@@ -133,9 +133,13 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     height: 900px;
   }
 
-  #toast .toast-hide-button {
+  .toast-hide-button {
     color: #eeff41;
     margin: 10px;
+  }
+
+  #toastError {
+    --paper-toast-color: var(--error-color);
   }
 
   /* Breakpoints */
