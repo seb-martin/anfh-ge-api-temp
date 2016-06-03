@@ -136,7 +136,7 @@ docker-compose up -d
 - crée l'alias `par` vers l'index `par_1_0`.
 
 ```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml data recover_1_0
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run data recover_1_0
 ```
 
 ### Modèle de document 1.1 (Migration depuis 1.0)
@@ -147,14 +147,14 @@ docker-compose -f docker-compose.yml -f docker-compose.admin.yml data recover_1_
 - crée l'alias `par` vers l'index `par_1_1`.
 
 ```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml data from_1_0_to_1_1
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run data from_1_0_to_1_1
 ```
 
 Supprime l'index `par_1_0`.
 
 
 ```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml data delete_1_0
+docker-compose -f docker-compose.yml -f docker-compose.admin.yml run data delete_1_0
 ```
 
 
