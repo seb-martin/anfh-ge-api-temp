@@ -105,118 +105,14 @@ docker-compose stop
 ```
 
 
-## Mise à jour
+## Mise à jour et peuplement
 
-Récupérer les dernières modifications.
-
-```sh
-cd anfh-ge-api-temp
-git pull
-```
-
-Reconstruire les images `Docker` du projet.
-
-```sh
-docker-compose build
-```
-
-Détruire et exécuter les nouveaux containers du système.
-
-```sh
-docker-compose down
-docker-compose up -d
-```
-
-## Peuplement
-
-### Modèle de document 1.0 (Reprise de données)
-
-- Crée l'index `par_1_0` de mapping 1.0,
-- réalise la reprise des données,
-- crée l'alias `par` vers l'index `par_1_0`.
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run data recover_1_0
-```
-
-### Modèle de document 1.1 (Migration depuis 1.0)
-
-- Crée l'index `par_1_1` de mapping 1.1,
-- migre les données de l'index `par_1_0` vers l'index `par_1_1`,
-- supprime l'alias `par` vers l'index `par_1_0`,
-- crée l'alias `par` vers l'index `par_1_1`.
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run data from_1_0_to_1_1
-```
-
-Supprime l'index `par_1_0`.
-
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run data delete_1_0
-```
+cf. [UPGRADE.md](UPGRADE.md)
 
 
 ## Sauvegarde et restauration
 
-Lister les commandes de sauvegarde et restauration.
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin
-```
-
-### Initialisation du référentiel des sauvegardes
-
-Initialiser le référentiel de sauvegarde `par_repo`.
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-init
-```
-
-### Instantanés (*Snapshots*)
-
-Créer un instantané.
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-snapshot --snapshot nom_snapshot
-```
-
-Lister les instantanés
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-list
-```
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-list --filter nom_*
-```
-
-Restaurer un instantané.
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-restore --snapshot nom_snapshot
-```
-
-Supprimer un instantané.
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-delete --snapshot nom_snapshot
-```
-
-### Destruction du référentiel des sauvegardes
-
-> Attention, cette opération détruira le  référentiel et tous les instantanés qu'il contient.
-
-Détruire le référentiel `par_repo`.
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-detroy
-```
-
-```sh
-docker-compose -f docker-compose.yml -f docker-compose.admin.yml run admin backup-detroy --force
-```
+cf. [BACKUP.md](BACKUP.md)
 
 # Machine Virtuelle
 
