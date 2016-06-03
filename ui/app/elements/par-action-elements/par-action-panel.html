@@ -118,7 +118,7 @@
             </paper-material>
 
             <paper-material elevation="1">
-              <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{_dirty.intitule}}"></paper-input>
+              <paper-input name="intitule" label="Intitulé de l'action" required char-counter maxlength="150" auto-validate value="{{_dirty.intitule}}"></paper-input>
             </paper-material>
 
             <paper-material elevation="1">
@@ -130,11 +130,11 @@
             </paper-material>
 
             <paper-material elevation="1">
-              <par-typologie-select label="Typologie" value="{{_dirty.typologie}}"></par-typologie-select>
+              <par-typologie-select label="DPC ou Typologie FPTLV" value="{{_dirty.typologie}}"></par-typologie-select>
             </paper-material>
 
             <paper-material elevation="1">
-              <paper-input name="titulaire" label="Titulaire" char-counter maxlength="250" value="{{_dirty.titulaire}}"></paper-input>
+              <paper-input name="titulaire" label="Organisme de formation titulaire" char-counter maxlength="250" value="{{_dirty.titulaire}}"></paper-input>
             </paper-material>
 
             <paper-material elevation="1">
@@ -146,13 +146,14 @@
             </paper-material>
 
             <paper-material elevation="1">
-              <par-marked-textarea label="Autre" value="{{_dirty.autre}}" maxlength="600"></par-marked-textarea>
+              <par-marked-textarea label="Renseignements complémentaires"
+                  value="{{_dirty.autre}}" maxlength="600" placeholder="Coût pédagogique, Nombre de stagiaires, Partenariats, ..."></par-marked-textarea>
             </paper-material>
 
           </div>
         </paper-card>
 
-        <paper-card heading="Publics">
+        <paper-card heading="Publics de l'action">
           <div class="card-content">
             <par-public-list publics="{{_dirty.publics}}"></par-public-list>
           </div>
@@ -167,7 +168,7 @@
               </paper-material>
 
               <paper-material elevation="1">
-                <paper-input name="intitule" label="Intitulé" required char-counter maxlength="150" auto-validate value="{{module.intitule}}"></paper-input>
+                <paper-input name="intitule" label="Intitulé du module" required char-counter maxlength="150" auto-validate value="{{module.intitule}}"></paper-input>
               </paper-material>
 
               <paper-material elevation="1">
@@ -175,7 +176,7 @@
               </paper-material>
 
               <paper-material elevation="1">
-                <paper-input label="Formateur" char-counter maxlength="250" value="{{module.formateur}}"></paper-input>
+                <paper-input label="Organisme de formation formateur" char-counter maxlength="250" value="{{module.formateur}}"></paper-input>
               </paper-material>
 
               <paper-material elevation="1">
@@ -190,7 +191,7 @@
                 <par-marked-textarea label="Programme" value="{{module.programme}}" maxlength="1700"></par-marked-textarea>
               </paper-material>
 
-              <paper-card heading="Publics">
+              <paper-card heading="Publics du module">
                 <div class="card-content">
                   <par-public-list publics="{{module.publics}}"></par-public-list>
                 </div>
@@ -535,7 +536,7 @@
           this.set('_dirty.planifications', []);
         }
 
-        this.push('_dirty.planifications', {});
+        this.push('_dirty.planifications', {calendrier: []});
       },
 
       _removePlanification: function(evt) {

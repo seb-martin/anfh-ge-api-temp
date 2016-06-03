@@ -70,7 +70,9 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <par-regions-data regions="{{_regions}}" loading="{{_regionsLoading}}"></par-regions-data>
     <par-exercices-data exercices="{{_exercices}}"></par-exercices-data>
-    <par-axes-data id="axesData" code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}" on-actions-updated="refreshActions"></par-axes-data>
+    <par-axes-data id="axesData"
+                    code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}"
+                    on-actions-updated="refreshActions"></par-axes-data>
     <par-actions-data id="actionsData" code-region="[[_region.code]]" exercice="[[_exercice]]" actions="{{_actions}}" loading="{{_actionsLoading}}"></par-actions-data>
 
     <paper-drawer-panel id="paperDrawerPanel">
@@ -158,6 +160,10 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <paper-toast id="toast">
       <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toast.hide()">Ok</span>
+    </paper-toast>
+
+    <paper-toast id="toastError" duration="0">
+      <span class="toast-hide-button" role="button" tabindex="0" onclick="app.$.toastError.hide()">Fermer</span>
     </paper-toast>
 
     <!-- Uncomment next block to enable Service Worker support (1/2) -->

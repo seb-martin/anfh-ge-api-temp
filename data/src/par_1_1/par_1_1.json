@@ -3,6 +3,7 @@
     "regions": {
       "properties": {
         "code": { "type": "string", "index":"not_analyzed" },
+        "derniereModif": { "type": "date", "format": "strict_date_time" },
         "denomination": {
           "type": "multi_field",
           "fields":{
@@ -17,6 +18,7 @@
         "region": { "type": "string", "index":"not_analyzed" },
         "exercice": { "type": "integer", "index":"not_analyzed" },
         "num": { "type": "integer", "index":"not_analyzed" },
+        "derniereModif": { "type": "date", "format": "strict_date_time" },
         "intitule": {
           "type": "multi_field",
           "fields": {
@@ -30,6 +32,7 @@
       "properties": {
         "region": { "type": "string", "index":"not_analyzed" },
         "exercice": { "type": "integer", "index":"not_analyzed" },
+        "derniereModif": { "type": "date", "format": "strict_date_time" },
         "_publie": { "type": "boolean", "index":"not_analyzed" },
         "axe": { "type": "string", "index":"not_analyzed" },
         "code": { "type": "string", "index":"not_analyzed" },
@@ -45,7 +48,7 @@
         "autre": { "type": "string" },
         "typologie": { "type": "string", "index":"not_analyzed" },
         "publics": { "type": "string" },
-        "nature": { "type": "string" },
+        "nature": { "type": "string", "index":"not_analyzed" },
         "titulaire": { "type": "string" },
         "modules": {
           "properties": {
@@ -70,8 +73,8 @@
           "properties": {
             "calendrier": {
               "properties": {
-                "debut": { "type": "date", "format": "yyyy-MM-dd" },
-                "fin": { "type": "date", "format": "yyyy-MM-dd" },
+                "debut": { "type": "date", "format": "strict_date" },
+                "fin": { "type": "date", "format": "strict_date" },
                 "ville": { "type": "string" },
                 "detail": { "type": "string" }
               }
@@ -80,8 +83,5 @@
         }
       }
     }
-  },
-  "aliases": {
-    "par": {}
   }
 }

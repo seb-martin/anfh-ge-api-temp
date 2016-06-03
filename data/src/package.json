@@ -1,0 +1,20 @@
+{
+  "name": "ge-api-temp-data",
+  "version": "1.0.5",
+  "description": "Utilitaires de gestion des données (reprise, migration, ...)",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Sébastien Martin <s.martin@anfh.fr>",
+  "license": "ISC",
+  "dependencies": {
+    "elasticsearch": "^11.0.1",
+    "elasticsearch-scroll-stream": "^1.0.6",
+    "gulp": "^3.9.1",
+    "moment": "^2.11.1",
+    "through2": "^2.0.1",
+    "to-markdown": "^2.0.1",
+    "xml2js": "^0.4.16"
+  }
+}

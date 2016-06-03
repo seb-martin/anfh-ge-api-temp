@@ -129,22 +129,45 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.deleteAxe = function(evt) {
-    app.$.axesData.supprimer(evt.detail.axe);
-    app.showAxes(evt);
+    app.$.axesData.supprimer(evt.detail.axe)
+      .then(function() {
+        app.$.toast.text = 'Axe supprimé';
+        app.$.toast.open();
+      })
+      .then(function() {
+        app.showAxes(evt);
+      }).catch(app.catchError);
   };
 
   app.createAxe = function(evt) {
-    app.$.axesData.creer(evt.detail.axe);
-    app.showAxes(evt);
+    app.$.axesData.creer(evt.detail.axe)
+      .then(function(axe) {
+        app.$.toast.text = 'Axe créé';
+        app.$.toast.open();
+        return axe;
+      })
+      .then(function(axe) {
+        evt.detail.axe = axe;
+        app.editAxe(evt);
+      }).catch(app.catchError);
   };
 
   app.updateAxe = function(evt) {
-    app.$.axesData.modifier(evt.detail.axe);
-    app.showAxes(evt);
+    app.$.axesData.modifier(evt.detail.axe)
+      .then(function(axe) {
+        app.$.toast.text = 'Axe mis à jour';
+        app.$.toast.open();
+        return axe;
+      })
+      .then(function(axe) {
+        evt.detail.axe = axe;
+        app._axe = axe;
+      }).catch(app.catchError);
+
   };
 
   app.refreshActions = function() {
-    app.$.actionsData.refresh();
+    app.$.actionsData.refresh().catch(app.catchError);
   };
 
   app.showActions = function(evt) {
@@ -166,7 +189,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       nature: 'R',
       publics: [],
       modules: [],
-      groupes: []
+      planifications: []
     };
 
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/actions/nouveau');
@@ -179,48 +202,72 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.deleteAction = function(evt) {
-    app.$.actionsData.supprimer(evt.detail.action);
-    app.showActions(evt);
+    app.$.actionsData.supprimer(evt.detail.action)
+      .then(function() {
+        app.$.toast.text = 'Action supprimée';
+        app.$.toast.open();
+      })
+      .then(function() {
+        app.showActions(evt);
+      }).catch(app.catchError);
   };
 
   app.createAction = function(evt) {
-    app.$.actionsData.creer(evt.detail.action);
-    app.showActions(evt);
+    app.$.actionsData.creer(evt.detail.action)
+      .then(function(action) {
+        app.$.toast.text = 'Action créée';
+        app.$.toast.open();
+        return action;
+      })
+      .then(function(action) {
+        evt.detail.action = action;
+        app.editAction(evt);
+      }).catch(app.catchError);
   };
 
   app.updateAction = function(evt) {
-    app.$.actionsData.modifier(evt.detail.action);
-    app.showActions(evt);
+    app.$.actionsData.modifier(evt.detail.action)
+      .then(function(action) {
+        app.$.toast.text = 'Action mise à jour';
+        app.$.toast.open();
+        return action;
+      })
+      .then(function(action) {
+        evt.detail.action = action;
+        app._action = action;
+      }).catch(app.catchError);
   };
 
   app.duplicateAction = function(evt) {
-    app._action = evt.detail.action;
-    app.$.actionsData.creer(app._action);
-
-    // On ne change de vue que si la région ou l'exercice a changé
-    if (
-      app._region.code !== app._action.region ||
-      app._exercice !== app._action.exercice
-    ) {
-      // On change de région, si nécessaire
-      if (app._region.code !== app._action.region) {
-        for (var i = 0 ; i < app._regions.length ; i++) {
-          if (app._regions[i].code === app._action.region) {
-            app._region = app._regions[i];
-            break;
-          }
-        }
-      }
-
-      // On change d'exercice, si nécessaire
-      if (app._exercice !== app._action.exercice) {
-        app._exercice = app._action.exercice;
-      }
-
-      // On change de vue
-      this.showActions(evt);
+    // On change de région, si nécessaire
+    if (app._region.code !== evt.detail.action.region) {
+      app._region = app._regions.reduce(function(prev, current) {
+        return current.code === evt.detail.action.region ? current : prev;
+      }, null);
     }
 
+    // On change d'exercice, si nécessaire
+    if (app._exercice !== evt.detail.action.exercice) {
+      app._exercice = evt.detail.action.exercice;
+    }
+
+    app.$.actionsData.creer(evt.detail.action)
+      .then(function(action) {
+        app.$.toast.text = 'Action dupliquée';
+        app.$.toast.open();
+        return action;
+      })
+      .then(function(action) {
+        // On change de vue
+        evt.detail.action = action;
+        app.showActions(evt);
+      }).catch(app.catchError);
+
+  };
+
+  app.catchError = function(err) {
+    app.$.toastError.text = JSON.stringify(err);
+    app.$.toastError.open();
   };
 
 })(document);

@@ -15,6 +15,39 @@
       }
     </style>
 
+    <template is="dom-if" if="{{!evenements.length}}" >
+      <paper-card elevation="1">
+        <div class="card-content">
+
+          <p>
+            <em>La liste des évènements de cette planification est actuellement vide.</em>
+          </p>
+          <p>
+            <em>
+
+              Pour y ajouter un évènement,
+              <ol>
+                <li>
+                  complétez les dates, ville et détail de l'évènement dans le formulaire de saisie ci-dessous ;
+                </li>
+                <li>
+                  cliquez sur l'icône <iron-icon icon="icons:add-circle"></iron-icon>
+                  située à droite du formulaire pour ajouter l'évènement à la liste.
+                </li>
+              </ol>
+              <p>
+                <em>
+                  Attention, chaque planification doit comporter au moins un évènement
+                  pour que l'action puisse être enregistrée.
+                </em>
+              </p>
+
+            </em>
+          </p>
+        </div>
+      </paper-card>
+    </template>
+
     <paper-material elevation="1" class="list">
       <template is="dom-repeat" items="{{evenements}}" as="evenement">
         <par-evenement-item value="{{evenement}}" class="list-item" style="width: 100%"

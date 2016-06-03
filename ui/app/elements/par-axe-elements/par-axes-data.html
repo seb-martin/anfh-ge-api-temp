@@ -7,15 +7,13 @@
 
     <iron-ajax
       id="axesData"
-      auto
       method="POST"
       url="{{_searchUrl}}"
       content-type="application/json"
-      body="{{_bodyString(codeRegion, exercice, from, size)}}"
+      body="{{_searchBody(codeRegion, exercice, from, size)}}"
       debounce-duration="300"
       handle-as="json"
       on-loading-changed="_handleLoading"
-      on-response="_handleResponse"
       ></iron-ajax>
 
     <iron-ajax
@@ -26,7 +24,6 @@
       content-type="application/json"
       handle-as="json"
       on-loading-changed="_handleLoading"
-      on-response="_handleCreateResponse"
       ></iron-ajax>
 
     <iron-ajax
@@ -36,7 +33,6 @@
       content-type="application/json"
       handle-as="json"
       on-loading-changed="_handleLoading"
-      on-response="_handleUpdateResponse"
       ></iron-ajax>
 
     <iron-ajax
@@ -46,7 +42,6 @@
       content-type="application/json"
       handle-as="json"
       on-loading-changed="_handleLoading"
-      on-response="_handleDeleteResponse"
       ></iron-ajax>
 
     <iron-ajax
@@ -89,7 +84,7 @@
 
           loading: {
             type: Boolean,
-            value: true,
+            value: false,
             reflectToAttribute: true,
             notify: true,
             readOnly: true
@@ -123,13 +118,21 @@
           }
         },
 
+        observers: [
+          '_refresh(codeRegion, exercice, from, size)'
+        ],
+
         ready: function() {
           this._baseUrl = this.$.globals.esHost + '/par/axes';
           this._searchUrl = this._baseUrl + '/_search';
           this._actionsBaseUrl = this.$.globals.esHost + '/par/actions';
         },
 
-        _bodyString: function(codeRegion, exercice, from, size) {
+        _handleLoading: function(evt) {
+          this._setLoading(evt.detail.value);
+        },
+
+        _searchBody: function(codeRegion, exercice, from, size) {
           var body = {
             from: from || 0,
             size: size || 100,
@@ -160,31 +163,36 @@
           return JSON.stringify(body);
         },
 
-        _handleLoading: function(evt) {
-          this._setLoading(evt.detail.value);
-        },
+        _refresh: function(codeRegion, exercice) {
+          if (codeRegion && exercice) {
 
-        _handleResponse: function(evt) {
-          if (!!evt.detail.response) {
-            this._setAxes(this._mapSearchResp(evt.detail.response));
-          } else {
-            this._setAxes([]);
+            this.refresh();
           }
         },
 
         refresh: function() {
-          this.$.axesData.generateRequest();
+          var self = this;
+          return this.$.axesData.generateRequest().completes
+            .then(function(ironRequest) {
+              var response = ironRequest.response;
+
+              var axes = self._mapSearchResp(response);
+              self._setAxes(axes);
+              return axes;
+            });
 
         },
 
         _mapSearchResp: function(resp) {
-          var self = this;
+          if (!resp) {
+            return [];
+          }
 
+          var self = this;
           if (!!resp) {
             return resp.hits.hits.map(function(resp) {
               return self._mapHit(resp);
             });
-
           } else {
             return [];
           }
@@ -207,14 +215,25 @@
             throw 'L\'argument axe est requis';
           }
 
+          var self = this;
+          var axeId;
+
+          axe.derniereModif = moment().toISOString();
+
           this.$.axesCreate.body = JSON.stringify(axe);
-          this.$.axesCreate.generateRequest();
+          return this.$.axesCreate.generateRequest().completes
+            .then(function(ironRequest) {
+              var response = ironRequest.response;
+              axeId = response._id;
+              // Un axe a été créé, on rafraîchit la liste des axes
+              return self.refresh();
+            }).then(function(axes) {
+              // Retourne le nouvel axe créé
+              return axes.reduce(function(prev, curr) {
+                return !prev && curr._id === axeId ? curr : prev;
+              }, null);
+            });
 
-        },
-
-        _handleCreateResponse: function() {
-          // Un axe a été créé, on rafraîchit la liste des axes
-          this.refresh();
         },
 
         _computeUpdateParams: function() {
@@ -226,20 +245,27 @@
             throw 'L\'argument axe est requis';
           }
 
-          // L'id est retiré du document avant sa mise à jour
+          var self = this;
           // L'id est conservé pour réaliser l'indexage du document
-          var _id = axe._id;
+          var axeId = axe._id;
+          // L'id est retiré du document avant sa mise à jour
           delete axe._id;
 
-          this.$.axesUpdate.url = this._baseUrl + '/' + _id;
+          axe.derniereModif = moment().toISOString();
+
+          this.$.axesUpdate.url = this._baseUrl + '/' + axeId;
           this.$.axesUpdate.body = JSON.stringify(axe);
-          this.$.axesUpdate.generateRequest();
 
-        },
-
-        _handleUpdateResponse: function() {
-          // Un axe a été modifié, on rafraîchit la liste des axes
-          this.refresh();
+          return this.$.axesUpdate.generateRequest().completes
+            .then(function() {
+              // Un axe a été modifié, on rafraîchit la liste des axes
+              return self.refresh();
+            }).then(function(axes) {
+              // Retourne l'axe modfié
+              return axes.reduce(function(prev, curr) {
+                return !prev && curr._id === axeId ? curr : prev;
+              }, null);
+            });
         },
 
         _computeDeleteParams: function() {
@@ -250,6 +276,8 @@
           if (!axe) {
             throw 'L\'argument axe est requis';
           }
+
+          var self = this;
 
           var actionsScroll = this.$.actionsScroll;
 
@@ -289,13 +317,12 @@
 
           // On supprime l'axe
           this.$.axesDelete.url = this._baseUrl + '/' + axe._id;
-          this.$.axesDelete.generateRequest();
+          return this.$.axesDelete.generateRequest().completes
+            .then(function() {
+              // Un axe a été supprimé, on rafraîchit la liste des axes
+              return self.refresh();
+            });
 
-        },
-
-        _handleDeleteResponse: function() {
-          // Un axe a été supprimé, on rafraîchit la liste des axes
-          this.refresh();
         },
 
         _handleActionsScrollResponse: function(evt) {
@@ -308,22 +335,28 @@
 
           if (hits.length > 0) {
 
-            var bulk = hits.map(function(hit) {
-              return JSON.stringify({
+            var bulk = hits.reduce(function(arr, hit) {
+              // Action du bulk
+              arr.push(JSON.stringify({
                 update: {
                   _index: 'par',
                   _type: 'actions',
                   _id: hit._id
                 }
-              }) + '\n' + JSON.stringify({
+              }));
+
+              // Données du bulk
+              arr.push(JSON.stringify({
                 doc: {
                   axe: null
                 }
-              }) + '\n';
-            }).join('');
+              }));
+              return arr;
+            }, []);
+            bulk.push('');
 
             actionsUpdateBulk.url = this.$.globals.esHost + '/_bulk';
-            actionsUpdateBulk.body = bulk;
+            actionsUpdateBulk.body = bulk.join('\n');
             actionsUpdateBulk.generateRequest();
 
             actionsScrollNext.url = this.$.globals.esHost + '/_search/scroll';

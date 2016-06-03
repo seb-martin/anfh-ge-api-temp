@@ -7,7 +7,6 @@
 
     <iron-ajax
         id="regionsData"
-        auto
         url="{{_url}}"
         method="POST"
         contentType="application/json"
@@ -15,7 +14,6 @@
         debounceDuration="300"
         handleAs="json"
         on-loading-changed="_handleLoading"
-        on-response="_handleResponse"
         ></iron-ajax>
 
   </template>
@@ -30,7 +28,7 @@
         properties: {
           loading: {
             type: Boolean,
-            value: true,
+            value: false,
             reflectToAttribute: true,
             notify: true,
             readOnly: true
@@ -54,6 +52,8 @@
               'denomination.denomination_na': 'asc'
             }
           });
+
+          this.refresh();
         },
 
         _handleLoading: function(evt) {
@@ -71,7 +71,16 @@
         },
 
         refresh: function() {
-          this.$.regionsData.generateRequest();
+          var self = this;
+
+          return this.$.regionsData.generateRequest().completes
+            .then(function(ironRequest) {
+              var response = ironRequest.response;
+
+              return self._setRegions(response.hits.hits.map(function(hit) {
+                return hit._source;
+              }));
+            });
         }
 
       });
