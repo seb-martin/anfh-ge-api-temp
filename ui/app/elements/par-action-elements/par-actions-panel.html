@@ -205,6 +205,10 @@ font-weight: 400;
         }
       },
 
+      ready: function() {
+        this.$.regionsData.refresh();
+      },
+
       _backTap: function() {
         this.fire('back');
       },
@@ -249,7 +253,8 @@ font-weight: 400;
           region: this._actionOriginale.region,
           // Par défaut, l'action est dupliquée sur le même exercice
           exercice: this._actionOriginale.exercice,
-          code: this._actionOriginale.code,
+          // Le code n'est pas à dupliquer
+          // code: undefined
           // L'axe pourra être conservé SSI le duplicat a
           // - la même région
           // - le même exercice
