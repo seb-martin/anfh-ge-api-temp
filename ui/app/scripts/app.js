@@ -86,46 +86,31 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.showDelegations = function() {
+    // Retire la région sélectionnée pour ne pas être redirigé lors du routage
     app._region = null;
     page(app.baseUrl);
   };
 
   app.showRegion = function(evt) {
-    if (evt.detail.region) {
-      app._region = evt.detail.region;
-    }
-    page(app.baseUrl + app._region.code);
+    var region = evt.detail.region || app._region;
+
+    page(app.baseUrl + region.code);
   };
 
   app.showAxes = function(evt) {
-    if (evt.detail.exercice) {
-      app._exercice = evt.detail.exercice;
-    }
-    app._axe = null;
-    page(app.baseUrl + app._region.code + '/' + app._exercice + '/axes');
+    var exercice = evt.detail.exercice || app._exercice;
+
+    page(app.baseUrl + app._region.code + '/' + exercice + '/axes');
   };
 
   app.newAxe = function() {
-
-    var maxNum = app._axes.reduce(function(m, axe) {
-      var num = parseInt(axe.num);
-      return m < num ? num : m;
-    }, 0);
-
-    app._axe = {
-      region: app._region.code,
-      exercice: app._exercice,
-      num: maxNum + 1,
-      intitule: 'Nouvel axe'
-    };
-
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/axes/nouveau');
-
   };
 
   app.editAxe = function(evt) {
-    app._axe = evt.detail.axe;
-    page(app.baseUrl + app._region.code + '/' + app._exercice + '/axes/' + app._axe._id);
+    var axeid = evt.detail.axe._id;
+
+    page(app.baseUrl + app._region.code + '/' + app._exercice + '/axes/' + axeid);
   };
 
   app.deleteAxe = function(evt) {
@@ -171,34 +156,19 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
   };
 
   app.showActions = function(evt) {
-    if (evt.detail.exercice) {
-      app._exercice = evt.detail.exercice;
-    }
-    app._action = null;
-    page(app.baseUrl + app._region.code + '/' + app._exercice + '/actions');
+    var exercice = evt.detail.exercice || app._exercice;
+
+    page(app.baseUrl + app._region.code + '/' + exercice + '/actions');
   };
 
   app.newAction = function() {
-
-    app._action = {
-      region: app._region.code,
-      exercice: app._exercice,
-      intitule: 'Nouvelle action',
-      contexte: '*Sera renseigné ultérieurement*',
-      objectifs: '*Seront renseignés ultérieurement*',
-      nature: 'R',
-      publics: [],
-      modules: [],
-      planifications: []
-    };
-
     page(app.baseUrl + app._region.code + '/' + app._exercice + '/actions/nouveau');
-
   };
 
   app.editAction = function(evt) {
-    app._action = evt.detail.action;
-    page(app.baseUrl + app._region.code + '/' + app._exercice + '/actions/' + app._action._id);
+    var actionid = evt.detail.action._id;
+
+    page(app.baseUrl + app._region.code + '/' + app._exercice + '/actions/' + actionid);
   };
 
   app.deleteAction = function(evt) {
