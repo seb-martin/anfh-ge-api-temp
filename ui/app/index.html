@@ -68,8 +68,8 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     <iron-localstorage id="localStorage" name="userRegion" value={{_region}}></iron-localstorage>
 
-    <par-regions-data regions="{{_regions}}" loading="{{_regionsLoading}}"></par-regions-data>
-    <par-exercices-data exercices="{{_exercices}}"></par-exercices-data>
+    <par-regions-data id="regionsData" regions="{{_regions}}" loading="{{_regionsLoading}}"></par-regions-data>
+    <par-exercices-data id="exercicesData" exercices="{{_exercices}}"></par-exercices-data>
     <par-axes-data id="axesData"
                     code-region="[[_region.code]]" exercice="[[_exercice]]" axes="{{_axes}}" loading="{{_axesLoading}}"
                     on-actions-updated="refreshActions"></par-axes-data>

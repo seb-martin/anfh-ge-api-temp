@@ -32,6 +32,40 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       next();
     }
 
+    function loadRegions(ctx, next) {
+      // La liste des régions n'étant jamais modifiée,
+      // on ne la charge qu'une seule et unique fois
+      if (!app._regions || app._regions.length === 0) {
+        app.$.regionsData.refresh().then(function() {
+          next();
+        }).catch(function(err) {
+          throw err;
+        });
+      } else {
+        next();
+      }
+    }
+
+    function loadAxes(ctx, next) {
+      app.$.axesData.codeRegion = ctx.params.reg;
+      app.$.axesData.exerice = ctx.params.exe;
+      app.$.axesData.refresh().then(function() {
+        next();
+      }).catch(function(err) {
+        throw err;
+      });
+    }
+
+    function loadActions(ctx, next) {
+      app.$.actionsData.codeRegion = ctx.params.reg;
+      app.$.actionsData.exerice = ctx.params.exe;
+      app.$.actionsData.refresh().then(function() {
+        next();
+      }).catch(function(err) {
+        throw err;
+      });
+    }
+
     function redirectRegion(ctx, next) {
       if (app._region) {
         page(app.baseUrl + app._region.code);
@@ -61,31 +95,70 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     }
 
     function selectAxe(ctx, next) {
-      if (ctx.params.idaxe) {
-        app._axes.forEach(function(axe) {
-          if (axe._id === ctx.params.idaxe) {
-            app._axe = axe;
-          }
-        });
-      }
+      var axeid = ctx.params.idaxe;
+
+      app._axe = app._axes.reduce(function(prev, axe) {
+        if (prev) {
+          return prev;
+        }
+        return axe._id === axeid ? axe : prev;
+      }, null);
+
+      next();
+    }
+
+    function newAxe(ctx, next) {
+      var maxNum = app._axes.reduce(function(m, axe) {
+        var num = parseInt(axe.num);
+        return m < num ? num : m;
+      }, 0);
+
+      app._axe = {
+        region: app._region.code,
+        exercice: app._exercice,
+        num: maxNum + 1,
+        intitule: 'Nouvel axe'
+      };
 
       next();
     }
 
     function selectAction(ctx, next) {
-      if (ctx.params.idact) {
-        app._actions.forEach(function(action) {
-          if (action._id === ctx.params.idact) {
-            app._action = action;
-          }
-        });
-      }
+      var actionid = ctx.params.idact;
+
+      app._action = app._actions.reduce(function(prev, action) {
+        if (prev) {
+          return prev;
+        }
+        return action._id === actionid ? action : prev;
+      }, null);
+
+      next();
+    }
+
+    function newAction(ctx, next) {
+      app._action = {
+        region: app._region.code,
+        exercice: app._exercice,
+        intitule: 'Nouvelle action',
+        contexte: '*Sera renseigné ultérieurement*',
+        objectifs: '*Seront renseignés ultérieurement*',
+        nature: 'R',
+        publics: [],
+        modules: [],
+        planifications: []
+      };
 
       next();
     }
 
     // Routes
     page('*', scrollToTop, closeDrawer, function(ctx, next) {
+      next();
+    });
+
+    // Cette route permet de charger les régions quelques soit l'URL
+    page('*', loadRegions, function(ctx, next) {
       next();
     });
 
@@ -108,7 +181,7 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       app.params = data.params;
     });
 
-    page('/:reg/:exe/axes', selectRegion, selectExercice, function(data) {
+    page('/:reg/:exe/axes', selectRegion, selectExercice, loadAxes, function(data) {
 
       app.titre = 'Axes de formation';
       app.sstitre = 'du plan d\'action :exe de la délégation :reg'
@@ -119,53 +192,67 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
 
     });
 
-    page('/:reg/:exe/actions', selectRegion, selectExercice, function(data) {
-      app.titre = 'Actions de formation';
-      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-        .replace(':exe', app._exercice)
-        .replace(':reg', app._region.denomination);
-      app.route = 'actions';
-      app.params = data.params;
-    });
+    page('/:reg/:exe/actions',
+      selectRegion, selectExercice, loadActions,
+      function(data) {
+        app.titre = 'Actions de formation';
+        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
+          .replace(':exe', app._exercice)
+          .replace(':reg', app._region.denomination);
+        app.route = 'actions';
+        app.params = data.params;
+      }
+    );
 
-    page('/:reg/:exe/axes/nouveau', selectRegion, selectExercice, function(data) {
-      app.titre = 'Créer un axe';
-      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-        .replace(':exe', app._exercice)
-        .replace(':reg', app._region.denomination);
-      app.route = 'axe';
-      app.params = data.params;
-    });
+    page('/:reg/:exe/axes/nouveau',
+      selectRegion, selectExercice, loadAxes, newAxe,
+      function(data) {
+        app.titre = 'Créer un axe';
+        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
+          .replace(':exe', app._exercice)
+          .replace(':reg', app._region.denomination);
+        app.route = 'axe';
+        app.params = data.params;
+      }
+    );
 
-    page('/:reg/:exe/axes/:idaxe', selectRegion, selectExercice, selectAxe, function(data) {
-      app.titre = 'Modifier un axe';
-      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-        .replace(':exe', app._exercice)
-        .replace(':reg', app._region.denomination);
-      app.route = 'axe';
-      app.params = data.params;
+    page('/:reg/:exe/axes/:idaxe',
+      selectRegion, selectExercice, loadAxes, selectAxe,
+      function(data) {
+        app.titre = 'Modifier un axe';
+        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
+          .replace(':exe', app._exercice)
+          .replace(':reg', app._region.denomination);
+        app.route = 'axe';
+        app.params = data.params;
+      }
+    );
 
-    });
+    page('/:reg/:exe/actions/nouveau',
+      selectRegion, selectExercice, loadActions, newAction,
+      function(data) {
+        app.titre = 'Créer une action';
+        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
+          .replace(':exe', app._exercice)
+          .replace(':reg', app._region.denomination);
+        app.route = 'action';
+        app.menu = 'action';
+        app.params = data.params;
+      }
+    );
 
-    page('/:reg/:exe/actions/nouveau', selectRegion, selectExercice, function(data) {
-      app.titre = 'Créer une action';
-      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-        .replace(':exe', app._exercice)
-        .replace(':reg', app._region.denomination);
-      app.route = 'action';
-      app.menu = 'action';
-      app.params = data.params;
-    });
-
-    page('/:reg/:exe/actions/:idact', selectRegion, selectExercice, selectAction, function(data) {
-      app.titre = 'Modifier une action';
-      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-        .replace(':exe', app._exercice)
-        .replace(':reg', app._region.denomination);
-      app.route = 'action';
-      app.menu = 'action';
-      app.params = data.params;
-    });
+    page('/:reg/:exe/actions/:idact',
+      selectRegion, selectExercice, loadActions, selectAction,
+      function(data) {
+        app.titre = 'Modifier une action';
+        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
+          .replace(':exe', app._exercice)
+          .replace(':reg', app._region.denomination);
+        app.route = 'action';
+        app.menu = 'action';
+        app.params = data.params;
+      }
+    );
 
     // 404
     page('*', function() {
