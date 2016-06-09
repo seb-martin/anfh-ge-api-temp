@@ -39,6 +39,10 @@
       width: 100%;
     }
 
+    .paper-search {
+      margin: 10px 0;
+    }
+
     paper-icon-item {
       height: 80px;
 
@@ -96,8 +100,18 @@ font-weight: 400;
       </template>
 
       <template is="dom-if" if="{{actions.length}}">
+
+        <paper-card elevation="2" class="paper-search">
+          <div class="card-content">
+            <paper-input id="filterInput" placeholder="Filtrer la liste des actions" value="{{filterString}}">
+              <iron-icon icon="filter-list" prefix></iron-icon>
+              <paper-icon-button icon="clear" suffix hidden$="{{!filterString}}" on-tap="_clearFilterTap" alt="Vider" title="Vider"></paper-icon-button>
+            </paper-input>
+          </div>
+        </paper-card>
+
         <paper-material elevation="1">
-          <template is="dom-repeat" id="actionList" items="{{actions}}" as="action">
+          <template is="dom-repeat" id="actionList" items="{{actions}}" as="action" filter="{{_computeFilter(filterString)}}">
             <paper-icon-item on-tap="_editTap">
 
               <iron-icon icon="icons:group-work" item-icon></iron-icon>
@@ -207,6 +221,26 @@ font-weight: 400;
 
       ready: function() {
         this.$.regionsData.refresh();
+        this.filterString = '';
+      },
+
+      _computeFilter: function(string) {
+        if (!string) {
+          // set filter to null to disable filtering
+          return null;
+        } else {
+          // return a filter function for the current search string
+          string = string.toLowerCase();
+          return function(action) {
+            var intitule = action.intitule ? action.intitule.toLowerCase() : '';
+            var contexte = action.contexte ? action.contexte.toLowerCase() : '';
+            return (intitule.indexOf(string) !== -1 || contexte.indexOf(string) !== -1);
+          };
+        }
+      },
+
+      _clearFilterTap: function() {
+        this.filterString = '';
       },
 
       _backTap: function() {
