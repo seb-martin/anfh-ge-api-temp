@@ -6,6 +6,7 @@
       'use strict';
 
       var esHost = window.location.protocol + '//' + window.location.hostname + ':9200';
+      var viewsHost = window.location.protocol + '//' + window.location.hostname + ':8082';
 
       var baseUrl = '/';
       if (window.location.port === '') {  // if production
@@ -19,6 +20,7 @@
 
         created: function() {
           this.esHost = esHost;
+          this.viewsHost = viewsHost;
           this.baseUrl = baseUrl;
         }
 
