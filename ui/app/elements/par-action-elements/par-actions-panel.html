@@ -84,6 +84,8 @@ font-weight: 400;
 
     </style>
 
+    <par-globals id="globals"></par-globals>
+
     <div class="back-zone">
       <paper-fab id="backFab" icon="icons:arrow-back" on-tap="_backTap"></paper-fab>
       <paper-tooltip position="bottom">Retour au plan de formation</paper-tooltip>
@@ -130,6 +132,10 @@ font-weight: 400;
                   <paper-tooltip position="left">Cette action est publiée</paper-tooltip>
                 </div>
               </template>
+              <div>
+                <paper-icon-button icon="icons:visibility" on-tap="_previewTap"></paper-icon-button>
+                <paper-tooltip position="right">Prévisualiser cette action</paper-tooltip>
+              </div>
               <div>
                 <paper-icon-button icon="icons:content-copy" on-tap="_duplicateTap"></paper-icon-button>
                 <paper-tooltip position="right">Dupliquer cette action</paper-tooltip>
@@ -270,6 +276,16 @@ font-weight: 400;
 
       _cancelDeleteTap: function() {
         this._toBeDeleted = null;
+      },
+
+      _previewTap: function(evt) {
+        evt.stopPropagation();
+        var action = this.querySelector('#actionList').itemForElement(evt.target);
+
+        var url = this.$.globals.viewsHost + '/preview/actions/' + action._id;
+
+        var win = window.open(url, '_blank');
+        win.focus();
       },
 
       _duplicateTap: function(evt) {
