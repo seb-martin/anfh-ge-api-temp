@@ -29,6 +29,8 @@ Vagrant.configure(2) do |config|
   config.vm.network "forwarded_port", guest: 8080, host: 8080
   # API
   config.vm.network "forwarded_port", guest: 8081, host: 8081
+  # Visualisation
+  config.vm.network "forwarded_port", guest: 8082, host: 8082
   # DB ElasticSearch
   config.vm.network "forwarded_port", guest: 9200, host: 9200
   config.vm.network "forwarded_port", guest: 9300, host: 9300
