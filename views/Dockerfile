@@ -9,6 +9,6 @@ RUN npm install
 COPY src/server.js /usr/src/
 COPY src/templ /usr/src/templ/
 
-EXPOSE 80
+EXPOSE 8082
 
 CMD [ "npm", "start" ]

@@ -14,7 +14,7 @@ api:
 views:
   ports:
   # Lie le port 80 du container views au le port 8081 de la machine hôte
-    - "8082:80"
+    - "8082:8082"
 
 # Base de données
 db:
