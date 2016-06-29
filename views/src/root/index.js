@@ -1,11 +1,9 @@
 (function() {
+  'use strict';
+
   var express = require('express');
-  var compression = require('compression');
-  var cors = require('cors');
 
   var app = express();
-  app.use(compression());
-  app.use(cors());
 
   var rootRouter = express.Router();
 
