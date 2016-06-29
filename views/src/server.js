@@ -246,12 +246,12 @@
 
   // Routes
 
-  var rootRouter = express.Router();       // get another instance of the express Router
-  rootRouter.get('/', function(req, res) {
-    var s = 'Bienvenue sur la prévisualisation des actions de formation. '
-    s += 'SVP, suffixez votre URL avec /preview/actions/ suivi de l\'identifiant de l\'action.'
-    res.send(s);
-  });
+  // var rootRouter = express.Router();       // get another instance of the express Router
+  // rootRouter.get('/', function(req, res) {
+  //   var s = 'Bienvenue sur la prévisualisation des actions de formation. '
+  //   s += 'SVP, suffixez votre URL avec /preview/actions/ suivi de l\'identifiant de l\'action.'
+  //   res.send(s);
+  // });
 
   var previewActionsRouter = express.Router();
   previewActionsRouter.get('/:id', [
@@ -278,7 +278,7 @@
 
   // REGISTER OUR ROUTES -------------------------------
   // all of our routes will be prefixed with /api/v1
-  app.use('/', rootRouter);
+  app.use('/', require('./routes/root.js'));
   app.use('/preview/actions', previewActionsRouter);
 
   // START THE SERVER
