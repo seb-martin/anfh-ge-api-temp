@@ -48,6 +48,7 @@ font-weight: 400;
 
 
   <template>
+    <par-globals id="globals"></par-globals>
 
     <div class="content">
 
@@ -67,7 +68,21 @@ font-weight: 400;
             <span>Actions</span>
             <paper-ripple class="circle" recenters></paper-ripple>
           </paper-icon-item>
+
+          <div class="card-actions">
+            <div class="horizontal end-justified layout">
+              <paper-button icon="maps:map" on-tap="_cdfTap">
+                <iron-icon icon="maps:map"></iron-icon>
+                Chemin de fer
+              </paper-button>
+              <paper-tooltip offset="0">
+                Génère le classeur Excel de <em>chemin de fer</em>.
+                Ce classeur est destiné au prestataire chargé d'éditer les "PAR papier".
+              </paper-tooltip>
+            </div>
+          </div>
         </paper-card>
+
 
         <div style="height: 20px"></div>
 
@@ -95,7 +110,7 @@ font-weight: 400;
 
       _computeElevation: function(exercice) {
         var now = new Date();
-        return exercice === now.getFullYear() ? 3 : 1;
+        return exercice === now.getFullYear() + 1 ? 3 : 1;
       },
 
       _axesTap: function(evt) {
@@ -104,6 +119,17 @@ font-weight: 400;
 
       _actionsTap: function(evt) {
         this.fire('show-actions', {exercice: evt.model.exercice});
+      },
+
+      _cdfTap: function(evt) {
+        evt.stopPropagation();
+
+        var codeRegion = this.region.code;
+        var exercice = evt.model.exercice;
+
+        var url = this.$.globals.viewsHost + '/cdf/' + codeRegion + '/' + exercice;
+
+        window.open(url, '_blank');
       }
 
     });
