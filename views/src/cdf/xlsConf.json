@@ -1,0 +1,36 @@
+{
+  "cols": [
+    {
+      "caption": "Région",
+      "type": "string"
+    },
+    {
+      "caption": "Exercice",
+      "type": "number"
+    },
+    {
+      "caption": "Numéro axe",
+      "type": "number"
+    },
+    {
+      "caption": "Intitulé axe",
+      "type": "string"
+    },
+    {
+      "caption": "Intitulé action",
+      "type": "string"
+    },
+    {
+      "caption": "Nature",
+      "type": "string"
+    },
+    {
+      "caption": "Numéro module",
+      "type": "number"
+    },
+    {
+      "caption": "Intitulé module",
+      "type": "string"
+    }
+  ]
+}

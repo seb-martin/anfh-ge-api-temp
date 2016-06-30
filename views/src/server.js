@@ -54,6 +54,7 @@
   // REGISTER OUR ROUTES -------------------------------
   app.use('/', require('./root'));
   app.use('/preview/actions', require('./previewActions'));
+  app.use('/cdf', require('./cdf'));
 
   // START THE SERVER
   // =============================================================================
