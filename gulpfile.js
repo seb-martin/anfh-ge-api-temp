@@ -19,7 +19,7 @@
       },
       views: {
         src: ['./views/src/package.json'],
-        dst: './view/src'
+        dst: './views/src'
       },
       ui: {
         src: ['./ui/package.json'],
