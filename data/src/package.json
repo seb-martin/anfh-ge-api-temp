@@ -1,6 +1,6 @@
 {
   "name": "ge-api-temp-data",
-  "version": "1.2.1",
+  "version": "1.2.2",
   "description": "Utilitaires de gestion des données (reprise, migration, ...)",
   "main": "index.js",
   "scripts": {
