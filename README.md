@@ -11,6 +11,7 @@ Il est composé de
 
 - une interface applicative présentant les ressources Région Formation, Axe Formation et Action Formation décritent dans le document [Gesform Evolution - API v1](https://docs.google.com/document/d/1mGhBQKpE_jTKBTFomEtEWp3L7fZFS5dYFgcQWklF6lk/edit?usp=sharing).
 - une interface utilisateur permettant la saisie des axes et actions de formation constituant les plans d'accès régionaux.
+- une interface de visualisation permettant la prévisualisation et l'impression des actions de formation.
 - une interface de gestion facilitant l'administration
 - un système de gestion des sauvegardes
 
@@ -50,6 +51,7 @@ docker-compose build
 
 - L'UI écoute sur le port 8080
 - L'API écoute sur le port 8081
+- La visualisation écoute sur le port 8082
 - Elasticsearch écoute sur les ports 9200 et 9300
 - Kibana écoute sur le port 5601
 
@@ -151,5 +153,6 @@ vagrant ssh
 
 - L'UI écoute sur le port 8080
 - L'API écoute sur le port 8081
+- La visualisation écoute sur le port 8082
 - Elasticsearch écoute sur les ports 9200 et 9300
 - SSH écoute sur le port 2222

@@ -1,9 +1,10 @@
 {
   "name": "ge-api-temp",
-  "version": "1.1.1",
+  "version": "1.2.0",
   "description": "Gesform-Evolution API temporaire",
   "main": "gulpfile.js",
   "dependencies": {
+    "excel-export": "^0.5.1",
     "gulp": "^3.9.1",
     "gulp-bump": "^1.0.0",
     "gulp-filter": "^4.0.0",

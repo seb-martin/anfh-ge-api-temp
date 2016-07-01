@@ -1,0 +1,149 @@
+doctype html
+html
+  head
+    title #{region}/#{exercice}/#{code}
+    link(
+      rel="stylesheet"
+      href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.6/css/bootstrap.min.css"
+      integrity="sha384-1q8mTJOASx8j1Au+a5WDVnPi2lkFfwwEAa8hDDdjZlpLegxhjVME1fgjWPGmkzs7"
+      crossorigin="anonymous"
+    )
+  body.container
+    .page-header
+      h3
+        span #{intitule}
+        =' '
+        span(class='label label-default') #{code}
+
+    dl.dl-horizontal
+      dt Publiée
+      if _publie
+        dd(style='margin-bottom: 10px')
+          span(class='glyphicon glyphicon-ok') 
+      else
+        dd(style='margin-bottom: 10px')
+          span(class='glyphicon glyphicon-remove') 
+    
+      if axe
+        dt Axe
+        dd(style='margin-bottom: 10px') 
+          span.badge #{axe.num}
+          =' '
+          span #{axe.intitule}
+      
+      if nature
+        dt Nature
+        dd(style='margin-bottom: 10px') 
+          span.label.label-default #{nature.abbr}
+          =' '
+          span #{nature.libelle}
+      
+      if typologie
+        dt Typologie
+        dd(style='margin-bottom: 10px')
+          span.label.label-default #{typologie.origine}
+          =' '
+          span #{typologie.libelle}
+      
+      if titulaire
+        dt Organisme de formation titulaire
+        dd
+          .panel.panel-default
+            .panel-body #{titulaire}
+
+      if contexte
+        dt Contexte
+        dd
+          .panel.panel-default
+            .panel-body !{contexte}
+      
+      if objectifs
+        dt Objectifs
+        dd
+          .panel.panel-default
+            .panel-body !{objectifs}
+    
+      if autre
+        dt Renseignements complémentaires
+        dd
+          .panel.panel-default
+            .panel-body !{autre}
+    
+      if publics && publics.length > 0
+        dt Publics de l'action
+        dd
+          ul.list-group
+            each p in publics
+              li.list-group-item #{p}
+      
+      if modules && modules.length > 0
+        dt Modules
+        dd
+          each module in modules
+            .panel.panel-default
+              .panel-heading
+                h4(class='panel-title') #{module.intitule}
+
+              .panel-body
+                dl
+                  if module.num
+                    dt Numéro
+                    dd(style='margin-bottom: 10px') 
+                      span.badge #{module.num}
+
+                  if module.duree            
+                    dt Durée
+                    dd
+                      .panel.panel-default
+                        .panel-body #{module.duree}
+                  
+                  if module.formateur
+                    dt Organisme de formation formateur
+                    dd #{module.formateur}
+                  
+                  if module.contexte
+                    dt Contexte
+                    dd
+                      .panel.panel-default
+                        .panel-body !{module.contexte}
+                  
+                  if module.objectifs
+                    dt Objectifs
+                    dd
+                      .panel.panel-default
+                        .panel-body !{module.objectifs}
+                  
+                  if module.programme
+                    dt Programme
+                    dd
+                      .panel.panel-default
+                        .panel-body !{module.programme}
+                  
+                  if module.publics && module.publics.length > 0
+                    dt Publics du module
+                    dd
+                      ul.list-group
+                        each p in module.publics
+                          li.list-group-item #{p}
+
+        if planifications && planifications.length > 0
+          dt Planifications
+          dd
+            each planification, index in planifications
+              .panel.panel-default
+                .panel-heading
+                  h5(class='panel-title') Planification #{index + 1}
+              
+                table(class="table table-bordered table-condensed")
+                  tr
+                    th Du
+                    th Au
+                    th Ville
+                    th Détail
+                  each evt in planification.calendrier
+                    tr
+                      td #{evt.debut}
+                      td #{evt.fin}
+                      td #{evt.ville}
+                      td #{evt.detail}
+            

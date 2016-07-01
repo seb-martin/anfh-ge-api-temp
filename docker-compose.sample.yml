@@ -10,6 +10,12 @@ api:
   # Lie le port 80 du container api au port 8081 de la machine hôte
     - "8081:80"
 
+# Interface de visualisation
+views:
+  ports:
+  # Lie le port 80 du container views au le port 8081 de la machine hôte
+    - "8082:8082"
+
 # Base de données
 db:
   ports:

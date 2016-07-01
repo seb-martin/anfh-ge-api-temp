@@ -8,8 +8,12 @@
     "cors": "^2.7.1",
     "elasticsearch": "^10.0.1",
     "express": "^4.13.3",
+    "humanize-duration": "^3.9.0",
+    "marked": "^0.3.5",
+    "moment": "^2.13.0",
     "morgan": "^1.7.0",
-    "promise": "^7.1.1"
+    "promise": "^7.1.1",
+    "pug": "^2.0.0-beta3"
   },
   "scripts": {
     "start": "node server.js"

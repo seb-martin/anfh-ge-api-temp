@@ -75,7 +75,8 @@
         properties: {
           publics: {
             type: Array,
-            value: []
+            value: [],
+            observer: '_publicsChanged'
           }
         },
 
@@ -120,6 +121,10 @@
           // Le removed est placé en new, pour être récupérable
           this._newPublic = evt.detail.public;
           this.splice('publics', evt.model.index, 1);
+        },
+
+        _publicsChanged: function() {
+          this._newPublic = '';
         }
       });
 

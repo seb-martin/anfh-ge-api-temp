@@ -8,6 +8,12 @@ api:
   links:
     - db:db
 
+# Interface Applicative
+views:
+  build: ./views
+  links:
+    - db:db
+
 # Base de données
 db:
   build: ./db
