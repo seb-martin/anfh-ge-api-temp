@@ -17,6 +17,10 @@
         src: ['./api/package.json'],
         dst: './api'
       },
+      views: {
+        src: ['./views/src/package.json'],
+        dst: './view/src'
+      },
       ui: {
         src: ['./ui/package.json'],
         dst: './ui'
@@ -29,6 +33,10 @@
         src: ['./admin/src/package.json'],
         dst: './admin/src'
       },
+      data: {
+        src: ['./data/src/package.json'],
+        dst: './data/src'
+      }
     },
     versionToCheck: 'package.json'
   };
@@ -86,6 +94,10 @@
     return ver(paths.versionToBump.api, argv.version);
   });
 
+  gulp.task('bump-views-version', function(){
+    return ver(paths.versionToBump.views, argv.version);
+  });
+
   gulp.task('bump-ui-version', function(){
     return ver(paths.versionToBump.ui, argv.version);
   });
@@ -98,6 +110,10 @@
     return ver(paths.versionToBump.admin, argv.version);
   });
 
+  gulp.task('bump-data-version', function(){
+    return ver(paths.versionToBump.data, argv.version);
+  });
+
   // Major subtasks
 
   gulp.task('bump-project-major', [], function() {
@@ -106,6 +122,10 @@
 
   gulp.task('bump-api-major', [], function() {
     return inc(paths.versionToBump.api, 'major');
+  });
+
+  gulp.task('bump-views-major', [], function() {
+    return inc(paths.versionToBump.views, 'major');
   });
 
   gulp.task('bump-ui-major', [], function() {
@@ -120,6 +140,10 @@
     return inc(paths.versionToBump.admin, 'major');
   });
 
+  gulp.task('bump-data-major', [], function() {
+    return inc(paths.versionToBump.data, 'major');
+  });
+
   // Minor subtasks
 
   gulp.task('bump-project-minor', [], function() {
@@ -128,6 +152,10 @@
 
   gulp.task('bump-api-minor', [], function() {
     return inc(paths.versionToBump.api, 'minor');
+  });
+
+  gulp.task('bump-views-minor', [], function() {
+    return inc(paths.versionToBump.views, 'minor');
   });
 
   gulp.task('bump-ui-minor', [], function() {
@@ -142,6 +170,10 @@
     return inc(paths.versionToBump.admin, 'minor');
   });
 
+  gulp.task('bump-data-minor', [], function() {
+    return inc(paths.versionToBump.data, 'minor');
+  });
+
   // Patch subtasks
 
   gulp.task('bump-project-patch', [], function() {
@@ -150,6 +182,10 @@
 
   gulp.task('bump-api-patch', [], function() {
     return inc(paths.versionToBump.api, 'patch');
+  });
+
+  gulp.task('bump-views-patch', [], function() {
+    return inc(paths.versionToBump.views, 'patch');
   });
 
   gulp.task('bump-ui-patch', [], function() {
@@ -164,15 +200,56 @@
     return inc(paths.versionToBump.admin, 'patch');
   });
 
+  gulp.task('bump-data-patch', [], function() {
+    return inc(paths.versionToBump.data, 'patch');
+  });
+
   // MAIN TASKS
 
-  gulp.task('bump-version', ['check-version-arg', 'bump-project-version', 'bump-api-version', 'bump-ui-version', 'bump-admin-version', 'bump-recovery-version', 'commit']);
+  gulp.task('bump-version', [
+    'check-version-arg',
+    'bump-project-version',
+    'bump-api-version',
+    'bump-views-version',
+    'bump-ui-version',
+    'bump-admin-version',
+    'bump-recovery-version',
+    'bump-data-version',
+    'commit'
+  ]);
 
-  gulp.task('bump-major', ['bump-project-major', 'bump-api-major', 'bump-ui-major', 'bump-recovery-major', 'bump-admin-major', 'commit']);
+  gulp.task('bump-major', [
+    'bump-project-major',
+    'bump-api-major',
+    'bump-views-major',
+    'bump-ui-major',
+    'bump-recovery-major',
+    'bump-admin-major',
+    'bump-data-major',
+    'commit'
+  ]);
 
-  gulp.task('bump-minor', ['bump-project-minor', 'bump-api-minor', 'bump-ui-minor', 'bump-recovery-minor', 'bump-admin-minor', 'commit']);
+  gulp.task('bump-minor', [
+    'bump-project-minor',
+    'bump-api-minor',
+    'bump-views-minor',
+    'bump-ui-minor',
+    'bump-recovery-minor',
+    'bump-admin-minor',
+    'bump-data-minor',
+    'commit'
+  ]);
 
-  gulp.task('bump-patch', ['bump-project-patch', 'bump-api-patch', 'bump-ui-patch', 'bump-recovery-patch', 'bump-admin-patch', 'commit']);
+  gulp.task('bump-patch', [
+    'bump-project-patch',
+    'bump-api-patch',
+    'bump-views-patch',
+    'bump-ui-patch',
+    'bump-recovery-patch',
+    'bump-admin-patch',
+    'bump-data-patch',
+    'commit'
+  ]);
 
   gulp.task('tag', function() {
     return gulp.src(paths.versionToCheck)
