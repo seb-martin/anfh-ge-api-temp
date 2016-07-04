@@ -1,0 +1,49 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-marked-sandbox-dialog">
+
+  <template>
+    <style include="shared-styles"></style>
+
+    <paper-dialog id="sandboxDialog" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <h2>Aide / Bac à sable</h2>
+
+      <paper-dialog-scrollable>
+        <par-marked-sandbox id="sandbox" on-sandbox-changed="_refit"></par-marked-sandbox>
+      </paper-dialog-scrollable>
+
+      <div class="buttons">
+        <paper-button on-tap="_rechargerTap">Recharger l'aide</paper-button>
+        <paper-button on-tap="_nettoyerTap">Nettoyer le bac à sable</paper-button>
+        <paper-button dialog-dismiss>Fermer</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+  <script>
+  Polymer({
+    is: 'par-marked-sandbox-dialog',
+
+    properties: {
+      opened: {
+        type: Boolean,
+        notify: true
+      }
+    },
+
+    _rechargerTap: function() {
+      this.$.sandbox.reload();
+    },
+
+    _nettoyerTap: function() {
+      this.$.sandbox.clear();
+    },
+
+    _refit: function() {
+      this.$.sandboxDialog.refit();
+    },
+
+  });
+  </script>
+
+</dom-module>

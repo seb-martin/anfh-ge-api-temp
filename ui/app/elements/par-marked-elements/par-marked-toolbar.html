@@ -1,0 +1,113 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-marked-toolbar">
+  <style include="shared-styles"></style>
+  <style>
+    paper-toolbar {
+      --paper-toolbar-background: var(--primary-background-color);
+      --paper-toolbar-color:      var(--primary-text-color);
+    }
+  </style>
+  <template>
+    <paper-toolbar id="toolbar" on-mousedown="_dontFocus">
+      <paper-icon-button tabindex="-1" icon="editor:format-italic" on-tap="_italicTap" on-mousedown="_dontFocus"></paper-icon-button>
+      <paper-icon-button tabindex="-1" icon="editor:format-bold" on-tap="_boldTap" on-mousedown="_dontFocus"></paper-icon-button>
+      <paper-icon-button tabindex="-1" icon="editor:format-list-bulleted" on-tap="_listBulletedTap" on-mousedown="_dontFocus"></paper-icon-button>
+      <paper-icon-button tabindex="-1" icon="editor:format-list-numbered" on-tap="_listNumberedTap" on-mousedown="_dontFocus"></paper-icon-button>
+      <span class="title"> </span>
+      <paper-icon-button tabindex="-1" icon="{{_computePreviewIcon(preview)}}" toggles active="{{preview}}" on-mousedown="_dontFocus"></paper-icon-button>
+      <paper-icon-button tabindex="-1" icon="{{_computeHelpIcon(help)}}" toggles active="{{help}}" on-mousedown="_dontFocus"></paper-icon-button>
+    </paper-toolbar>
+
+  </template>
+  <script>
+    Polymer({
+      is: 'par-marked-toolbar',
+
+      behaviors: [
+        Polymer.NeonAnimationRunnerBehavior
+      ],
+
+      properties: {
+        displayed: {
+          type: Boolean,
+        },
+        preview: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        help: {
+          type: Boolean,
+          value: false,
+          notify: true
+        },
+        animationConfig: {
+          value: function() {
+            return {
+              'entry': [{
+                name: 'fade-in-animation',
+                node: this
+              }],
+              'exit': [{
+                name: 'fade-out-animation',
+                node: this
+              }]
+            };
+          }
+        }
+      },
+
+      listeners: {
+        'neon-animation-finish': '_onNeonAnimationFinish'
+      },
+
+      show: function() {
+        this.cancelAnimation();
+        this.displayed = true;
+        this.style.display = 'block';
+        this.playAnimation('entry');
+      },
+      hide: function() {
+        this.cancelAnimation();
+        this.displayed = false;
+        this.playAnimation('exit');
+      },
+
+      _onNeonAnimationFinish: function() {
+        if (!this.displayed) {
+          this.style.display = 'none';
+        }
+      },
+
+      _computePreviewIcon: function(preview) {
+        return preview ? 'icons:visibility-off' : 'icons:visibility';
+      },
+
+      _computeHelpIcon: function(help) {
+        return help ? 'icons:help' : 'icons:help-outline';
+      },
+
+      _dontFocus: function(evt) {
+        evt.preventDefault();
+      },
+
+      _italicTap: function() {
+        this.fire('italic', {italic: true}, {bubbles: false});
+      },
+
+      _boldTap: function() {
+        this.fire('bold', {bold: true}, {bubbles: false});
+      },
+
+      _listBulletedTap: function() {
+        this.fire('unordered-list', {unordered: true}, {bubbles: false});
+      },
+
+      _listNumberedTap: function() {
+        this.fire('ordered-list', {ordered: true}, {bubbles: false});
+      },
+
+    });
+  </script>
+</dom-module>

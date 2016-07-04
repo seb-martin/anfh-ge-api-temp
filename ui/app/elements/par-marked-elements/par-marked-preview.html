@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-marked-preview">
+<style include="shared-styles"></style>
+<style>
+  .markdown-html {
+    color: var(--secondary-text-color);
+  }
+</style>
+  <template>
+    <marked-element markdown="[[_markdownDisplayed(markdown)]]" on-mousedown="_dontFocus">
+      <div class="markdown-html"></div>
+    </marked-element>
+  </template>
+  <script>
+  Polymer({
+    is: 'par-marked-preview',
+
+    behaviors: [
+      Polymer.NeonAnimationRunnerBehavior
+    ],
+
+    properties: {
+      markdown: {
+        type: String,
+        value: ''
+      },
+
+      displayed: {
+        type: Boolean
+      },
+
+      animationConfig: {
+        value: function() {
+          return {
+            'entry': [{
+              name: 'scale-up-animation',
+              node: this
+            }],
+            'exit': [{
+              name: 'scale-down-animation',
+              node: this
+            }]
+          };
+        }
+      }
+    },
+
+    listeners: {
+      'neon-animation-finish': '_onNeonAnimationFinish'
+    },
+
+    show: function() {
+      this.cancelAnimation();
+      this.displayed = true;
+      this.style.display = 'block';
+      this.playAnimation('entry');
+    },
+    hide: function() {
+      this.cancelAnimation();
+      this.displayed = false;
+      this.playAnimation('exit');
+    },
+
+    _onNeonAnimationFinish: function() {
+      if (!this.displayed) {
+        this.style.display = 'none';
+      }
+    },
+
+    _markdownDisplayed: function(markdown) {
+      return markdown ? markdown : '*Rien à visualiser*';
+    },
+
+    _dontFocus: function(evt) {
+      evt.preventDefault();
+    }
+
+  });
+  </script>
+</dom-module>

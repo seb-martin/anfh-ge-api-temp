@@ -27,7 +27,9 @@
       handle-as="text"
       on-response="_responseHandler" last-response="{{lastResponse}}"></iron-ajax>
 
-    <paper-textarea value="{{value}}" class="flex"></paper-textarea>
+    <!-- <paper-textarea value="{{value}}" class="flex"></paper-textarea> -->
+    <iron-autogrow-textarea value="{{value}}" rows="10" class="flex"></iron-autogrow-textarea>
+
     <marked-element markdown="{{value}}" class="flex">
       <div class="markdown-html"></div>
     </marked-element>
