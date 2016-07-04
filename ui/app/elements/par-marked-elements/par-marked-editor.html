@@ -33,7 +33,7 @@
 
     <par-marked-preview id="preview" markdown="[[value]]"></par-marked-preview>
 
-    <par-marked-sandbox-dialog id="help" opened="{{help}}" on-iron-overlay-closed="_helpClosed"></par-marked-sandbox-dialog>
+    <par-marked-help-dialog id="help" opened="{{help}}" on-iron-overlay-closed="_helpClosed"></par-marked-help-dialog>
 
   </template>
 </dom-module>
@@ -283,7 +283,7 @@ Polymer({
   },
 
   _helpClosed: function() {
-    this.focused = true;
+    this.$.input.focus();
   },
 
 });
