@@ -1,0 +1,69 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-public-dialog">
+  <template>
+    <style>
+    iron-icon[prefix] {
+      padding-right: 5px;
+    }
+    </style>
+    <paper-dialog id="publicDialog" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <h2>{{title}}</h2>
+
+      <p>
+        Complétez le nom du public, idéalement, un métier du
+        <a href="http://www.metiers-fonctionpubliquehospitaliere.sante.gouv.fr/" target="_blank">Répertoire v3 des métiers de la FPH</a>.
+      </p>
+
+      <form is="iron-form" id="form" on-submit="_onSubmit">
+        <paper-input id="input" value="{{value}}" label="Public" autofocus>
+          <iron-icon icon="icons:face" prefix></iron-icon>
+        </paper-input>
+      </form>
+
+      <div class="buttons">
+        <paper-button raised dialog-confirm>OK</paper-button>
+        <paper-button dialog-dismiss>Annuler</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+  Polymer({
+    is: 'par-public-dialog',
+
+    properties: {
+      title: {
+        type: String
+      },
+
+      value: {
+        type: String,
+        notify: true
+      }
+    },
+
+    open: function() {
+      this.$.publicDialog.open();
+    },
+
+    confirm: function() {
+      this.$.publicDialog.closingReason.confirmed = true;
+      this.close();
+    },
+
+    cancel: function() {
+      this.$.publicDialog.closingReason.canceled = true;
+      this.close();
+    },
+
+    close: function() {
+      this.$.publicDialog.close();
+    },
+
+    _onSubmit: function() {
+      this.confirm();
+    }
+
+  });
+  </script>
+</dom-module>
