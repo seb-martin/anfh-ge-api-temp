@@ -16,13 +16,13 @@
       </p>
 
       <form is="iron-form" id="form" on-submit="_onSubmit">
-        <paper-input id="input" value="{{value}}" label="Public" autofocus>
+        <paper-input id="input" value="{{value}}" label="Public" autofocus required error-message="La dénomination du public est requise">
           <iron-icon icon="icons:face" prefix></iron-icon>
         </paper-input>
       </form>
 
       <div class="buttons">
-        <paper-button raised dialog-confirm>OK</paper-button>
+        <paper-button raised on-tap="_onConfirmTap">OK</paper-button>
         <paper-button dialog-dismiss>Annuler</paper-button>
       </div>
     </paper-dialog>
@@ -38,7 +38,8 @@
 
       value: {
         type: String,
-        notify: true
+        notify: true,
+        observer: '_onValueChanged'
       }
     },
 
@@ -47,8 +48,10 @@
     },
 
     confirm: function() {
-      this.$.publicDialog.closingReason.confirmed = true;
-      this.close();
+      if (this.$.form.validate()) {
+        this.$.publicDialog.closingReason.confirmed = true;
+        this.close();
+      }
     },
 
     cancel: function() {
@@ -62,7 +65,15 @@
 
     _onSubmit: function() {
       this.confirm();
-    }
+    },
+
+    _onConfirmTap: function() {
+      this.confirm();
+    },
+
+    _onValueChanged: function() {
+      this.$.form.validate()
+    },
 
   });
   </script>
