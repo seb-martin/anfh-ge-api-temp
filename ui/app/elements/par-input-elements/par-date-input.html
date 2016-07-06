@@ -7,31 +7,33 @@
       :host {
         display: inline-block;
       }
-      input[is="iron-input"] {
-        font: inherit;
-        outline: none;
-        box-shadow: none;
-        border: none;
-        width: 6em;
-        text-align: right;
+
+      paper-input {
+        width: 10em;
+      }
+
+      iron-icon[prefix] {
+        padding-right: 5px;
       }
     </style>
 
-    <paper-input-container attr-for-value="date" always-float-label>
-      <label>{{label}}</label>
-      <input is="iron-input" type="text" value="{{_computeShortDate(value)}}" readonly
-        on-tap="_openDialog">
-      <paper-icon-button suffix icon="icons:event" toggles active="{{dialogOpened}}"></paper-icon-button>
-    </paper-input-container>
+    <paper-input
+      label="[[label]]"
+      readonly
+      value="[[_computeShortDate(value)]]"
+      on-tap="_onOpenDialogTap"
+      required$="[[required]]">
+      <iron-icon prefix icon="icons:event"></iron-icon>
+      <paper-icon-button suffix icon="clear" on-tap="_onClearTap"></paper-icon-button>
+    </paper-input>
 
-    <paper-dialog id="dialog" class="paper-date-picker-dialog" modal opened="{{dialogOpened}}" on-iron-overlay-closed="_dialogClosing">
+    <paper-dialog id="dialog" modal on-iron-overlay-closed="_dialogClosing">
       <paper-date-picker
-      id="datepicker"
-      class="paper-input-input"
-      locale="fr"
-      on-date-changed="_pickedDateChanged"
-      force-narrow
-      heading-format="ddd D MMMM"
+        id="datepicker"
+        locale="fr"
+        date="{{_pickedDate}}"
+        force-narrow
+        heading-format="ddd D MMMM"
       ></paper-date-picker>
 
       <div class="buttons">
@@ -50,75 +52,75 @@
         is: 'par-date-input',
 
         behaviors: [
-          Polymer.IronFormElementBehavior,
-          Polymer.IronValidatableBehavior
+          Polymer.IronFormElementBehavior
         ],
 
         properties: {
           value: {
             type: String,
             notify: true,
+            value: null,
             observer: '_valueChanged'
           },
 
-          label: {
-            type: String
+          date: {
+            type: Date,
+            notify: true,
+            readOnly: true
           },
 
-          date: {
-            type: Object,
+          initValue: {
+            type: String,
+            value: moment().format('YYYY-MM-DD'),
+            observer: '_initValueChanged'
+          },
+
+          initDate: {
+            type: Date,
             notify: true,
-            readOnly: true,
-            observer: '_dateChanged'
-          }
-        },
-
-        _dateChanged: function(date) {
-          if (!this.$.datepicker.date ||
-            !date.isSame(moment(this.$.datepicker.date), 'day')) {
-
-            this.$.datepicker.date = date.toDate();
-          }
-
-        },
-
-        _pickedDateChanged: function(evt) {
-          var pickedDate = evt.detail.value;
-          if (pickedDate) {
-            this._setDate(moment(pickedDate).startOf('day'));
-          } else {
-            this._setDate(null);
+            readOnly: true
           }
         },
 
         _valueChanged: function(dateISO) {
-          if (dateISO) {
-            this._setDate(moment(dateISO).startOf('day'));
-          } else {
-            this._setDate(moment());
-          }
+          this._setDate(this._isoToDate(dateISO));
         },
 
-        _computeShortDate: function(dateIso) {
-          return moment(dateIso).format('DD/MM/YYYY');
+        _initValueChanged: function(dateISO) {
+          this._setInitDate(this._isoToDate(dateISO));
         },
 
-        _openDialog: function() {
+        _computeShortDate: function(dateISO) {
+          return dateISO ? moment(dateISO).format('DD/MM/YYYY') : '';
+        },
+
+        _onClearTap: function(evt) {
+          evt.stopPropagation();
+          this.value = null;
+        },
+
+        _onOpenDialogTap: function() {
+          console.log('_onOpenDialogTap', this.date, this.initDate);
+          this._pickedDate = this.date ? this.date : this.initDate;
           this.$.dialog.open();
         },
 
         _dialogClosing: function(evt) {
           if (evt.detail.confirmed) {
-            if (!this.value || !this.date.isSame(moment(this.value), 'day')) {
-              this.value = this.date.format('YYYY-MM-DD');
-            }
-          } else {
-            if (this.value) {
-              this._setDate(moment(this.value).startOf('day'));
-            } else {
-              this._setDate(moment());
+            var pickedDateISO = this._dateToISO(this._pickedDate);
+
+            if (this.value !== this.pickedDateISO) {
+              this.value = pickedDateISO;
             }
           }
+        },
+
+        _isoToDate: function(dateISO) {
+          return dateISO ? moment(dateISO).startOf('day').toDate() : null;
+        },
+
+        _dateToISO: function(date) {
+          return date ? moment(date).format('YYYY-MM-DD') : null;
         }
 
       });
