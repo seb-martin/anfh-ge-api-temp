@@ -1,0 +1,155 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-marked-help-dialog">
+  <template>
+    <style>
+    paper-dialog {
+      width: 800px;
+    }
+
+    paper-toolbar.draw {
+      --paper-toolbar-background: var(--primary-background-color);
+      --paper-toolbar-color:      var(--primary-text-color);
+    }
+
+    paper-toolbar.content {
+
+    }
+
+    .markdown-html {
+      color: var(--secondary-text-color);
+    }
+    </style>
+    <paper-dialog id="helpDialog" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+
+      <div class="layout horizontal">
+        <div class="layout vertical">
+          <paper-toolbar class="draw">
+            <iron-icon icon="help-outline"></iron-icon>
+          </paper-toolbar>
+          <paper-listbox selected="{{selected}}">
+            <template is="dom-repeat" items="{{helpItems}}">
+              <paper-item>{{item.title}}</paper-item>
+            </template>
+          </paper-listbox>
+
+        </div>
+        <section class="flex">
+          <paper-toolbar class="content">
+            <div class="title">[[helpItem.title]]</div>
+            <paper-icon-button icon="refresh" on-tap="_reload"></paper-icon-button>
+          </paper-toolbar>
+
+          <paper-textarea value="{{markdown}}"></paper-textarea>
+
+          <marked-element markdown="{{markdown}}" class="flex">
+            <div class="markdown-html"></div>
+          </marked-element>
+
+        </section>
+
+      </div>
+
+      <div class="buttons">
+        <paper-button dialog-dismiss>Fermer</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+  <script>
+  Polymer({
+    is: 'par-marked-help-dialog',
+
+    properties: {
+      opened: {
+        type: Boolean,
+        notify: true
+      }
+    },
+
+    observers: [
+      '_onSelectedChanged(selected)'
+    ],
+
+    ready: function() {
+      this.helpItems = [
+        {
+          id: 'intro',
+          title: 'Introduction',
+          markdown: [
+            'Ce composant supporte le `Markdown`, un langage de balisage léger.',
+            '',
+            '- `Markdown` a été conçu pour être aussi facile à lire et à écrire que possible.',
+            '- La syntaxe de `Markdown` sert un objectif : ' +
+            'être utilisée comme format *d\'écriture* sur le web.'
+          ].join('\r\n')
+        },
+        {
+          id: 'paragraphs',
+          title: 'Paragraphes',
+          markdown: [
+            'Les lignes de texte appartiennent à un même paragraphe.',
+            'Rédiger une ligne par phrase est une bonne pratique.',
+            '',
+            'Intercaler une ligne vide permet de produire un nouveau paragraphe.'
+          ].join('\r\n')
+        },
+        {
+          id: 'formats',
+          title: 'Formatages',
+          markdown: [
+            'Décorer un mot ou un groupe de mots avec le caractère `*` ' +
+            'permet de le formatter en italique et/ou en gras.',
+            '',
+            '- Ce texte possède *des caractères en italiques*.',
+            '- Ce texte possède **des caractères en gras**.',
+            '- Ce texte possède ***des caractères en italique et en gras***.'
+          ].join('\r\n')
+        },
+        {
+          id: 'unorderdLists',
+          title: 'Listes non ordonnées',
+          markdown: [
+            'Préfixer des lignes avec `"- "` (un tiret suivi d\'un espace) ' +
+            'permet de produire des listes à puces',
+            '',
+            '- Siège',
+            '- Délégations régionales',
+            '  - Alpes',
+            '  - Alsace',
+            '  - ...'
+          ].join('\r\n')
+        },
+        {
+          id: 'orderedLists',
+          title: 'Listes ordonnées',
+          markdown: [
+            '1. Premier',
+            '2. Second',
+            '3. Troisième',
+            '  1. Troisième 1',
+            '  2. Troisième 2',
+            '  3. Troisième 3'
+          ].join('\r\n')
+        }
+      ];
+      this.selected = 0;
+    },
+
+    _onSelectedChanged: function(selected) {
+      this.helpItem = this.helpItems[selected];
+      this.markdown = this.helpItem.markdown;
+
+    },
+
+    _reload: function() {
+      this.markdown = this.helpItem.markdown;
+    },
+
+    _onResponse: function(evt) {
+      this.markdown = evt.detail.response;
+    },
+
+  });
+  </script>
+</dom-module>

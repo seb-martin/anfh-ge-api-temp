@@ -1,0 +1,115 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-evenement-item">
+  <template>
+
+    <style include="shared-styles"></style>
+
+    <style>
+    :host {
+      display: inline-block;
+    }
+    </style>
+
+    <paper-icon-item id="consultationItem" on-tap="_editTap">
+      <iron-icon icon="icons:date-range" item-icon></iron-icon>
+
+      <paper-item-body two-line$="{{!value.ville}}">
+        <template is="dom-if" if="{{_noDay(value.debut, value.fin)}}">
+          <div hidden$="{{!value.ville}}">
+            A <strong>{{value.ville}}</strong>
+          </div>
+        </template>
+
+        <template is="dom-if" if="{{_oneDay(value.debut, value.fin)}}">
+          <div>
+            Le
+            <strong>{{_format(value.debut)}}</strong>
+            ({{_fromNow(value.debut, value.fin)}})
+            <span hidden$="{{!value.ville}}">, {{value.ville}}</span>
+          </div>
+        </template>
+
+        <template is="dom-if" if="{{_manyDays(value.debut, value.fin)}}">
+          <div>
+            Du
+            <strong>{{_format(value.debut)}}</strong> au
+            <strong>{{_format(value.fin)}}</strong>
+            ({{_fromNow(value.debut, value.fin)}})
+            <span hidden$="{{!value.ville}}">, {{value.ville}}</span>
+          </div>
+        </template>
+
+        <div hidden$="{{!value.detail}}" secondary>{{value.detail}}</div>
+      </paper-item-body>
+      <paper-icon-button icon="icons:delete" on-tap="_removeTap"></paper-icon-button>
+    </paper-icon-item>
+
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-evenement-item',
+
+      properties: {
+        value: {
+          type: Object,
+          notify: true,
+          value: {}
+        }
+
+      },
+
+      _format: function(dateISO) {
+        return moment(dateISO).format('D MMMM YYYY');
+      },
+
+      _fromNow: function(debutISO, finISO) {
+        var now = moment();
+        var debut = moment(debutISO);
+        var fin = moment(finISO);
+
+        var fromNow;
+        if (now.isBefore(debut, 'day')) {
+          fromNow = 'Démarre ' + debut.set('hour', 8).fromNow();
+        } else if (now.isAfter(debut, 'day')) {
+          fromNow = 'Terminé ' + fin.set('hour', 17).fromNow();
+        } else {
+          fromNow = 'En ce moment';
+        }
+        return fromNow;
+      },
+
+      _noDay: function(debutISO, finISO) {
+        return !debutISO && !finISO;
+      },
+
+      _oneDay: function(debutISO, finISO) {
+        return debutISO && finISO && debutISO === finISO;
+      },
+
+      _manyDays: function(debutISO, finISO) {
+        return debutISO && finISO && debutISO !== finISO;
+      },
+
+      _computeUpdateDisabled: function(debut, fin) {
+        return moment(debut).isAfter(moment(fin));
+      },
+
+      _editTap: function(evt) {
+        evt.stopPropagation();
+        this.fire('edit-evenement', {evenement: this.value});
+      },
+
+      _removeTap: function(evt) {
+        evt.stopPropagation();
+        this.fire('remove-evenement', {evenement: this.value});
+      }
+
+    });
+  })();
+  </script>
+</dom-module>

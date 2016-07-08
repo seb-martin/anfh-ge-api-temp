@@ -1,0 +1,291 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-marked-editor">
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+
+    </style>
+
+    <par-marked-toolbar
+      id="toolbar"
+      help="{{help}}"
+      preview="{{preview}}"
+      on-italic="_onItalic"
+      on-bold="_onBold"
+      on-unordered-list="_onUnorderedList"
+      on-ordered-list="_onOrderedList"
+     ></par-marked-toolbar>
+
+    <paper-textarea
+     id="input"
+     max-rows="10"
+     value="{{value}}"
+     label="[[label]]"
+     required="[[required]]"
+     char-counter$="[[charCounter]]"
+     maxlength$="[[maxlength]]"
+     auto-validate="[[autoValidate]]"
+     focused="{{focused}}"
+     ></paper-textarea>
+
+    <par-marked-preview id="preview" markdown="[[value]]"></par-marked-preview>
+
+    <par-marked-help-dialog id="help" opened="{{help}}" on-iron-overlay-closed="_helpClosed"></par-marked-help-dialog>
+
+  </template>
+</dom-module>
+
+<script>
+
+var wordStart = function(text, pos) {
+  var startPos = 0;
+  while (startPos === 0 && pos > 0) {
+    if (text[pos - 1].search(/[\s\.,;()']/) > -1) {
+      startPos = pos;
+    } else {
+      pos--;
+    }
+  }
+  return startPos;
+};
+
+var wordEnd = function(text, pos) {
+  var endPos = text.length;
+  while (endPos === text.length && pos < text.length) {
+    if (text[pos].search(/[\s\.,;()']/) > -1) {
+      endPos = pos;
+    } else {
+      pos++;
+    }
+  }
+  return endPos;
+};
+
+var lineStart = function(text, pos) {
+  var startPos = 0;
+  while (startPos === 0 && pos > 0) {
+    if (text[pos - 1].search(/[\r\n]/) > -1) {
+      startPos = pos;
+    } else {
+      pos--;
+    }
+  }
+  return startPos;
+};
+
+var lineEnd = function(text, pos) {
+  var endPos = text.length;
+  while (endPos === text.length && pos < text.length) {
+    if (text[pos].search(/[\r\n]/) > -1) {
+      endPos = pos;
+    } else {
+      pos++;
+    }
+  }
+  return endPos;
+};
+
+Polymer({
+  is: 'par-marked-editor',
+  behaviors: [
+    Polymer.IronFormElementBehavior
+  ],
+
+  properties: {
+    edit: {
+      type: Boolean,
+      observer: '_editChanged'
+    },
+
+    focused: {
+      type: Boolean,
+      observer: '_focusedChanged'
+    }
+
+  },
+
+  listeners: {
+    'on-value-changed': '_onValueChanged'
+  },
+
+  observers: [
+    '_displayPreview(focused, preview)'
+  ],
+
+  get selectionStart() {
+    return this.$.input.inputElement.selectionStart;
+  },
+
+  get selectionEnd() {
+    return this.$.input.inputElement.selectionEnd;
+  },
+
+  set selectionStart(val) {
+    this.$.input.inputElement.selectionStart = val;
+  },
+
+  set selectionEnd(val) {
+    this.$.input.inputElement.selectionEnd = val;
+  },
+
+  focalise: function(selectionStart, selectionEnd) {
+    this.focused = true;
+    this.selectionEnd = selectionEnd;
+    this.selectionStart = selectionStart;
+  },
+
+  _onItalic: function() {
+    var ss = wordStart(this.value, this.selectionStart);
+    var se = wordEnd(this.value, this.selectionEnd);
+
+    var text = this.value.substring(ss, se);
+
+    var matchStartAsterisk = text.match(/^(\*+)/m);
+    var matchEndAsterisk = text.match(/(\*+)$/m);
+
+    if (!(matchStartAsterisk || matchEndAsterisk)) {
+      // Italic
+      text = '*' + text + '*';
+    } else if (
+      matchStartAsterisk &&
+      matchEndAsterisk &&
+      matchStartAsterisk[0].length === matchEndAsterisk[0].length
+    ) {
+      var nbAsterisks = matchStartAsterisk[0].length;
+      if (nbAsterisks % 2 === 0) {
+        // En gras sans italic -> En gras, avec italic
+        text = text.replace(/^(\*+)/m, '***').replace(/(\*+)$/m, '***');
+      } else if (nbAsterisks > 1) {
+        // En gras et en italic -> En gras, sans italic
+        text = text.replace(/^(\*+)/m, '**').replace(/(\*+)$/m, '**');
+      } else {
+        // Sans gras et avec italic -> Sans gras, sans italic
+        text = text.replace(/^(\*+)/m, '').replace(/(\*+)$/m, '');
+      }
+    } else {
+      // Cleaning
+      text = text.replace(/^(\*+)/m, '').replace(/(\*+)$/m, '');
+    }
+
+    this.value = this.value.substring(0, ss) + text + this.value.substring(se);
+    this.focalise(ss, ss + text.length);
+  },
+
+  _onBold: function() {
+    var ss = wordStart(this.value, this.selectionStart);
+    var se = wordEnd(this.value, this.selectionEnd);
+
+    var text = this.value.substring(ss, se);
+
+    var matchStartAsterisk = text.match(/^(\*+)/m);
+    var matchEndAsterisk = text.match(/(\*+)$/m);
+
+    if (!(matchStartAsterisk || matchEndAsterisk)) {
+      // Gras
+      text = '**' + text + '**';
+    } else if (
+      matchStartAsterisk &&
+      matchEndAsterisk &&
+      matchStartAsterisk[0].length === matchEndAsterisk[0].length
+    ) {
+      var nbAsterisks = matchStartAsterisk[0].length;
+      if (nbAsterisks % 2 === 0) {
+        // En gras sans italic -> Sans gras, sans italic
+        text = text.replace(/^(\*+)/m, '').replace(/(\*+)$/m, '');
+      } else if (nbAsterisks > 1) {
+        // En gras et en italic -> Sans gras, avec italic
+        text = text.replace(/^(\*+)/m, '*').replace(/(\*+)$/m, '*');
+      } else {
+        // Sans gras et avec italic -> Avec gras, avec italic
+        text = text.replace(/^(\*+)/m, '***').replace(/(\*+)$/m, '***');
+      }
+    } else {
+      // Cleaning
+      text = text.replace(/^(\*+)/m, '').replace(/(\*+)$/m, '');
+    }
+
+    this.value = this.value.substring(0, ss) + text + this.value.substring(se);
+    this.focalise(ss, ss + text.length);
+  },
+
+  _onUnorderedList: function() {
+    var ss = lineStart(this.value, this.selectionStart);
+    var se = lineEnd(this.value, this.selectionEnd);
+
+    var text = this.value.substring(ss, se);
+    // On désindente si au moins une ligne commence par '- '
+    var unindent = text.split(/[\r\n]+/).reduce(function(b, line) {
+      return /^\-\s/.test(line) || b;
+    }, false);
+
+    if (unindent) {
+      text = text.replace(/(\-\s+)/g, '');
+    } else {
+      text = text.replace(/([^\r\n]+)/g, '- $&');
+
+    }
+
+    this.value = this.value.substring(0, ss) + text + this.value.substring(se);
+    this.focalise(ss, ss + text.length);
+  },
+
+  _onOrderedList: function() {
+    var ss = lineStart(this.value, this.selectionStart);
+    var se = lineEnd(this.value, this.selectionEnd);
+
+    var text = this.value.substring(ss, se);
+    // On désindente si au moins une ligne commence par 'n. ' où n est un nombre
+    var unindent = text.split(/[\r\n]+/).reduce(function(b, line) {
+      return /^\d+\.\s/.test(line) || b;
+    }, false);
+
+    var num = 0;
+    if (unindent) {
+      text = text.replace(/(\d+\.\s+)/g, '');
+    } else {
+      text = text.replace(/([^\r\n]+)/g, function(match/*, p1, offset, str*/) {
+        num++;
+        return num + '. ' + match;
+      });
+
+    }
+
+    this.value = this.value.substring(0, ss) + text + this.value.substring(se);
+    this.focalise(ss, ss + text.length);
+  },
+
+  _displayPreview: function(edit, preview) {
+    if (edit && preview) {
+      this.$.preview.show();
+    } else {
+      this.$.preview.hide();
+    }
+  },
+
+  _editChanged: function(newValue) {
+    if (newValue) {
+      this.$.toolbar.show();
+    } else {
+      this.$.toolbar.hide();
+      this.preview = false;
+    }
+  },
+
+  _focusedChanged: function(newValue) {
+    if (newValue) {
+      this.edit = true;
+    } else if (!this.help) {
+      this.edit = false;
+    }
+  },
+
+  _helpClosed: function() {
+    this.$.input.focus();
+  },
+
+});
+
+</script>

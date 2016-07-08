@@ -138,16 +138,15 @@
             </paper-material>
 
             <paper-material elevation="1">
-              <par-marked-textarea label="Contexte" value="{{_dirty.contexte}}" maxlength="1200"></par-marked-textarea>
+              <par-marked-editor label="Contexte" required char-counter maxlength="1200" value="{{_dirty.contexte}}" auto-validate></par-marked-editor>
             </paper-material>
 
             <paper-material elevation="1">
-              <par-marked-textarea label="Objectifs" value="{{_dirty.objectifs}}" maxlength="900"></par-marked-textarea>
+              <par-marked-editor label="Objectifs" required char-counter maxlength="900" value="{{_dirty.objectifs}}" auto-validate></par-marked-editor>
             </paper-material>
 
             <paper-material elevation="1">
-              <par-marked-textarea label="Renseignements complémentaires"
-                  value="{{_dirty.autre}}" maxlength="600" placeholder="Coût pédagogique, Nombre de stagiaires, Partenariats, ..."></par-marked-textarea>
+              <par-marked-editor label="Renseignements complémentaires" char-counter maxlength="600" value="{{_dirty.autre}}" auto-validate placeholder="Coût pédagogique, Nombre de stagiaires, Partenariats, ..."></par-marked-editor>
             </paper-material>
 
           </div>
@@ -180,15 +179,15 @@
               </paper-material>
 
               <paper-material elevation="1">
-                <par-marked-textarea label="Contexte" value="{{module.contexte}}" maxlength="1200"></par-marked-textarea>
+                <par-marked-editor label="Contexte" char-counter maxlength="1200" value="{{module.contexte}}" auto-validate></par-marked-editor>
               </paper-material>
 
               <paper-material elevation="1">
-                <par-marked-textarea label="Objectifs" value="{{module.objectifs}}" maxlength="900"></par-marked-textarea>
+                <par-marked-editor label="Objectifs" char-counter maxlength="900" value="{{module.objectifs}}" auto-validate></par-marked-editor>
               </paper-material>
 
               <paper-material elevation="1">
-                <par-marked-textarea label="Programme" value="{{module.programme}}" maxlength="1700"></par-marked-textarea>
+                <par-marked-editor label="Programme" char-counter maxlength="1700" value="{{module.programme}}" auto-validate></par-marked-editor>
               </paper-material>
 
               <paper-card heading="Publics du module">
@@ -197,8 +196,9 @@
                 </div>
               </paper-card>
             </div>
-            <div class="card-actions layout horizontal">
+            <div class="card-actions layout horizontal center">
               <span class="flex"></span>
+              <span>Supprimer le module <em>{{module.intitule}}</em> &#8594;</span>
               <paper-fab mini icon="icons:delete" on-tap="_removeModule"></paper-fab>
             </div>
           </paper-card>
@@ -217,8 +217,9 @@
             <div class="card-content">
               <par-evenement-list exercice="{{_dirty.exercice}}" evenements="{{planification.calendrier}}"></par-evenement-list>
             </div>
-            <div class="card-actions layout horizontal">
+            <div class="card-actions layout horizontal center">
               <span class="flex"></span>
+              <span>Supprimer la {{_computePlanifHeader(index)}} &#8594;</span>
               <paper-fab mini icon="icons:delete" on-tap="_removePlanification"></paper-fab>
             </div>
           </paper-card>

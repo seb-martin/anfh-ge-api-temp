@@ -1,0 +1,172 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-evenement-dialog">
+  <template>
+
+    <paper-dialog id="evenementDialog" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <h2>{{title}}</h2>
+
+      <p>
+        Complétez les dates de début et de fin de période, la ville et le détail.
+      </p>
+      <p>
+        Un évènement n'est considérée comme valide que s'il possède une période et/ou une ville.
+      </p>
+
+      <form is="iron-form" id="form" on-submit="_onSubmit">
+        <div class="layout vertical">
+          <fieldset>
+            <legend>Période</legend>
+            <div class="layout vertical">
+              <par-date-input id="debutInput" label="Du" value="{{value.debut}}" init-value="{{_computeInitDateValue(exercice)}}"
+                required$="{{_computeDateRequired(opened, value.ville, value.debut, value.fin)}}" auto-validate
+                error-message="Une période ou une ville est requise" auto-validate
+              ></par-date-input>
+              <par-date-input id="finInput" label="Au" value="{{value.fin}}" init-value="{{_computeInitDateValue(exercice)}}"
+                required$="{{_computeDateRequired(opened, value.ville, value.debut, value.fin)}}"
+                error-message="Une période ou une ville est requise"
+              ></par-date-input>
+            </div>
+          </fieldset>
+          <paper-input id="villeInput" label="Ville" value={{value.ville}}
+              required$="{{_computeVilleRequired(opened, value.debut, value.fin)}}" auto-validate autofocus
+              error-message="Une ville ou une période est requise"
+          ></paper-input>
+
+          <paper-input id="detailInput" label="Détail" value="{{value.detail}}"></paper-input>
+        </div>
+
+      </form>
+
+      <div class="buttons">
+        <paper-button raised disabled$="{{_computeConfirmDisabled(value.*)}}" on-tap="_onConfirmTap">OK</paper-button>
+        <paper-button dialog-dismiss>Annuler</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+  Polymer({
+    is: 'par-evenement-dialog',
+
+    properties: {
+      title: {
+        type: String
+      },
+
+      exercice: {
+        type: Number,
+        value: moment().year()
+      },
+
+      value: {
+        type: Object,
+        value: {
+          debut: null,
+          fin: null,
+          ville: null
+        },
+        notify: true,
+        observer: '_onValueChanged'
+      }
+    },
+
+    observers: [
+      '_debutChanged(value.debut)',
+      '_finChanged(value.fin)',
+      '_changed(value.debut, value.fin)',
+    ],
+
+    open: function() {
+      this.$.evenementDialog.open();
+    },
+
+    confirm: function() {
+      if (this.$.form.validate()) {
+        this.$.evenementDialog.closingReason.confirmed = true;
+        this.close();
+      }
+    },
+
+    cancel: function() {
+      this.$.evenementDialog.closingReason.canceled = true;
+      this.close();
+    },
+
+    close: function() {
+      this.$.evenementDialog.close();
+    },
+
+    _onSubmit: function() {
+      this.confirm();
+    },
+
+    _onConfirmTap: function() {
+      this.confirm();
+    },
+
+    _onValueChanged: function(value) {
+      if (value.ville === 'undefined') {
+        this.value.ville = null;
+      } else {
+        this.$.form.validate();
+      }
+    },
+
+    _changed: function() {
+      this.$.debutInput.validate();
+      this.$.finInput.validate();
+      this.$.villeInput.validate();
+    },
+
+    _debutChanged: function(debut) {
+      if (!debut) {
+        this.set('value.fin', null);
+      } else if (!this.value.fin) {
+        this.set('value.fin', debut);
+      } else {
+        var debutMoment = moment(debut);
+        var finMoment = moment(this.value.fin);
+        if (debutMoment.isAfter(finMoment, 'day')) {
+          this.set('value.fin', debut);
+        }
+      }
+    },
+
+    _finChanged: function(fin) {
+      if (!fin) {
+        this.set('value.debut', null);
+      } else if (!this.value.debut) {
+        this.set('value.debut', fin);
+      } else {
+        var finMoment = moment(fin);
+        var debutMoment = moment(this.value.debut);
+        if (finMoment.isBefore(debutMoment, 'day')) {
+          this.set('value.debut', fin);
+        }
+      }
+
+    },
+
+    _computeInitDateValue: function(exercice) {
+      return exercice ?
+        moment().year(exercice).format('YYYY-MM-DD') :
+        moment().format('YYYY-MM-DD');
+    },
+
+    _computeDateRequired: function(opened, ville) {
+      return opened && !ville;
+    },
+
+    _computeVilleRequired: function(opened, debut, fin) {
+      return opened && !(debut && fin);
+    },
+
+    _computeConfirmDisabled: function() {
+      this.$.debutInput.validate();
+      this.$.finInput.validate();
+      this.$.villeInput.validate();
+      return !this.value || !(this.value.debut || this.value.fin) && !this.value.ville;
+    },
+  });
+  </script>
+</dom-module>

@@ -1,0 +1,53 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-public-item">
+  <template>
+
+    <style include="shared-styles"></style>
+
+    <style>
+    :host {
+      display: inline-block;
+    }
+
+    </style>
+
+    <paper-icon-item id="consultationItem" on-tap="_editTap">
+      <iron-icon icon="icons:face" item-icon></iron-icon>
+
+      <paper-item-body>{{value}}</paper-item-body>
+
+      <paper-icon-button icon="icons:delete" on-tap="_removeTap"></paper-icon-button>
+    </paper-icon-item>
+
+  </template>
+
+  <script>
+  (function() {
+    'use strict';
+
+    Polymer({
+      is: 'par-public-item',
+
+      properties: {
+        value: {
+          type: String,
+          notify: true,
+          value: ''
+        }
+      },
+
+      _editTap: function(evt) {
+        evt.stopPropagation();
+        this.fire('edit-public', {public: this.value});
+      },
+
+      _removeTap: function(evt) {
+        evt.stopPropagation();
+        this.fire('remove-public', {public: this.value});
+      }
+
+    });
+  })();
+  </script>
+</dom-module>
