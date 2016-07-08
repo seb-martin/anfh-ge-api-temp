@@ -10,19 +10,21 @@
     <paper-dialog id="publicDialog" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
       <h2>{{title}}</h2>
 
-      <p>
-        Complétez le nom du public, idéalement, un métier du
-        <a href="http://www.metiers-fonctionpubliquehospitaliere.sante.gouv.fr/" target="_blank">Répertoire v3 des métiers de la FPH</a>.
-      </p>
+      <div>
+        <p>
+          Complétez le nom du public, idéalement, un métier du
+          <a href="http://www.metiers-fonctionpubliquehospitaliere.sante.gouv.fr/" target="_blank">Répertoire v3 des métiers de la FPH</a>.
+        </p>
 
-      <form is="iron-form" id="form" on-submit="_onSubmit">
-        <paper-input id="input" value="{{value}}" label="Public" autofocus required error-message="La dénomination du public est requise">
-          <iron-icon icon="icons:face" prefix></iron-icon>
-        </paper-input>
-      </form>
+        <form is="iron-form" id="form" name="publicForm" on-iron-form-presubmit="_onSubmit">
+          <paper-input id="input" name="publicInput" value="{{value}}" label="Public" required$="{{opened}}" auto-validate autofocus error-message="La dénomination du public est requise">
+            <iron-icon icon="icons:face" prefix></iron-icon>
+          </paper-input>
+        </form>
+      </div>
 
       <div class="buttons">
-        <paper-button raised on-tap="_onConfirmTap">OK</paper-button>
+        <paper-button raised disabled$="{{_computeConfirmDisabled(value)}}" on-tap="_onConfirmTap">OK</paper-button>
         <paper-button dialog-dismiss>Annuler</paper-button>
       </div>
     </paper-dialog>
@@ -39,7 +41,7 @@
       value: {
         type: String,
         notify: true,
-        observer: '_onValueChanged'
+        value: null
       }
     },
 
@@ -48,10 +50,8 @@
     },
 
     confirm: function() {
-      if (this.$.form.validate()) {
-        this.$.publicDialog.closingReason.confirmed = true;
-        this.close();
-      }
+      this.$.publicDialog.closingReason.confirmed = true;
+      this.close();
     },
 
     cancel: function() {
@@ -63,16 +63,17 @@
       this.$.publicDialog.close();
     },
 
-    _onSubmit: function() {
+    _onSubmit: function(evt) {
+      evt.preventDefault();
       this.confirm();
     },
 
     _onConfirmTap: function() {
-      this.confirm();
+      this.$.form.submit();
     },
 
-    _onValueChanged: function() {
-      this.$.form.validate()
+    _computeConfirmDisabled: function(value) {
+      return !value;
     },
 
   });

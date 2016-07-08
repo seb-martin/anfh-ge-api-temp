@@ -21,7 +21,7 @@
           <iron-icon icon="icons:face" item-icon></iron-icon>
 
           <paper-item-body>
-            Tous publics.
+            Tous publics
             <small>
               Pour spécialiser cette liste, ajouter un public en cliquant sur
               <iron-icon icon="icons:create"></iron-icon>
@@ -34,14 +34,14 @@
 
         <par-public-item value="{{public}}" class="list-item" style="width: 100%"
           on-edit-public="_onEditPublic"
-          on-update-public="_updatePublic"
           on-remove-public="_onRemovePublic"
         ></par-public-item>
       </template>
     </paper-material>
 
-    <paper-material elevation="0" class="layout horizontal">
+    <paper-material elevation="0" class="layout horizontal center">
       <div class="flex"></div>
+      <span>Ajouter un public &#8594;</span>
       <paper-icon-button icon="icons:create" alt="Ajouter" title="Ajouter" on-tap="_onNewPublicTap"></paper-icon-button>
     </paper-material>
 

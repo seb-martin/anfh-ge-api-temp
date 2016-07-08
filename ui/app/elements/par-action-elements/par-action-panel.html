@@ -196,8 +196,9 @@
                 </div>
               </paper-card>
             </div>
-            <div class="card-actions layout horizontal">
+            <div class="card-actions layout horizontal center">
               <span class="flex"></span>
+              <span>Supprimer le module <em>{{module.intitule}}</em> &#8594;</span>
               <paper-fab mini icon="icons:delete" on-tap="_removeModule"></paper-fab>
             </div>
           </paper-card>
@@ -216,8 +217,9 @@
             <div class="card-content">
               <par-evenement-list exercice="{{_dirty.exercice}}" evenements="{{planification.calendrier}}"></par-evenement-list>
             </div>
-            <div class="card-actions layout horizontal">
+            <div class="card-actions layout horizontal center">
               <span class="flex"></span>
+              <span>Supprimer la {{_computePlanifHeader(index)}} &#8594;</span>
               <paper-fab mini icon="icons:delete" on-tap="_removePlanification"></paper-fab>
             </div>
           </paper-card>
