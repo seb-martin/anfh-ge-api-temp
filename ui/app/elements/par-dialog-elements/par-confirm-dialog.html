@@ -1,0 +1,51 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-confirm-dialog">
+  <template>
+    <style>
+    :host {
+      width: 600px;
+    }
+    </style>
+    <paper-dialog id="dialog" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <h2>{{title}}</h2>
+
+      <content></content>
+
+      <div class="buttons">
+        <paper-button raised dialog-confirm>Confirmer</paper-button>
+        <paper-button dialog-dismiss>Annuler</paper-button>
+      </div>
+    </paper-dialog>
+
+  </template>
+  <script>
+  Polymer({
+    is: 'par-confirm-dialog',
+    properties: {
+      title: {
+        type: String
+      }
+    },
+
+    open: function() {
+      this.$.dialog.open();
+    },
+
+    confirm: function() {
+      this.$.publicDialog.closingReason.confirmed = true;
+      this.close();
+    },
+
+    cancel: function() {
+      this.$.publicDialog.closingReason.canceled = true;
+      this.close();
+    },
+
+    close: function() {
+      this.$.dialog.close();
+    }
+
+  });
+  </script>
+</dom-module>

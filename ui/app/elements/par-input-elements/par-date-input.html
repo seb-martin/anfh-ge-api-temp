@@ -8,26 +8,25 @@
         display: inline-block;
       }
 
-      paper-input {
-        width: 10em;
-      }
-
       iron-icon[prefix] {
         padding-right: 5px;
       }
     </style>
 
     <paper-input
+      id="input"
       label="[[label]]"
       readonly
       value="[[_computeShortDate(value)]]"
       on-tap="_onOpenDialogTap"
-      required$="[[required]]">
-      <iron-icon prefix icon="icons:event"></iron-icon>
+      required$="[[required]]"
+      auto-validate$="[[autoValidate]]"
+      error-message$="[[errorMessage]]"
+      ><iron-icon prefix icon="icons:event"></iron-icon>
       <paper-icon-button suffix icon="clear" on-tap="_onClearTap"></paper-icon-button>
     </paper-input>
 
-    <paper-dialog id="dialog" modal on-iron-overlay-closed="_dialogClosing">
+    <paper-dialog id="dialog" class="paper-date-picker-dialog" modal on-iron-overlay-closed="_dialogClosing">
       <paper-date-picker
         id="datepicker"
         locale="fr"
@@ -52,7 +51,8 @@
         is: 'par-date-input',
 
         behaviors: [
-          Polymer.IronFormElementBehavior
+          Polymer.IronFormElementBehavior,
+          Polymer.IronValidatableBehavior
         ],
 
         properties: {
@@ -100,16 +100,16 @@
         },
 
         _onOpenDialogTap: function() {
-          console.log('_onOpenDialogTap', this.date, this.initDate);
           this._pickedDate = this.date ? this.date : this.initDate;
           this.$.dialog.open();
         },
 
         _dialogClosing: function(evt) {
+          evt.stopPropagation();
           if (evt.detail.confirmed) {
             var pickedDateISO = this._dateToISO(this._pickedDate);
 
-            if (this.value !== this.pickedDateISO) {
+            if (this.value !== pickedDateISO) {
               this.value = pickedDateISO;
             }
           }
@@ -121,6 +121,10 @@
 
         _dateToISO: function(date) {
           return date ? moment(date).format('YYYY-MM-DD') : null;
+        },
+
+        _getValidity: function() {
+          return this.$.input.validate();
         }
 
       });

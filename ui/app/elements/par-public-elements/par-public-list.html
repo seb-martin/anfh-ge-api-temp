@@ -1,0 +1,178 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-public-list">
+  <template>
+    <style include="shared-styles"></style>
+
+    <style>
+      :host {
+        @apply(--layout-vertical);
+      }
+
+      .list-item {
+        border-bottom: 1px solid #dedede;
+        background-color: #fff;
+      }
+    </style>
+
+    <paper-material elevation="1" class="list">
+      <template is="dom-if" if="{{!publics.length}}" >
+        <paper-icon-item on-tap="_onNewPublicTap">
+          <iron-icon icon="icons:face" item-icon></iron-icon>
+
+          <paper-item-body>
+            Tous publics
+            <small>
+              Pour spécialiser cette liste, ajouter un public en cliquant sur
+              <iron-icon icon="icons:create"></iron-icon>
+            </small>
+          </paper-item-body>
+        </paper-icon-item>
+      </template>
+
+      <template is="dom-repeat" items="{{publics}}" as="public">
+
+        <par-public-item value="{{public}}" class="list-item" style="width: 100%"
+          on-edit-public="_onEditPublic"
+          on-remove-public="_onRemovePublic"
+        ></par-public-item>
+      </template>
+    </paper-material>
+
+    <paper-material elevation="0" class="layout horizontal center">
+      <div class="flex"></div>
+      <span>Ajouter un public &#8594;</span>
+      <paper-icon-button icon="icons:create" alt="Ajouter" title="Ajouter" on-tap="_onNewPublicTap"></paper-icon-button>
+    </paper-material>
+
+    <par-public-dialog id="newPublicDialog" title="Nouveau public" value="{{_newPublic}}"></par-public-dialog>
+    <par-public-dialog id="editPublicDialog" title="Modification public" value="{{_editPublic}}"></par-public-dialog>
+    <par-confirm-dialog id="removePublicConfirmDialog" title="Suppression public">
+      <p>
+        Etes-vous sûr de vouloir supprimer le publc <em>{{_computePublicToRemove(_removeIndex)}}</em> ?
+      </p>
+    </par-confirm-dialog>
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      Polymer({
+        is: 'par-public-list',
+
+        properties: {
+          publics: {
+            type: Array,
+            value: [],
+            notify: true
+          }
+        },
+
+        listeners: {
+          'newPublicDialog.iron-overlay-closed': '_onNewPublicDialogClosed',
+          'editPublicDialog.iron-overlay-closed': '_onEditPublicDialogClosed',
+          'removePublicConfirmDialog.iron-overlay-closed': '_onRemovePublicConfirmDialogClosed'
+        },
+
+        addPublic: function(nouveauPublic) {
+          var p = nouveauPublic ? nouveauPublic.trim() : '';
+
+          if (p) {
+            this._checkPublicArray();
+
+            var addIndex = this._findAddIndex(p);
+
+            this.splice('publics', addIndex, 0, p);
+          }
+
+        },
+
+        updatePublic: function(publicIndex, pub) {
+          // Le public peut ne plus devoir être à la même place
+          // Il convient de replacer le public dans la liste
+          this.removePublic(publicIndex);
+          this.addPublic(pub);
+        },
+
+        removePublic: function(publicIndex) {
+          if (
+            typeof publicIndex === 'number' &&
+            publicIndex >= 0 &&
+            Array.isArray(this.publics) &&
+            publicIndex < this.publics.length
+          ) {
+
+            this.splice('publics', publicIndex, 1);
+          }
+        },
+
+        _checkPublicArray: function() {
+          if (!Array.isArray(this.publics)) {
+            this.set('publics', []);
+          }
+        },
+
+        _findAddIndex: function(pub) {
+          return this.publics.reduceRight(
+            function(addIndex, p, index) {
+              if (p > pub) {
+                return index;
+              } else {
+                return addIndex;
+              }
+            },
+            this.publics.length
+          );
+        },
+
+        _onNewPublicTap: function() {
+          this._newPublic = '';
+          this.$.newPublicDialog.open();
+        },
+
+        _onEditPublic: function(evt) {
+          this._editIndex = evt.model.index;
+          this._editPublic = this.publics[this._editIndex];
+          this.$.editPublicDialog.open();
+        },
+
+        _onRemovePublic: function(evt) {
+          this._removeIndex = evt.model.index;
+          this.$.removePublicConfirmDialog.open();
+        },
+
+        _onNewPublicDialogClosed: function(evt) {
+          if (evt.detail.confirmed && !evt.detail.canceled) {
+            this.addPublic(this._newPublic);
+          }
+          this._newPublic = null;
+        },
+
+        _onEditPublicDialogClosed: function(evt) {
+          if (evt.detail.confirmed && !evt.detail.canceled) {
+            this.updatePublic(this._editIndex, this._editPublic);
+          }
+          delete this._editIndex;
+          this._editPublic = null;
+        },
+
+        _onRemovePublicConfirmDialogClosed: function(evt) {
+          if (evt.detail.confirmed && !evt.detail.canceled) {
+            this.removePublic(this._removeIndex);
+          }
+
+          delete this._removeIndex;
+
+        },
+
+        _computePublicToRemove: function(publicIndex) {
+          return this.publics[publicIndex];
+        }
+
+      });
+
+    })();
+  </script>
+
+</dom-module>

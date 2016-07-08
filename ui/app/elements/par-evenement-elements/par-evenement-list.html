@@ -1,0 +1,250 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-evenement-list">
+  <template>
+    <style include="shared-styles"></style>
+
+    <style>
+      :host {
+        @apply(--layout-vertical);
+      }
+      .list-item {
+        border-bottom: 1px solid #dedede;
+        background-color: #fff;
+
+      }
+    </style>
+
+    <paper-material elevation="1" class="list">
+      <template is="dom-if" if="{{!evenements.length}}" >
+        <paper-icon-item on-tap="_onNewEvenementTap">
+          <iron-icon icon="icons:date-range" item-icon></iron-icon>
+
+          <paper-item-body>
+            Aucun évènement
+            <small>
+              Cette planification n'est constituée d'aucun évènement et est donc <b>invalide</b>
+              <br>
+              Ajouter un évènement un cliquant sur
+              <iron-icon icon="icons:create"></iron-icon>
+            </small>
+          </paper-item-body>
+        </paper-icon-item>
+      </template>
+
+      <template is="dom-repeat" items="{{evenements}}" as="evenement">
+        <par-evenement-item value="{{evenement}}" class="list-item" style="width: 100%"
+          on-edit-evenement="_onEditEvenement"
+          on-remove-evenement="_onRemoveEvenement"
+        ></par-evenement-item>
+      </template>
+    </paper-material>
+
+    <paper-material elevation="0" class="layout horizontal center">
+      <span class="flex"></span>
+      <span>Ajouter un évènement &#8594;</span>
+      <paper-icon-button icon="icons:create" alt="Ajouter" title="Ajouter" on-tap="_onNewEvenementTap"></paper-icon-button>
+    </paper-material>
+
+    <par-evenement-dialog id="newEvenementDialog" title="Nouvel évènement" value="{{_newEvenement}}" exercice={{exercice}}></par-evenement-dialog>
+    <par-evenement-dialog id="editEvenementDialog" title="Modification évènement" value="{{_editEvenement}}" exercice={{exercice}}></par-evenement-dialog>
+    <par-confirm-dialog id="removeEvenementConfirmDialog" title="Suppression évènement">
+      <p>
+        Etes-vous sûr de vouloir supprimer l'évènement
+        <template is="dom-if" if="{{_computeEvenementToRemoveHasPeriod(_removeIndex)}}">
+          du <strong>{{_computeEvenementToRemoveDebut(_removeIndex)}}</strong>
+          au <strong>{{_computeEvenementToRemoveFin(_removeIndex)}}</strong>
+        </template>
+
+        <template is="dom-if" if="{{_computeEvenementToRemoveVille(_removeIndex)}}">
+          à <strong>{{_computeEvenementToRemoveVille(_removeIndex)}}</strong>
+        </template>
+        ?
+      </p>
+    </par-confirm-dialog>
+
+  </template>
+
+  <script>
+    (function() {
+      'use strict';
+
+      var clone = function(evenement) {
+        if (!evenement) {
+          return evenement;
+        }
+
+        return {
+          debut: evenement.debut,
+          fin: evenement.fin,
+          ville: evenement.ville,
+          detail: evenement.detail
+        };
+      };
+
+      Polymer({
+        is: 'par-evenement-list',
+
+        properties: {
+          exercice: {
+            type: Number,
+            value: moment().year()
+          },
+          evenements: {
+            type: Array,
+            value: [],
+            notify: true
+          }
+        },
+
+        listeners: {
+          'newEvenementDialog.iron-overlay-closed':
+          '_onNewEvenementDialogClosed',
+
+          'editEvenementDialog.iron-overlay-closed':
+          '_onEditEvenementDialogClosed',
+
+          'removeEvenementConfirmDialog.iron-overlay-closed':
+          '_onRemoveEvenementConfirmDialogClosed'
+        },
+
+        addEvenement: function(nouvelEvenement) {
+          var e = nouvelEvenement || {};
+
+          e.debut = e.debut || null;
+          e.fin = e.fin || null;
+          e.ville = e.ville ? e.ville.trim() : e.ville;
+          e.detail = e.detail ? e.detail.trim() : e.detail;
+
+          var hasPeriod = e.debut && e.fin;
+          var hasVille = !!e.ville;
+          var hasDetail = !!e.detail;
+
+          if (hasPeriod || hasVille || hasDetail) {
+            this._checkEvenementArray();
+
+            var addIndex = this._findAddIndex(e);
+
+            this.splice('evenements', addIndex, 0, e);
+          }
+
+        },
+
+        updateEvenement: function(evenementIndex, evenement) {
+          // La date de début a pu changer
+          // Il convient de replacer l'évènement dans la liste
+          this.removeEvenement(evenementIndex);
+          this.addEvenement(evenement);
+        },
+
+        removeEvenement: function(evenementIndex) {
+          if (
+            typeof evenementIndex === 'number' &&
+            evenementIndex >= 0 &&
+            Array.isArray(this.evenements) &&
+            evenementIndex < this.evenements.length
+          ) {
+
+            this.splice('evenements', evenementIndex, 1);
+          }
+        },
+
+        _checkEvenementArray: function() {
+          if (!Array.isArray(this.evenements)) {
+            this.set('evenements', []);
+          }
+        },
+
+        _findAddIndex: function(nouvelEvenement) {
+          return this.evenements.reduceRight(
+            function(addIndex, evenement, index) {
+              var evtMoment = moment(evenement.debut);
+              var newMoment = moment(nouvelEvenement.debut);
+              if (evtMoment.isAfter(newMoment)) {
+                return index;
+              } else {
+                return addIndex;
+              }
+            },
+            this.evenements.length
+          );
+        },
+
+        _onNewEvenementTap: function() {
+          this._newEvenement = {
+            debut: null,
+            fin: null,
+            ville: null
+          };
+          this.$.newEvenementDialog.open();
+        },
+
+        _onEditEvenement: function(evt) {
+          this._editIndex = evt.model.index;
+          this._editEvenement = clone(this.evenements[this._editIndex]);
+          this.$.editEvenementDialog.open();
+        },
+
+        _onRemoveEvenement: function(evt) {
+          this._removeIndex = evt.model.index;
+          this.$.removeEvenementConfirmDialog.open();
+        },
+
+        _onNewEvenementDialogClosed: function(evt) {
+          if (evt.detail.confirmed && !evt.detail.canceled) {
+            this.addEvenement(this._newEvenement);
+          }
+          this._newEvenement = null;
+        },
+
+        _onEditEvenementDialogClosed: function(evt) {
+          if (evt.detail.confirmed && !evt.detail.canceled) {
+            this.updateEvenement(this._editIndex, this._editEvenement);
+          }
+          delete this._editIndex;
+          this._editEvenement = null;
+        },
+
+        _onRemoveEvenementConfirmDialogClosed: function(evt) {
+          if (evt.detail.confirmed && !evt.detail.canceled) {
+            this.removeEvenement(this._removeIndex);
+          }
+
+          this._removeIndex = null;
+
+        },
+
+        _computeEvenementToRemove: function(evenementIndex) {
+          return typeof evenementIndex === 'number' ?
+            this.evenements[evenementIndex] : {};
+        },
+
+        _computeEvenementToRemoveHasPeriod: function(evenementIndex) {
+          var evenement = this._computeEvenementToRemove(evenementIndex);
+          return evenement.debut && evenement.fin;
+        },
+
+        _computeEvenementToRemoveDebut: function(evenementIndex) {
+          var evenement = this._computeEvenementToRemove(evenementIndex);
+          return this._format(evenement.debut);
+        },
+
+        _computeEvenementToRemoveFin: function(evenementIndex) {
+          var evenement = this._computeEvenementToRemove(evenementIndex);
+          return this._format(evenement.fin);
+        },
+
+        _computeEvenementToRemoveVille: function(evenementIndex) {
+          var evenement = this._computeEvenementToRemove(evenementIndex);
+          return evenement.ville;
+        },
+
+        _format: function(dateISO) {
+          return dateISO ? moment(dateISO).format('D MMMM YYYY') : '';
+        },
+      });
+
+    })();
+  </script>
+
+</dom-module>

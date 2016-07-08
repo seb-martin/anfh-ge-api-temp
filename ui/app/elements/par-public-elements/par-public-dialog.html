@@ -1,0 +1,81 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-public-dialog">
+  <template>
+    <style>
+    iron-icon[prefix] {
+      padding-right: 5px;
+    }
+    </style>
+    <paper-dialog id="publicDialog" opened="{{opened}}" entry-animation="scale-up-animation" exit-animation="fade-out-animation" with-backdrop>
+      <h2>{{title}}</h2>
+
+      <div>
+        <p>
+          Complétez le nom du public, idéalement, un métier du
+          <a href="http://www.metiers-fonctionpubliquehospitaliere.sante.gouv.fr/" target="_blank">Répertoire v3 des métiers de la FPH</a>.
+        </p>
+
+        <form is="iron-form" id="form" name="publicForm" on-iron-form-presubmit="_onSubmit">
+          <paper-input id="input" name="publicInput" value="{{value}}" label="Public" required$="{{opened}}" auto-validate autofocus error-message="La dénomination du public est requise">
+            <iron-icon icon="icons:face" prefix></iron-icon>
+          </paper-input>
+        </form>
+      </div>
+
+      <div class="buttons">
+        <paper-button raised disabled$="{{_computeConfirmDisabled(value)}}" on-tap="_onConfirmTap">OK</paper-button>
+        <paper-button dialog-dismiss>Annuler</paper-button>
+      </div>
+    </paper-dialog>
+  </template>
+  <script>
+  Polymer({
+    is: 'par-public-dialog',
+
+    properties: {
+      title: {
+        type: String
+      },
+
+      value: {
+        type: String,
+        notify: true,
+        value: null
+      }
+    },
+
+    open: function() {
+      this.$.publicDialog.open();
+    },
+
+    confirm: function() {
+      this.$.publicDialog.closingReason.confirmed = true;
+      this.close();
+    },
+
+    cancel: function() {
+      this.$.publicDialog.closingReason.canceled = true;
+      this.close();
+    },
+
+    close: function() {
+      this.$.publicDialog.close();
+    },
+
+    _onSubmit: function(evt) {
+      evt.preventDefault();
+      this.confirm();
+    },
+
+    _onConfirmTap: function() {
+      this.$.form.submit();
+    },
+
+    _computeConfirmDisabled: function(value) {
+      return !value;
+    },
+
+  });
+  </script>
+</dom-module>
