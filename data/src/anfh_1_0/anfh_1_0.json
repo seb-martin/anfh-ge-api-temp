@@ -1,0 +1,71 @@
+{
+  "mappings": {
+    "centresbc": {
+      "properties": {
+        "derniereModif": { "type": "date", "format": "strict_date_time" },
+        "region": { "type": "string", "index":"not_analyzed" },
+        "idOrg": { "type": "integer", "index":"not_analyzed" },
+        "raisonSociale": {
+          "type": "multi_field",
+          "fields": {
+            "raisonSociale": { "type": "string", "index":"analyzed" },
+            "raisonSociale_na": { "type": "string", "index":"not_analyzed" }
+          }
+        },
+        "siret": { "type": "string", "index":"not_analyzed" },
+        "ape": { "type": "string", "index":"not_analyzed" },
+        "nda": { "type": "string", "index":"not_analyzed" },
+        "dateFinHabilitation": { "type": "date", "format": "strict_date" },
+        "site": { "type": "string", "index":"not_analyzed" },
+        "adresse": {
+          "properties": {
+            "nom": {
+              "type": "multi_field",
+              "fields": {
+                "nom": { "type": "string", "index":"analyzed" },
+                "nom_na": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "service": {
+              "type": "multi_field",
+              "fields": {
+                "service": { "type": "string", "index":"analyzed" },
+                "service_na": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "pointLocalisation": {
+              "type": "multi_field",
+              "fields": {
+                "pointLocalisation": { "type": "string", "index":"analyzed" },
+                "pointLocalisation_na": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "voie": {
+              "type": "multi_field",
+              "fields": {
+                "voie": { "type": "string", "index":"analyzed" },
+                "voie_na": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "lieuDit": {
+              "type": "multi_field",
+              "fields": {
+                "lieuDit": { "type": "string", "index":"analyzed" },
+                "lieuDit_na": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "cpLocalite": {
+              "type": "multi_field",
+              "fields": {
+                "cpLocalite": { "type": "string", "index":"analyzed" },
+                "cpLocalite_na": { "type": "string", "index":"not_analyzed" }
+              }
+            }
+          }
+        },
+        "tel": { "type": "string", "index":"not_analyzed" },
+        "email": { "type": "string", "index":"not_analyzed" }
+      }
+    }
+  }
+}
