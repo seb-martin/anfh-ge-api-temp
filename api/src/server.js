@@ -94,7 +94,13 @@
         req.esClient.get(getParams).then(function(hit) {
           return type.mapHitToResource(req, hit);
         }).then(function(resource) {
-          res.json(resource);
+          if (resource === null) {
+            throw {
+              status: 404
+            };
+          } else {
+            res.json(resource);
+          }
         }).catch(function(error){
           if (error.status === 404) {
             sendError(res, {

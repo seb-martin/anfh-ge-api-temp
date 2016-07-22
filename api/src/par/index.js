@@ -15,6 +15,11 @@ par.axes.mapHitToResource = function(req, hit) {
 par.actions.mapHitToResource = function(req, hit) {
   var action = hit._source;
 
+  // Les actions non publiées ne doivent pas être retournées
+  if (!action._publie) {
+    return null;
+  }
+
   // Ajoute l'id de l'action
   action.id = hit._id;
 
