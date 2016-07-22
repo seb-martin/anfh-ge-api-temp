@@ -1,7 +1,7 @@
 (function() {
   'use strict';
 
-  var port = 80;
+  var port = 8080;
 
   // call the packages we need
   var express       = require('express');       // call express
