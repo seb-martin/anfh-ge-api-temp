@@ -1,0 +1,64 @@
+{
+  "mappings": {
+    "centresbc": {
+      "properties": {
+        "derniereModif": { "type": "date", "format": "strict_date_time" },
+        "region": { "type": "string", "index":"not_analyzed" },
+        "idOrg": { "type": "integer", "index":"not_analyzed" },
+        "raisonSociale": {
+          "type": "string",
+          "fields": {
+            "raw": { "type": "string", "index":"not_analyzed" }
+          }
+        },
+        "siret": { "type": "string", "index":"not_analyzed" },
+        "ape": { "type": "string", "index":"not_analyzed" },
+        "nda": { "type": "string", "index":"not_analyzed" },
+        "dateFinHabilitation": { "type": "date", "format": "strict_date" },
+        "site": { "type": "string", "index":"not_analyzed" },
+        "adresse": {
+          "properties": {
+            "nom": {
+              "type": "string",
+              "fields": {
+                "raw": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "service": {
+              "type": "string",
+              "fields": {
+                "raw": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "pointLocalisation": {
+              "type": "string",
+              "fields": {
+                "raw": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "voie": {
+              "type": "string",
+              "fields": {
+                "raw": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "lieuDit": {
+              "type": "string",
+              "fields": {
+                "raw": { "type": "string", "index":"not_analyzed" }
+              }
+            },
+            "cpLocalite": {
+              "type": "string",
+              "fields": {
+                "raw": { "type": "string", "index":"not_analyzed" }
+              }
+            }
+          }
+        },
+        "tel": { "type": "string", "index":"not_analyzed" },
+        "email": { "type": "string", "index":"not_analyzed" }
+      }
+    }
+  }
+}

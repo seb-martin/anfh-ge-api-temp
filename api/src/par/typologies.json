@@ -1,47 +1,38 @@
 {
   "0": {
     "code": "0",
-    "origine": "DPC",
     "libelle": "Action prioritaire (ex DPC)"
   },
   "1": {
     "code": "1",
-    "origine": "FPTLV",
     "libelle": "Formation professionnelle initiale"
   },
   "2": {
     "code": "2",
-    "origine": "FPTLV",
     "libelle": "Formation continue ou Développement des connaissances et des compétences"
   },
   "3": {
     "code": "3",
-    "origine": "FPTLV",
     "libelle": "Préparation concours et examens"
   },
   "4": {
     "code": "4",
-    "origine": "FPTLV",
     "libelle": "Etude Promotionnelle ou Promotion professionnelle (EP)"
   },
   "5": {
     "code": "5",
-    "origine": "FPTLV",
     "libelle": "Action de conversion"
   },
   "6": {
     "code": "6",
-    "origine": "FPTLV",
     "libelle": "Congé de Formation Professionnelle (CFP)"
   },
   "7": {
     "code": "7",
-    "origine": "FPTLV",
     "libelle": "Bilan de compétences"
   },
   "8": {
     "code": "8",
-    "origine": "FPTLV",
     "libelle": "Validation des Acquis de l\"Expérience (VAE)"
   }
 }

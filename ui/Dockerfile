@@ -34,7 +34,7 @@ COPY gulpfile.js .jscsrc .jshintrc /usr/src/
 COPY app /usr/src/app
 RUN gulp
 
-EXPOSE 80
+EXPOSE 8080
 
 COPY server.js /usr/src
 

@@ -2,18 +2,18 @@
 ui:
   ports:
   # Lie le port 80 du container ui au le port 80 de la machine hôte
-    - "8080:80"
+    - "8080:8080"
 
 # Interface Applicative
 api:
   ports:
-  # Lie le port 80 du container api au le port 8081 de la machine hôte
-    - "8081:80"
+  # Lie le port 8081 du container api au le port 8081 de la machine hôte
+    - "8081:8081"
 
 # Interface de visualisation
 views:
   ports:
-  # Lie le port 80 du container views au le port 8081 de la machine hôte
+  # Lie le port 8082 du container views au le port 8081 de la machine hôte
     - "8082:8082"
 
 # Base de données

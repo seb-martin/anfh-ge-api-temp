@@ -12,8 +12,10 @@ var esHelpers = require('./es-helpers')({
 
 var par_1_0 = require('./par_1_0')(esHelpers);
 var par_1_1 = require('./par_1_1')(esHelpers);
+var anfh_1_0 = require('./anfh_1_0')(esHelpers);
 
-var ALIAS_NAME = 'par';
+var PAR_ALIAS_NAME = 'par';
+var ANFH_ALIAS_NAME = 'anfh';
 
 // moment.locale('fr');
 
@@ -29,98 +31,131 @@ gulp.task('ping', function(){
 });
 
 /*
-Tâches du mapping 1.0 (reprise de données)
+Tâches du mapping par 1.0 (reprise de données)
 */
 
-gulp.task('delete_1_0', ['ping'], function() {
+gulp.task('delete_par_1_0', ['ping'], function() {
 
   return par_1_0.deleteIndex();
 
 });
 
-gulp.task('create_1_0', ['ping', 'delete_1_0'], function() {
+gulp.task('create_par_1_0', ['ping', 'delete_par_1_0'], function() {
   return par_1_0.createIndex();
 });
 
-gulp.task('recover_regions_1_0', ['create_1_0'], function() {
+gulp.task('recover_par_regions_1_0', ['create_par_1_0'], function() {
   return par_1_0.recoverRegions();
 });
 
-gulp.task('recover_actions_before_2014', ['create_1_0'], function() {
+gulp.task('recover_par_actions_before_2014', ['create_par_1_0'], function() {
   return par_1_0.recoverActionsBefore2014();
 });
 
-gulp.task('recover_actions_starting_2014', ['create_1_0'], function() {
+gulp.task('recover_par_actions_starting_2014', ['create_par_1_0'], function() {
   return par_1_0.recoverActionsStarting2014();
 });
 
-gulp.task('create_alias_1_0', [
-  'recover_regions_1_0',
-  'recover_actions_before_2014',
-  'recover_actions_starting_2014'
+gulp.task('create_alias_par_1_0', [
+  'recover_par_regions_1_0',
+  'recover_par_actions_before_2014',
+  'recover_par_actions_starting_2014'
 ], function() {
-  return par_1_0.createAlias(ALIAS_NAME);
+  return par_1_0.createAlias(PAR_ALIAS_NAME);
 });
 
-gulp.task('delete_alias_1_0', function() {
-  return par_1_0.deleteAlias(ALIAS_NAME);
+gulp.task('delete_alias_par_1_0', function() {
+  return par_1_0.deleteAlias(PAR_ALIAS_NAME);
 });
 
-gulp.task('recover_1_0', [
-  'recover_regions_1_0',
-  'recover_actions_before_2014',
-  'recover_actions_starting_2014',
-  'create_alias_1_0'
+gulp.task('recover_par_1_0', [
+  'recover_par_regions_1_0',
+  'recover_par_actions_before_2014',
+  'recover_par_actions_starting_2014',
+  'create_alias_par_1_0'
 ]);
 
 /*
-Tâches du mapping 1.1 (migration depuis 1.0)
+Tâches du mapping par 1.1 (migration depuis 1.0)
 */
 
-gulp.task('delete_1_1', ['ping'], function() {
+gulp.task('delete_par_1_1', ['ping'], function() {
   return par_1_1.deleteIndex();
 });
 
-gulp.task('create_1_1', ['ping', 'delete_1_1'], function() {
+gulp.task('create_par_1_1', ['ping', 'delete_par_1_1'], function() {
   return par_1_1.createIndex();
 });
 
-gulp.task('migrate_regions_1_0_to_1_1', ['create_1_1'], function() {
+gulp.task('migrate_par_regions_1_0_to_1_1', ['create_par_1_1'], function() {
   return par_1_1.migrationRegions(par_1_0.scrollRegions());
 });
 
-gulp.task('migrate_axes_1_0_to_1_1', ['create_1_1'], function() {
+gulp.task('migrate_par_axes_1_0_to_1_1', ['create_par_1_1'], function() {
   return par_1_1.migrationAxes(par_1_0.scrollAxes());
 });
 
-gulp.task('migrate_actions_1_0_to_1_1', ['create_1_1'], function() {
+gulp.task('migrate_par_actions_1_0_to_1_1', ['create_par_1_1'], function() {
   return par_1_1.migrationActions(par_1_0.scrollActions());
 });
 
-gulp.task('create_alias_1_1', [
-  'migrate_regions_1_0_to_1_1',
-  'migrate_axes_1_0_to_1_1',
-  'migrate_actions_1_0_to_1_1'
+gulp.task('create_alias_par_1_1', [
+  'migrate_par_regions_1_0_to_1_1',
+  'migrate_par_axes_1_0_to_1_1',
+  'migrate_par_actions_1_0_to_1_1'
 ], function() {
-  return par_1_0.deleteAlias(ALIAS_NAME)
+  return par_1_0.deleteAlias(PAR_ALIAS_NAME)
     .then(function() {
-      return par_1_1.createAlias(ALIAS_NAME);
+      return par_1_1.createAlias(PAR_ALIAS_NAME);
     });
 });
 
-gulp.task('delete_alias_1_1', function() {
-  return par_1_1.deleteAlias(ALIAS_NAME);
+gulp.task('delete_alias_par_1_1', function() {
+  return par_1_1.deleteAlias(PAR_ALIAS_NAME);
 });
 
-gulp.task('from_1_0_to_1_1', [
-  'migrate_regions_1_0_to_1_1',
-  'migrate_axes_1_0_to_1_1',
-  'migrate_actions_1_0_to_1_1',
-  'create_alias_1_1'
+gulp.task('from_par_1_0_to_1_1', [
+  'migrate_par_regions_1_0_to_1_1',
+  'migrate_par_axes_1_0_to_1_1',
+  'migrate_par_actions_1_0_to_1_1',
+  'create_alias_par_1_1'
+]);
+
+/*
+Tâches du mapping anfh 1.0 (reprise de données)
+*/
+
+gulp.task('delete_anfh_1_0', ['ping'], function() {
+
+  return anfh_1_0.deleteIndex();
+
+});
+
+gulp.task('create_anfh_1_0', ['ping', 'delete_anfh_1_0'], function() {
+  return anfh_1_0.createIndex();
+});
+
+gulp.task('recover_anfh_centresbc_1_0', ['create_anfh_1_0'], function() {
+  return anfh_1_0.recoverCentresBC();
+});
+
+gulp.task('create_alias_anfh_1_0', [
+  'recover_anfh_centresbc_1_0',
+], function() {
+  return anfh_1_0.createAlias(ANFH_ALIAS_NAME);
+});
+
+gulp.task('delete_alias_anfh_1_0', function() {
+  return anfh_1_0.deleteAlias(ANFH_ALIAS_NAME);
+});
+
+gulp.task('recover_anfh_1_0', [
+  'recover_anfh_centresbc_1_0',
+  'create_alias_anfh_1_0'
 ]);
 
 /*
 Tâche par défaut (denière tâche majeure de manip des données)
 */
 
-gulp.task('default', ['from_1_0_to_1_1']);
+gulp.task('default', ['recover_anfh_1_0']);
