@@ -1,0 +1,168 @@
+{
+  "regions": {
+    "filter_fields": {
+      "code": {
+        "type": "string",
+        "term": "code",
+        "index": "not_analyzed"
+      },
+      "denomination": {
+        "type": "string",
+        "term": "denomination",
+        "index": "analyzed"
+      }
+    },
+    "sort_fields": {
+      "derniereModif": "derniereModif",
+      "code": "code",
+      "denomination": "denomination.denomination_na"
+    }
+  },
+
+  "axes": {
+    "filter_fields": {
+      "region": {
+        "type": "string",
+        "term": "region",
+        "index": "not_analyzed"
+      },
+      "exercice": {
+        "type": "integer",
+        "term": "exercice",
+        "index": "not_analyzed"
+      },
+      "num": {
+        "type": "integer",
+        "term": "num",
+        "index": "not_analyzed"
+      },
+      "intitule": {
+        "type": "string",
+        "term": "intitule",
+        "index": "analyzed"
+      }
+    },
+    "sort_fields": {
+      "derniereModif": "derniereModif",
+      "region": "region",
+      "exercice": "exercice",
+      "num": "num",
+      "intitule": "intitule.intitule_na"
+    }
+  },
+
+  "actions": {
+    "filters": [
+      {
+        "_publie": true
+      }
+    ],
+    "filter_fields": {
+      "region": {
+        "type": "string",
+        "term": "region",
+        "index": "not_analyzed"
+      },
+      "exercice": {
+        "type": "integer",
+        "term": "exercice",
+        "index": "not_analyzed"
+      },
+      "axe.id": {
+        "type": "string",
+        "term": "axe",
+        "index": "not_analyzed"
+      },
+      "intitule": {
+        "type": "string",
+        "term": "intitule",
+        "index": "analyzed"
+      },
+      "contexte": {
+        "type": "string",
+        "term": "contexte",
+        "index": "analyzed"
+      },
+      "objectifs": {
+        "type": "string",
+        "term": "objectifs",
+        "index": "analyzed"
+      },
+      "autre": {
+        "type": "string",
+        "term": "autre",
+        "index": "analyzed"
+      },
+      "typologie.code": {
+        "type": "string",
+        "term": "typologie",
+        "index": "not_analyzed"
+      },
+      "publics": {
+        "type": "string",
+        "term": "publics",
+        "index": "analyzed"
+      },
+      "nature": {
+        "type": "string",
+        "term": "nature",
+        "index": "not_analyzed"
+      },
+      "titulaire": {
+        "type": "string",
+        "term": "titulaire",
+        "index": "analyzed"
+      },
+      "modules.num": {
+        "type": "integer",
+        "term": "modules.num",
+        "index": "not_analyzed"
+      },
+      "modules.intitule": {
+        "type": "string",
+        "term": "modules.intitule",
+        "index": "analyzed"
+      },
+      "modules.contexte": {
+        "type": "string",
+        "term": "modules.contexte",
+        "index": "analyzed"
+      },
+      "modules.objectifs": {
+        "type": "string",
+        "term": "modules.objectifs",
+        "index": "analyzed"
+      },
+      "modules.programme": {
+        "type": "string",
+        "term": "modules.programme",
+        "index": "analyzed"
+      },
+      "modules.duree": {
+        "type": "string",
+        "term": "modules.duree",
+        "index": "not_analyzed"
+      },
+      "modules.publics": {
+        "type": "string",
+        "term": "modules.publics",
+        "index": "analyzed"
+      }
+    },
+    "sort_fields": {
+      "derniereModif": "derniereModif",
+      "region": "region",
+      "exercice": "exercice",
+      "axe.id": "axe",
+      "intitule": "intitule.intitule_na",
+      "typologie.code": "typologie",
+      "publics": "publics",
+      "nature": "nature",
+      "titulaire": "titulaire",
+      "modules.num": "modules.num",
+      "modules.intitule": "modules.intitule_na",
+      "modules.duree": "modules.duree",
+      "modules.publics": "modules.publics"
+    }
+  }
+}

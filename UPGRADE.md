@@ -26,7 +26,7 @@ docker-compose down
 Lancer le conteneur de base de données
 
 ```sh
-docker-compose -f docker-compose.yml -f docker-compose.sample.yml up db -d
+docker-compose -f docker-compose.yml -f docker-compose.sample.yml up -d db
 ```
 
 ### Domaine du PAR 1.0 (Reprise de données)

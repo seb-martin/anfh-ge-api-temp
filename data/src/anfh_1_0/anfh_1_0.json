@@ -6,10 +6,9 @@
         "region": { "type": "string", "index":"not_analyzed" },
         "idOrg": { "type": "integer", "index":"not_analyzed" },
         "raisonSociale": {
-          "type": "multi_field",
+          "type": "string",
           "fields": {
-            "raisonSociale": { "type": "string", "index":"analyzed" },
-            "raisonSociale_na": { "type": "string", "index":"not_analyzed" }
+            "raw": { "type": "string", "index":"not_analyzed" }
           }
         },
         "siret": { "type": "string", "index":"not_analyzed" },
@@ -20,45 +19,39 @@
         "adresse": {
           "properties": {
             "nom": {
-              "type": "multi_field",
+              "type": "string",
               "fields": {
-                "nom": { "type": "string", "index":"analyzed" },
-                "nom_na": { "type": "string", "index":"not_analyzed" }
+                "raw": { "type": "string", "index":"not_analyzed" }
               }
             },
             "service": {
-              "type": "multi_field",
+              "type": "string",
               "fields": {
-                "service": { "type": "string", "index":"analyzed" },
-                "service_na": { "type": "string", "index":"not_analyzed" }
+                "raw": { "type": "string", "index":"not_analyzed" }
               }
             },
             "pointLocalisation": {
-              "type": "multi_field",
+              "type": "string",
               "fields": {
-                "pointLocalisation": { "type": "string", "index":"analyzed" },
-                "pointLocalisation_na": { "type": "string", "index":"not_analyzed" }
+                "raw": { "type": "string", "index":"not_analyzed" }
               }
             },
             "voie": {
-              "type": "multi_field",
+              "type": "string",
               "fields": {
-                "voie": { "type": "string", "index":"analyzed" },
-                "voie_na": { "type": "string", "index":"not_analyzed" }
+                "raw": { "type": "string", "index":"not_analyzed" }
               }
             },
             "lieuDit": {
-              "type": "multi_field",
+              "type": "string",
               "fields": {
-                "lieuDit": { "type": "string", "index":"analyzed" },
-                "lieuDit_na": { "type": "string", "index":"not_analyzed" }
+                "raw": { "type": "string", "index":"not_analyzed" }
               }
             },
             "cpLocalite": {
-              "type": "multi_field",
+              "type": "string",
               "fields": {
-                "cpLocalite": { "type": "string", "index":"analyzed" },
-                "cpLocalite_na": { "type": "string", "index":"not_analyzed" }
+                "raw": { "type": "string", "index":"not_analyzed" }
               }
             }
           }
