@@ -8,7 +8,7 @@ ui:
 api:
   ports:
   # Lie le port 80 du container api au port 8081 de la machine hôte
-    - "8081:80"
+    - "8081:8081"
 
 # Interface de visualisation
 views:

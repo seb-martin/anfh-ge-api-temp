@@ -1,0 +1,38 @@
+{
+  "0": {
+    "code": "0",
+    "libelle": "Développement professionnel continu"
+  },
+  "1": {
+    "code": "1",
+    "libelle": "Formation professionnelle initiale"
+  },
+  "2": {
+    "code": "2",
+    "libelle": "Formation continue ou Développement des connaissances et des compétences"
+  },
+  "3": {
+    "code": "3",
+    "libelle": "Préparation concours et examens"
+  },
+  "4": {
+    "code": "4",
+    "libelle": "Etude Promotionnelle ou Promotion professionnelle (EP)"
+  },
+  "5": {
+    "code": "5",
+    "libelle": "Action de conversion"
+  },
+  "6": {
+    "code": "6",
+    "libelle": "Congé de Formation Professionnelle (CFP)"
+  },
+  "7": {
+    "code": "7",
+    "libelle": "Bilan de compétences"
+  },
+  "8": {
+    "code": "8",
+    "libelle": "Validation des Acquis de l\"Expérience (VAE)"
+  }
+}

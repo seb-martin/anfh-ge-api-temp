@@ -1,0 +1,100 @@
+{
+  "centresbc": {
+    "filter_fields": {
+      "region": {
+        "type": "string",
+        "term": "region",
+        "index": "not_analyzed"
+      },
+      "idOrg": {
+        "type": "integer",
+        "term": "idOrg",
+        "index": "not_analyzed"
+      },
+      "raisonSociale": {
+        "type": "string",
+        "term": "raisonSociale",
+        "index": "analyzed"
+      },
+      "siret": {
+        "type": "string",
+        "term": "siret",
+        "index": "not_analyzed"
+      },
+      "ape": {
+        "type": "string",
+        "term": "ape",
+        "index": "not_analyzed"
+      },
+      "nda": {
+        "type": "string",
+        "term": "nda",
+        "index": "not_analyzed"
+      },
+      "site": {
+        "type": "string",
+        "term": "site",
+        "index": "not_analyzed"
+      },
+      "adresse.nom": {
+        "type": "string",
+        "term": "adresse.nom",
+        "index": "analyzed"
+      },
+      "adresse.service": {
+        "type": "string",
+        "term": "adresse.service",
+        "index": "analyzed"
+      },
+      "adresse.pointLocalisation": {
+        "type": "string",
+        "term": "adresse.pointLocalisation",
+        "index": "analyzed"
+      },
+      "adresse.voie": {
+        "type": "string",
+        "term": "adresse.voie",
+        "index": "analyzed"
+      },
+      "adresse.lieuDit": {
+        "type": "string",
+        "term": "adresse.lieuDit",
+        "index": "analyzed"
+      },
+      "adresse.cpLocalite": {
+        "type": "string",
+        "term": "adresse.cpLocalite",
+        "index": "analyzed"
+      },
+      "tel": {
+        "type": "string",
+        "term": "tel",
+        "index": "analyzed"
+      },
+      "email": {
+        "type": "string",
+        "term": "email",
+        "index": "analyzed"
+      }
+    },
+    "sort_fields": {
+      "derniereModif": "derniereModif",
+      "region": "region",
+      "idOrg": "idOrg",
+      "raisonSociale": "raisonSociale.raw",
+      "siret": "siret",
+      "ape": "ape",
+      "nda": "nda",
+      "dateFinHabilitation": "dateFinHabilitation",
+      "site": "site",
+      "adresse.nom": "adresse.nom.raw",
+      "adresse.service": "adresse.service.raw",
+      "adresse.pointLocalisation": "adresse.pointLocalisation.raw",
+      "adresse.voie": "adresse.voie.raw",
+      "adresse.lieuDit": "adresse.lieuDit.raw",
+      "adresse.cpLocalite": "adresse.cpLocalite.raw",
+      "tel": "tel",
+      "email": "email"
+    }
+  }
+}
