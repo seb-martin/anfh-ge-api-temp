@@ -21,6 +21,7 @@ db:
   ports:
   # Lie le port 9200 du container db au port 9200 de la machine hôte
     - "9200:9200"
+    - "9300:9300"
   volumes:
   # Monte les volumes de données et de sauvegarde
     - /data:/usr/share/elasticsearch/data
