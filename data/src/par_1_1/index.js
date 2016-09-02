@@ -12,7 +12,7 @@ module.exports = function(esHelpers) {
   var docModif = function() {
     return through.obj(function(obj, enc, cb) {
       obj._index = INDEX_1_1;
-      obj.derniereModif = moment().toISOString();;
+      obj.derniereModif = moment().toISOString();
       this.push(obj);
       cb();
     });
@@ -60,12 +60,12 @@ module.exports = function(esHelpers) {
       return migration(regionsStream, 'regions');
     },
 
-    migrationAxes: function(regionsStream) {
-      return migration(regionsStream, 'axes');
+    migrationAxes: function(axesStream) {
+      return migration(axesStream, 'axes');
     },
 
-    migrationActions: function(regionsStream) {
-      return migration(regionsStream, 'actions');
+    migrationActions: function(actionsStream) {
+      return migration(actionsStream, 'actions');
     },
 
     createAlias: function(alias) {
@@ -73,7 +73,7 @@ module.exports = function(esHelpers) {
         .then(function(response) {
           console.info('Succès de création de l\'alias', alias, 'vers l\'index', INDEX_1_1);
         }).catch(function(err) {
-          console.error('Echec de création de l\'alias', alias, 'vers l\'index', INDEX_1_0, JSON.stringify(mapping), err);
+          console.error('Echec de création de l\'alias', alias, 'vers l\'index', INDEX_1_0, err);
         });
     },
 
@@ -82,10 +82,18 @@ module.exports = function(esHelpers) {
         .then(function(response) {
           console.info('Succès de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_1);
         }).catch(function(err) {
-          console.error('Echec de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_1, JSON.stringify(mapping), err);
+          console.error('Echec de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_1, err);
         });
-    }
+    },
 
+    scrollActions: function() {
+      return esHelpers.scroller({
+        index: INDEX_1_1,
+        type: 'actions',
+        scroll: '5s',
+        size: 5
+      });
+    }
   }
 
 };

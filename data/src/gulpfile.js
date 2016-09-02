@@ -13,6 +13,7 @@ var esHelpers = require('./es-helpers')({
 var par_1_0 = require('./par_1_0')(esHelpers);
 var par_1_1 = require('./par_1_1')(esHelpers);
 var anfh_1_0 = require('./anfh_1_0')(esHelpers);
+var par_1_1_dataUpdate_1 = require('./par_1_1_dataUpdate_1')(esHelpers);
 
 var PAR_ALIAS_NAME = 'par';
 var ANFH_ALIAS_NAME = 'anfh';
@@ -155,7 +156,16 @@ gulp.task('recover_anfh_1_0', [
 ]);
 
 /*
+Tâches de mise à jour 1 des données du mapping 1.1 (durées exprimées en heures et en minutes, pas en jours)
+*/
+
+gulp.task('update_1_par_1_1', function() {
+  return par_1_1_dataUpdate_1.updateActions(par_1_1.scrollActions());
+});
+
+
+/*
 Tâche par défaut (denière tâche majeure de manip des données)
 */
 
-gulp.task('default', ['recover_anfh_1_0']);
+gulp.task('default', ['update_1_par_1_1']);

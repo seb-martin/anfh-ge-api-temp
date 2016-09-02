@@ -152,7 +152,7 @@ module.exports = function(esHelpers) {
         .then(function(response) {
           console.info('Succès de création de l\'alias', alias, 'vers l\'index', INDEX_1_0);
         }).catch(function(err) {
-          console.error('Echec de création de l\'alias', alias, 'vers l\'index', INDEX_1_0, JSON.stringify(mapping), err);
+          console.error('Echec de création de l\'alias', alias, 'vers l\'index', INDEX_1_0, err);
         });
     },
 
@@ -161,7 +161,7 @@ module.exports = function(esHelpers) {
         .then(function(response) {
           console.info('Succès de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_0);
         }).catch(function(err) {
-          console.error('Echec de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_0, JSON.stringify(mapping), err);
+          console.error('Echec de suppression de l\'alias', alias, 'vers l\'index', INDEX_1_0, err);
         });
     }
 
