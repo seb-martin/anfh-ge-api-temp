@@ -18,7 +18,7 @@
     </style>
 
     <span id="humanized">[[_humanizedStr]]</span>
-    <paper-tooltip for="humanized" position="right" animation-delay="0">
+    <paper-tooltip id="humanized-tooltip" for="humanized" position="right" animation-delay="0">
       Approximation :
       <ul>
         <li>60 minutes = 1 heure</li>
@@ -84,9 +84,11 @@
         minutes: state.value.minutes
       });
 
-      this._humanizedStr = state.value === '' ?
+      var asMinutes = duration.asMinutes();
+
+      this._humanizedStr = asMinutes === 0 ?
         'Durée inconnue' :
-        'Approximativement ' + humanizeDuration(duration.asMinutes(), this.humanizerConfig);
+        'Approximativement ' + humanizeDuration(asMinutes, this.humanizerConfig);
     }
   });
 </script>
