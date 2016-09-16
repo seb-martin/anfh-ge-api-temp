@@ -171,7 +171,7 @@
               </paper-material>
 
               <paper-material elevation="1">
-                <par-duree-input value="{{module.duree}}" required auto-validate></par-duree-input>
+                <par-duree-input value="{{module.duree}}"></par-duree-input>
               </paper-material>
 
               <paper-material elevation="1">
@@ -504,7 +504,7 @@
           {
             num: num,
             intitule: intituleModule,
-            duree: 'P1D',
+            // duree: undefined, // Durée undefined par défaut
             // Recopie les publics de l'action dans le nouveau module
             publics: (this._dirty.publics || []).map(function(p) {
               return p;

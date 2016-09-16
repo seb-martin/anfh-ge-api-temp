@@ -162,38 +162,24 @@
       '_computeDuration(heures,minutes)'
     ],
 
-    ready: function() {
-      var self = this;
-
-      this.$.hours.addEventListener('blur', function() {
-        if (self.heures.length === 0) {
-          self.heures = '0';
-        }
-      });
-
-      this.$.minutes.addEventListener('blur', function() {
-        if (self.minutes.length === 0) {
-          self.minutes = '0';
-        }
-      });
-
-    },
-
     _selectMinutes: function() {
       this.$.minutes.focus();
     },
 
     _computeDuration: function(heures, minutes) {
-      this.duree = {heures: heures, minutes: minutes};
+      this.duree = {heures: parseInt(heures), minutes: parseInt(minutes)};
       this.fire('dureeChanged', this.duree);
     },
 
     validate: function() {
       // Empty, non-required input is valid.
-      if (!this.required && this.heures === '' && this.minutes === '') {
+      if (!this.required) {
         return true;
       }
-      this.invalid = !this.$.validator.validate(this.duree);
+      this.invalid = (
+        !this.$.validator.validate(this.duree) ||
+        (this.duree.heures === 0 && this.duree.minutes === 0)
+      );
       this.fire('iron-input-validate');
       return !this.invalid;
     },
