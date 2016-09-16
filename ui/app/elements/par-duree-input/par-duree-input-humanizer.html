@@ -1,0 +1,94 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<dom-module id="par-duree-input-humanizer">
+  <template>
+    <style>
+      :host {
+        display: inline-block;
+        float: right;
+        @apply(--paper-font-caption);
+        @apply(--par-duree-input-huminizer);
+      }
+      :host([hidden]) {
+        display: none !important;
+      }
+      :host-context([dir="rtl"]) {
+        float: left;
+      }
+    </style>
+
+    <span id="humanized">[[_humanizedStr]]</span>
+    <paper-tooltip id="humanized-tooltip" for="humanized" position="right" animation-delay="0">
+      Approximation :
+      <ul>
+        <li>60 minutes = 1 heure</li>
+        <li>7 heures = 1 jour</li>
+        <li>35 heures = 1 semaine</li>
+        <li>23 jours (jours travaillés) = 1 mois</li>
+        <li>47 semaines (52 semaines - 5 semaines de congés) = 1 an</li>
+      </ul>
+
+    </paper-tooltip>
+  </template>
+</dom-module>
+
+<script>
+  Polymer({
+    is: 'par-duree-input-humanizer',
+    behaviors: [
+      Polymer.PaperInputAddonBehavior
+    ],
+    properties: {
+      humanizerConfig: {
+        type: Object,
+        value: {
+          language: 'fr',
+          units: ['y', 'mo', 'w', 'd', 'h', 'm'],
+          unitMeasures: {
+            y: 47 * 5 * 7 * 60, // 52 semaines - 5 semaines de congés par an
+            mo: 23 * 7 * 60, // 23 jours travaillés par mois
+            w: 35 * 60, // 35 heures par semaine
+            d: 7 * 60, // 7 heures par jours
+            h: 60, // 60 minutes par heure
+            m: 1
+          }
+        }
+      },
+      _humanizedStr: {
+        type: String
+      }
+    },
+
+    /**
+     * This overrides the update function in PaperInputAddonBehavior.
+     *
+     * @param {{
+     *   inputElement: (Element|undefined),
+     *   value: (string|undefined),
+     *   invalid: boolean
+     * }} state -
+     *     inputElement: The input element.
+     *     value: The input value.
+     *     invalid: True if the input value is invalid.
+     */
+
+    update: function(state) {
+      if (!state.inputElement) {
+        return;
+      }
+
+      state.value = state.value || {};
+
+      var duration = moment.duration({
+        hours: state.value.heures,
+        minutes: state.value.minutes
+      });
+
+      var asMinutes = duration.asMinutes();
+
+      this._humanizedStr = asMinutes === 0 ?
+        'Durée inconnue' :
+        'Approximativement ' + humanizeDuration(asMinutes, this.humanizerConfig);
+    }
+  });
+</script>

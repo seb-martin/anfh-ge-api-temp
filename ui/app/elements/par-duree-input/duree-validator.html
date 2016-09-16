@@ -1,0 +1,30 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<script>
+
+  Polymer({
+    is: 'duree-validator',
+
+    behaviors: [
+      Polymer.IronValidatorBehavior
+    ],
+
+    validate: function(duree) {
+      if (!duree) {
+        return false;
+      }
+
+      if (duree.heures < 0) {
+        return false;
+      }
+
+      if (duree.minutes > 59 || duree.minutes < 0) {
+        return false;
+      }
+
+      return (duree.heures >= 0 && duree.minutes >= 0);
+
+    }
+
+  });
+</script>

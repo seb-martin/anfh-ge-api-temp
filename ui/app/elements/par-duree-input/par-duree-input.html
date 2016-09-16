@@ -1,0 +1,143 @@
+<link rel="import" href="../../bower_components/polymer/polymer.html">
+
+<link rel="import" href="duree-input.html">
+
+<dom-module id="par-duree-input">
+
+  <template>
+    <style>
+      :host {
+        display: block;
+      }
+    </style>
+
+    <paper-input-container id="container"
+        no-label-float="[[noLabelFloat]]"
+        always-float-label="[[alwaysFloatLabel]]"
+        attr-for-value="duree"
+        disabled$="[[disabled]]"
+        invalid="[[invalid]]">
+
+      <label hidden$="[[!label]]">[[label]]</label>
+
+      <duree-input class="paper-input-input" id="input"
+          aria-label-prefix="[[_ariaLabelledBy]]"
+          required$="[[required]]"
+          heures="[[_computeHours(value)]]"
+          minutes="[[_computeMinutes(value)]]"
+          autocomplete$="[[autocomplete]]"
+          disabled$="[[disabled]]"
+          invalid="{{invalid}}"
+          autofocus$="[[autofocus]]"
+          inputmode$="[[inputmode]]"
+          placeholder$="[[placeholder]]"
+          readonly$="[[readonly]]">
+      </duree-input>
+
+      <template is="dom-if" if="[[humanize]]">
+        <par-duree-input-humanizer></par-duree-input-humanizer>
+      </template>
+
+      <template is="dom-if" if="[[errorMessage]]">
+        <paper-input-error>[[errorMessage]]</paper-input-error>
+      </template>
+
+    </paper-input-container>
+  </template>
+
+  <script>
+    (function() {
+      Polymer({
+        is: 'par-duree-input',
+        /* The underlying dureeInput is tabbable */
+        hostAttributes: {
+          'tabindex': -1
+        },
+        behaviors: [
+          Polymer.PaperInputBehavior,
+          Polymer.IronFormElementBehavior
+        ],
+        properties: {
+          /**
+           * The label for this input.
+           */
+          label: {
+            type: String,
+            value: 'Durée'
+          },
+          value: {
+            type: String,
+            value: '',
+            observer: '_onValueChanged'
+          },
+          humanize: {
+            type: Boolean,
+            value: true
+          }
+        },
+        listeners: {
+          'dureeChanged': '_dureeChanged'
+        },
+        observers: [
+          '_onFocusedChanged(focused)'
+        ],
+        ready: function() {
+          // If there's an initial input, validate it.
+          if (this.value) {
+            if (this.autoValidate) {
+              this.validate();
+            }
+          }
+        },
+        /**
+         * A handler that is called on input
+         */
+        _onValueChanged: function(value, oldValue) {
+          // The initial property assignment is handled by `ready`.
+          if (oldValue === undefined) {
+            return;
+          }
+          if (this.autoValidate) {
+            this.validate();
+          }
+        },
+        _dureeChanged: function(event) {
+          if (parseInt(event.detail.heures) || parseInt(event.detail.minutes)) {
+            this.value = moment.duration({
+              hours: event.detail.heures,
+              minutes: event.detail.minutes
+            }).toISOString();
+          } else {
+            this.value = undefined;
+          }
+        },
+        _computeHours: function(value) {
+          var valueDuration = moment.duration(value);
+          return Math.floor(valueDuration.asHours());
+        },
+        _computeMinutes: function(value) {
+          var valueDuration = moment.duration(value);
+          return valueDuration.minutes();
+        },
+        /**
+         * Overidden from Polymer.PaperInputBehavior.
+         */
+        validate: function() {
+          return this.$.input.validate();
+        },
+        /**
+         * Overidden from Polymer.IronControlState.
+         */
+        _onFocusedChanged: function(focused) {
+          if (!focused) {
+            if (this.autoValidate) {
+              this.validate();
+            }
+          }
+        }
+
+      });
+    })();
+  </script>
+
+</dom-module>

@@ -67,6 +67,14 @@ docker-compose -f docker-compose.yml -f docker-compose.sample.yml -f docker-comp
 docker-compose -f docker-compose.yml -f docker-compose.sample.yml -f docker-compose.admin.yml run data recover_anfh_1_0
 ```
 
+### Mise à jour 1 des données du PAR 1.1 (Durées exprimées en heures et non en jours)
+
+- Transforme la durée des modules exprimées en jours/heures/minutes en durées exprimées en heures/minutes,
+
+```sh
+docker-compose -f docker-compose.yml -f docker-compose.sample.yml -f docker-compose.admin.yml run data update_1_par_1_1
+```
+
 ## Relancer le système.
 
 ```sh
