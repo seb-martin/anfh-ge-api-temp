@@ -21,6 +21,7 @@
     "page": true,
     "app": true,
     "elasticsearch": true,
-    "moment": false
+    "moment": false,
+    "humanizeDuration": false
   }
 }

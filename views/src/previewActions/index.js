@@ -86,8 +86,37 @@
         module.objectifs = module.objectifs ? marked(module.objectifs) : '';
         module.programme = module.programme ? marked(module.programme) : '';
 
-        // Remplace la durée au format ISO par une durée humaiinement lisible
-        module.duree = module.duree ? humanizeDuration(moment.duration(module.duree).asMilliseconds(), {language: 'fr'}) : '';
+        // Remplace la durée au format ISO par une durée humainement lisible
+        if (module.duree) {
+          var duration = moment.duration(module.duree);
+
+          var heures = Math.floor(duration.asHours());
+          var minutes = duration.minutes();
+
+          module.duree = heures + ' heures et ' + minutes + ' minutes';
+
+          if (heures >= 7) {
+            // On donne une approximation en années/mois/semaines/jours/heures/minutes)
+            var approx = humanizeDuration(moment.duration(duration).asMinutes(), {
+              language: 'fr',
+              units: ['y', 'mo', 'w', 'd', 'h', 'm'],
+              unitMeasures: {
+                y: 47 * 5 * 7 * 60, // 52 semaines - 5 semaines de congés par an
+                mo: 23 * 7 * 60, // 23 jours travaillés par mois
+                w: 35 * 60, // 35 heures par semaine
+                d: 7 * 60, // 7 heures par jours
+                h: 60, // 60 minutes par heure
+                m: 1
+              }
+            });
+
+            module.duree += ' (approximativement ' + approx + ')';
+          }
+
+
+        } else {
+          module.duree = '';
+        }
 
       });
     }
