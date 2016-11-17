@@ -1,4 +1,4 @@
-FROM node:5.5.0
+FROM node:7.1.10
 
 RUN npm install -g gulp
 

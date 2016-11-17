@@ -1,4 +1,4 @@
-FROM node:6.2.2
+FROM node:7.1.10
 
 RUN mkdir -p /usr/src/app
 WORKDIR /usr/src/app
@@ -6,10 +6,9 @@ WORKDIR /usr/src/app
 COPY src/package.json /usr/src/app/
 RUN npm install
 
-COPY src/server.js /usr/src/app
-COPY src/anfh /usr/src/app/anfh
-COPY src/par /usr/src/app/par
-COPY src/root /usr/src/app/root
+COPY src/docs /usr/src/app/api
+COPY src/index.js /usr/src/app
+COPY src/controllers /usr/src/app/controllers
 
 EXPOSE 8081
 

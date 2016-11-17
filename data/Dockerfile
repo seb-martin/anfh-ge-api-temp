@@ -1,4 +1,4 @@
-FROM node:6
+FROM node:7.1.10
 
 RUN npm install --global gulp-cli
 
