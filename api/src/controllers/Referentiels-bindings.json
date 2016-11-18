@@ -1,0 +1,100 @@
+{
+  "centresbc": {
+    "derniereModif": {
+      "sort": "derniereModif"
+    },
+    "region": {
+      "type": "string",
+      "term": "region",
+      "sort": "region",
+      "index": "not_analyzed"
+    },
+    "idOrg": {
+      "type": "integer",
+      "term": "idOrg",
+      "sort": "idOrg",
+      "index": "not_analyzed"
+    },
+    "raisonSociale": {
+      "type": "string",
+      "term": "raisonSociale",
+      "sort": "raisonSociale.raw",
+      "index": "analyzed"
+    },
+    "siret": {
+      "type": "string",
+      "term": "siret",
+      "sort": "siret",
+      "index": "not_analyzed"
+    },
+    "ape": {
+      "type": "string",
+      "term": "ape",
+      "sort": "ape",
+      "index": "not_analyzed"
+    },
+    "nda": {
+      "type": "string",
+      "term": "nda",
+      "sort": "nda",
+      "index": "not_analyzed"
+    },
+    "dateFinHabilitation": {
+      "sort": "dateFinHabilitation"
+    },
+    "site": {
+      "type": "string",
+      "term": "site",
+      "sort": "site",
+      "index": "not_analyzed"
+    },
+    "adresse.nom": {
+      "type": "string",
+      "term": "adresse.nom",
+      "sort": "adresse.nom.raw",
+      "index": "analyzed"
+    },
+    "adresse.service": {
+      "type": "string",
+      "term": "adresse.service",
+      "sort": "adresse.service.raw",
+      "index": "analyzed"
+    },
+    "adresse.pointLocalisation": {
+      "type": "string",
+      "term": "adresse.pointLocalisation",
+      "sort": "adresse.pointLocalisation.raw",
+      "index": "analyzed"
+    },
+    "adresse.voie": {
+      "type": "string",
+      "term": "adresse.voie",
+      "sort": "adresse.voie.raw",
+      "index": "analyzed"
+    },
+    "adresse.lieuDit": {
+      "type": "string",
+      "term": "adresse.lieuDit",
+      "sort": "adresse.lieuDit.raw",
+      "index": "analyzed"
+    },
+    "adresse.cpLocalite": {
+      "type": "string",
+      "term": "adresse.cpLocalite",
+      "sort": "adresse.cpLocalite.raw",
+      "index": "analyzed"
+    },
+    "tel": {
+      "type": "string",
+      "term": "tel",
+      "sort": "tel",
+      "index": "analyzed"
+    },
+    "email": {
+      "type": "string",
+      "term": "email",
+      "sort": "email",
+      "index": "analyzed"
+    }
+  }
+}
