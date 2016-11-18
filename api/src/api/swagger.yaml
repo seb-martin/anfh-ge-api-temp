@@ -201,7 +201,7 @@ paths:
         200:
           description: "Succès de la requête"
           schema:
-            $ref: "#/definitions/CollectionCentreBC"
+            $ref: "#/definitions/CentreBC"
         404:
           description: "Aucun centre de bilan n'a pu être trouvé"
           schema:
