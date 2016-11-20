@@ -1,4 +1,4 @@
-FROM node:7.1.10
+FROM node:7.1.0
 
 # Installe Bower, Gulp et Http-Server
 ################################
