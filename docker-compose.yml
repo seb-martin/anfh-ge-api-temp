@@ -20,7 +20,7 @@ db:
 
 # Gestion
 mgmt:
-  build: ./mgmt
+  image: kibana:5.0.1
   environment:
     - ELASTICSEARCH_URL=http://db:9200
   links:
