@@ -5,9 +5,8 @@
         "code": { "type": "string", "index":"not_analyzed" },
         "derniereModif": { "type": "date", "format": "strict_date_time" },
         "denomination": {
-          "type": "multi_field",
-          "fields":{
-            "denomination": { "type": "string", "index":"analyzed" },
+          "type": "string",
+          "fields": {
             "denomination_na": { "type": "string", "index":"not_analyzed" }
           }
         }
@@ -20,9 +19,8 @@
         "num": { "type": "integer", "index":"not_analyzed" },
         "derniereModif": { "type": "date", "format": "strict_date_time" },
         "intitule": {
-          "type": "multi_field",
+          "type": "string",
           "fields": {
-            "intitule": { "type": "string", "index":"analyzed" },
             "intitule_na": { "type": "string", "index":"not_analyzed" }
           }
         }
@@ -37,9 +35,8 @@
         "axe": { "type": "string", "index":"not_analyzed" },
         "code": { "type": "string", "index":"not_analyzed" },
         "intitule": {
-          "type": "multi_field",
+          "type": "string",
           "fields": {
-            "intitule": { "type": "string", "index":"analyzed" },
             "intitule_na": { "type": "string", "index":"not_analyzed" }
           }
         },
@@ -54,9 +51,8 @@
           "properties": {
             "num": { "type": "integer", "index":"not_analyzed" },
             "intitule": {
-              "type": "multi_field",
+              "type": "string",
               "fields": {
-                "intitule": { "type": "string", "index":"analyzed" },
                 "intitule_na": { "type": "string", "index":"not_analyzed" }
               }
             },

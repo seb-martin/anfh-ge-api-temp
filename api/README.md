@@ -1,17 +1,22 @@
 # API
 
-Interface applicative exposant les plans d'accès régionaux
+## Vue générale
 
-## Installation
+API exposant
 
-```sh
-cd src
-npm install
-```
+- les plans d'accès régionaux
+- les centres de bilans de compétences
 
-## Exécution
+
+## Démarrer le serveur
 
 ```sh
 cd src
 npm start
+```
+
+Pour voir les spécifications de l'API :
+
+```sh
+open http://localhost:8081/docs
 ```

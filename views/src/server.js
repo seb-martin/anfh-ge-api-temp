@@ -38,10 +38,7 @@
   // Procède à un ping du serveur elasticsearch
   (function(){
     client.ping({
-      requestTimeout: 30000,
-
-      // undocumented params are appended to the query string
-      hello: "elasticsearch"
+      requestTimeout: 30000
     }, function (error) {
       if (error) {
         console.error('elasticsearch cluster is down!');
