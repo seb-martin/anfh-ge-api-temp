@@ -19,9 +19,12 @@ views:
 # Base de données
 db:
   ports:
-  # Lie le port 9200 du container db au port 9200 de la machine hôte
+  # Lie les ports 9200 et 9300 du container db aux ports 9200 et 9300 de la machine hôte
     - "9200:9200"
     - "9300:9300"
+  environment:
+    - bootstrap.memory_lock=true
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
   volumes:
   # Monte les volumes de données et de sauvegarde
     - /data:/usr/share/elasticsearch/data

@@ -32,6 +32,13 @@ Le système est distribué sous la forme d'images [Docker](https://www.docker.co
 
 ## Installation
 
+Elasticsearch requiert la possibilité de créer de nombreux *memory-mapped areas*.
+Le kernel doit autoriser au moins 262 144 memory-mapped areas.
+
+```sh
+echo "vm.max_map_count=262144" >> /etc/sysctl.conf
+```
+
 Cloner la branche `master` du référentiel GitHub du projet.
 
 ```sh
@@ -116,7 +123,19 @@ cf. [UPGRADE.md](UPGRADE.md)
 
 cf. [BACKUP.md](BACKUP.md)
 
-# Machine Virtuelle
+# Virtualisation
+
+## Docker Machine
+
+```sh
+docker-machine create -d virtualbox --virtualbox-memory 4096 default
+
+docker-machine ssh
+sudo sysctl -w vm.max_map_count=262144
+exit
+```
+
+## Machine Virtuelle
 
 Pour le développement, une machine virtuelle (VM) [Vagrant](https://www.vagrantup.com/), testée avec [Virtual Box](https://www.virtualbox.org/), est disponible.
 
