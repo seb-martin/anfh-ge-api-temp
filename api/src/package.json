@@ -1,6 +1,6 @@
 {
   "name": "ge-api-temp-api",
-  "version": "1.4.2",
+  "version": "1.5.0",
   "description": "API publique de Gesform Evolution",
   "main": "index.js",
   "dependencies": {
