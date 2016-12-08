@@ -1,17 +1,22 @@
 {
   "name": "ge-api-temp-api",
-  "version": "1.3.0",
-  "description": "Interface applicative exposant les plans d'accès régionaux",
+  "version": "1.5.0",
+  "description": "API publique de Gesform Evolution",
+  "main": "index.js",
   "dependencies": {
-    "body-parser": "^1.14.1",
     "compression": "^1.6.1",
     "cors": "^2.7.1",
-    "elasticsearch": "^10.0.1",
+    "elasticsearch": "^12.0.1",
+    "esq": "^1.0.0",
     "express": "^4.13.3",
+    "js-yaml": "^3.3.0",
     "morgan": "^1.7.0",
-    "promise": "^7.1.1"
+    "promise": "^7.1.1",
+    "redirects": "^1.1.1",
+    "swagger-tools": "0.10.1"
   },
   "scripts": {
-    "start": "node server.js"
+    "prestart": "npm install",
+    "start": "node index.js"
   }
 }

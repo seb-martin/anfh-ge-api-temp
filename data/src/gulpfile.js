@@ -7,7 +7,7 @@ var dbPort = process.env.DB_PORT_9200_TCP_PORT || 9200
 
 var esHelpers = require('./es-helpers')({
   host: dbHost + ':' + dbPort,
-  requestTimeout: 50000
+  requestTimeout: 50000//, log: 'trace'
 });
 
 var par_1_0 = require('./par_1_0')(esHelpers);
@@ -23,7 +23,6 @@ var ANFH_ALIAS_NAME = 'anfh';
 gulp.task('ping', function(){
   return esHelpers.ping({
     requestTimeout: 30000,
-    hello: "elasticsearch"
   }).then(function(pong) {
     console.info('Succès de connexion ElasticSearch');
   }).catch(function(err) {

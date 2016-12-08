@@ -22,6 +22,10 @@ db:
   # Lie les ports 9200 et 9300 du container db aux ports 9200 et 9300 de la machine hôte
     - "9200:9200"
     - "9300:9300"
+  environment:
+    # - cluster.name=anfh-ge-api-temp
+    - bootstrap.memory_lock=true
+    - "ES_JAVA_OPTS=-Xms512m -Xmx512m"
   volumes:
     - /data:/usr/share/elasticsearch/data
     - /backups:/usr/share/elasticsearch/backups

@@ -14,8 +14,8 @@
         dst: './'
       },
       api: {
-        src: ['./api/package.json'],
-        dst: './api'
+        src: ['./api/src/package.json'],
+        dst: './api/src'
       },
       views: {
         src: ['./views/src/package.json'],

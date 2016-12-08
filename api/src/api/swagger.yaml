@@ -1,0 +1,1037 @@
+---
+swagger: "2.0"
+info:
+  description: "Spécification de l'API publique de Gesform Evolution"
+  version: "1.0.0"
+  title: "Gesform Evolution API v1"
+host: "gesform-api.anfh.fr"
+basePath: "/api/v1"
+tags:
+- name: "Referentiels"
+  description: "Référentiels ANFH"
+- name: "PAR"
+  description: "Plans d'Actions Régionaux"
+schemes:
+- "https"
+consumes:
+- "application/json"
+produces:
+- "application/json"
+paths:
+  /anfh/centresbc:
+    get:
+      tags:
+      - "Referentiels"
+      description: "Obtenir une collection\nde Centres de bilans de compétences\n"
+      operationId: "anfhCentresbcGET"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "Index du premier élément à retourner"
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "Nombre maximum d'éléments à retourner"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 50
+        minimum: 1
+        format: "int32"
+      - name: "sortedBy"
+        in: "query"
+        description: "Tri des éléments à retourner.\nListe des membres du tri, sé\
+          parés par des virgules.\nUn membre préfixé par le signe `-` permet d’indiquer\
+          \ un tri \n"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+            - "derniereModif"
+            - "region"
+            - "idOrg"
+            - "raisonSociale"
+            - "siret"
+            - "ape"
+            - "nda"
+            - "dateFinHabilitation"
+            - "site"
+            - "adresse.nom"
+            - "adresse.service"
+            - "adresse.pointLocalisation"
+            - "adresse.voie"
+            - "adresse.lieuDit"
+            - "adresse.cpLocalite"
+            - "tel"
+            - "email"
+            - "-derniereModif"
+            - "-region"
+            - "-idOrg"
+            - "-raisonSociale"
+            - "-siret"
+            - "-ape"
+            - "-nda"
+            - "-dateFinHabilitation"
+            - "-site"
+            - "-adresse.nom"
+            - "-adresse.service"
+            - "-adresse.pointLocalisation"
+            - "-adresse.voie"
+            - "-adresse.lieuDit"
+            - "-adresse.cpLocalite"
+            - "-tel"
+            - "-email"
+        collectionFormat: "csv"
+      - name: "q"
+        in: "query"
+        description: "Recherche “Full text” sur l’ensemble des membres des éléments"
+        required: false
+        type: "string"
+      - name: "region"
+        in: "query"
+        description: "Filtre sur le code région"
+        required: false
+        type: "string"
+      - name: "idOrg"
+        in: "query"
+        description: "Filtre sur l'identifiant d'organisme'"
+        required: false
+        type: "integer"
+        format: "int64"
+      - name: "raisonSociale"
+        in: "query"
+        description: "Filtre sur la raison sociale de l'organisme"
+        required: false
+        type: "string"
+      - name: "siret"
+        in: "query"
+        description: "Filtre sur le numéro Siret"
+        required: false
+        type: "string"
+      - name: "ape"
+        in: "query"
+        description: "Filtre sur le code APE"
+        required: false
+        type: "string"
+      - name: "nda"
+        in: "query"
+        description: "Filtre sur le numéro d'activité"
+        required: false
+        type: "string"
+      - name: "site"
+        in: "query"
+        description: "Filtre sur l'URL du site"
+        required: false
+        type: "string"
+        format: "url"
+      - name: "adresse.nom"
+        in: "query"
+        description: "Filtre sur le nom de centre de bilan"
+        required: false
+        type: "string"
+      - name: "adresse.service"
+        in: "query"
+        description: "Filtre sur le service"
+        required: false
+        type: "string"
+      - name: "adresse.pointLocalisation"
+        in: "query"
+        description: "Filtre sur le point de localisation"
+        required: false
+        type: "string"
+      - name: "adresse.voie"
+        in: "query"
+        description: "Filtre sur la voie"
+        required: false
+        type: "string"
+      - name: "adresse.lieuDit"
+        in: "query"
+        description: "Filtre sur le lieu dit"
+        required: false
+        type: "string"
+      - name: "adresse.cpLocalite"
+        in: "query"
+        description: "Filtre sur le code postal et la localité"
+        required: false
+        type: "string"
+      - name: "tel"
+        in: "query"
+        description: "Filtre sur le téléphone"
+        required: false
+        type: "string"
+      - name: "email"
+        in: "query"
+        description: "Filtre sur l'email"
+        required: false
+        type: "string"
+        format: "email"
+
+      responses:
+        200:
+          description: "Succès de la requête"
+          schema:
+            $ref: "#/definitions/CollectionCentreBC"
+        400:
+          description: "La requête ne peut pas être interprété par le serveur à cause\
+            \ d’une erreur de syntaxe"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+        500:
+          description: "Le serveur a rencontré une erreur inattendue"
+      x-swagger-router-controller: "Referentiels"
+  /anfh/centresbc/{id}:
+    get:
+      tags:
+      - "Referentiels"
+      description: "Obtenir un centre de bilans de compétences avec son identifiant\n"
+      operationId: "anfhCentresbcIdGET"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Identifiant du centre de bilan"
+        required: true
+        type: "integer"
+        format: "int64"
+      responses:
+        200:
+          description: "Succès de la requête"
+          schema:
+            $ref: "#/definitions/CentreBC"
+        404:
+          description: "Aucun centre de bilan n'a pu être trouvé"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+        500:
+          description: "Le serveur a rencontré une erreur inattendue"
+      x-swagger-router-controller: "Referentiels"
+
+  /par/regions:
+    get:
+      tags:
+      - "PAR"
+      description: "Obtenir une collection\nde régions de formation\n"
+      operationId: "parRegionsGET"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "Index du premier élément à retourner"
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "Nombre maximum d'éléments à retourner"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 50
+        minimum: 1
+        format: "int32"
+      - name: "sortedBy"
+        in: "query"
+        description: "Tri des éléments à retourner.\nListe des membres du tri, sé\
+          parés par des virgules.\nUn membre préfixé par le signe `-` permet d’indiquer\
+          \ un tri \n"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+            - "derniereModif"
+            - "code"
+            - "denomination"
+            - "-derniereModif"
+            - "-code"
+            - "-denomination"
+        collectionFormat: "csv"
+      - name: "q"
+        in: "query"
+        description: "Recherche “Full text” sur l’ensemble des membres des éléments"
+        required: false
+        type: "string"
+      - name: "code"
+        in: "query"
+        description: "Filtre par code région"
+        required: false
+        type: "string"
+      - name: "denomination"
+        in: "query"
+        description: "Filtre sur la dénomination de la région"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Succès de la requête"
+          schema:
+            $ref: "#/definitions/CollectionRegionFormation"
+        400:
+          description: "La requête ne peut pas être interprété par le serveur à cause\
+            \ d’une erreur de syntaxe"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+        500:
+          description: "Le serveur a rencontré une erreur inattendue"
+      x-swagger-router-controller: "PAR"
+
+
+  /par/regions/{id}:
+    get:
+      tags:
+      - "PAR"
+      description: "Obtenir une région de formation avec son code\n"
+      operationId: "parRegionsCodeGET"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Code identifiant de la région"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Succès de la requête"
+          schema:
+            $ref: "#/definitions/RegionFormation"
+        404:
+          description: "Aucune région de formation n'a pu être trouvée"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+        500:
+          description: "Le serveur a rencontré une erreur inattendue"
+      x-swagger-router-controller: "PAR"
+
+
+  /par/axes:
+    get:
+      tags:
+      - "PAR"
+      description: "Obtenir une collection\nd'axes de formation\n"
+      operationId: "parAxesGET"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "Index du premier élément à retourner"
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "Nombre maximum d'éléments à retourner"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 50
+        minimum: 1
+        format: "int32"
+      - name: "sortedBy"
+        in: "query"
+        description: "Tri des éléments à retourner.\nListe des membres du tri, sé\
+          parés par des virgules.\nUn membre préfixé par le signe `-` permet d’indiquer\
+          \ un tri \n"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+            - "derniereModif"
+            - "region"
+            - "exercice"
+            - "num"
+            - "intitule"
+            - "-derniereModif"
+            - "-region"
+            - "-exercice"
+            - "-num"
+            - "-intitule"
+        collectionFormat: "csv"
+      - name: "q"
+        in: "query"
+        description: "Recherche “Full text” sur l’ensemble des membres des éléments"
+        required: false
+        type: "string"
+      - name: "region"
+        in: "query"
+        description: "Filtre par code région"
+        required: false
+        type: "string"
+      - name: "exercice"
+        in: "query"
+        description: "Filtre par exercice"
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "num"
+        in: "query"
+        description: "Filtre par numéro d'axe"
+        required: false
+        type: "integer"
+        format: "int32"
+      - name: "intitule"
+        in: "query"
+        description: "Filtre sur l'intitulé"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Succès de la requête"
+          schema:
+            $ref: "#/definitions/CollectionAxeFormation"
+        400:
+          description: "La requête ne peut pas être interprété par le serveur à cause\
+            \ d’une erreur de syntaxe"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+        500:
+          description: "Le serveur a rencontré une erreur inattendue"
+      x-swagger-router-controller: "PAR"
+  /par/axes/{id}:
+    get:
+      tags:
+      - "PAR"
+      description: "Obtenir un axe de formation par son identifiant"
+      operationId: "parAxesIdGET"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Identifiant de l'axe de formation"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Succès de la requête"
+          schema:
+            $ref: "#/definitions/AxeFormation"
+        404:
+          description: "Aucun axe de formation n'a pu être trouvé"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+        500:
+          description: "Le serveur a rencontré une erreur inattendue"
+      x-swagger-router-controller: "PAR"
+
+  /par/actions:
+    get:
+      tags:
+      - "PAR"
+      description: "Obtenir une collection\nd'actions de formation\n"
+      operationId: "parActionsGET"
+      parameters:
+      - name: "offset"
+        in: "query"
+        description: "Index du premier élément à retourner"
+        required: false
+        type: "integer"
+        default: 0
+        minimum: 0
+        format: "int32"
+      - name: "limit"
+        in: "query"
+        description: "Nombre maximum d'éléments à retourner"
+        required: false
+        type: "integer"
+        default: 10
+        maximum: 50
+        minimum: 1
+        format: "int32"
+      - name: "sortedBy"
+        in: "query"
+        description: "Tri des éléments à retourner.\nListe des membres du tri, sé\
+          parés par des virgules.\nUn membre préfixé par le signe `-` permet d’indiquer\
+          \ un tri \n"
+        required: false
+        type: "array"
+        items:
+          type: "string"
+          enum:
+            - "derniereModif"
+            - "region"
+            - "exercice"
+            - "axe.id"
+            - "intitule"
+            - "typologie.code"
+            - "publics"
+            - "nature"
+            - "titulaire"
+            - "modules.num"
+            - "modules.intitule"
+            - "modules.duree"
+            - "modules.publics"
+            - "-derniereModif"
+            - "-region"
+            - "-exercice"
+            - "-axe.id"
+            - "-intitule"
+            - "-typologie.code"
+            - "-publics"
+            - "-nature"
+            - "-titulaire"
+            - "-modules.num"
+            - "-modules.intitule"
+            - "-modules.duree"
+            - "-modules.publics"
+        collectionFormat: "csv"
+      - name: "q"
+        in: "query"
+        description: "Recherche “Full text” sur l’ensemble des membres des éléments"
+        required: false
+        type: "string"
+      - name: "region"
+        in: "query"
+        description: "Filtre par le code région"
+        required: false
+        type: "string"
+      - name: "exercice"
+        in: "query"
+        description: "Filtre par l'exercice"
+        required: false
+        type: "integer"
+        format: int32
+      - name: "axe.id"
+        in: "query"
+        description: "Filtre par l'identifiant"
+        required: false
+        type: "string"
+      - name: "intitule"
+        in: "query"
+        description: "Filtre sur l'intitule"
+        required: false
+        type: "string"
+      - name: "contexte"
+        in: "query"
+        description: "Filtre sur le contexte de l'action"
+        required: false
+        type: "string"
+      - name: "objectifs"
+        in: "query"
+        description: "Filtre sur les objectifs de l'action"
+        required: false
+        type: "string"
+      - name: "autre"
+        in: "query"
+        description: "Filtre sur les informations complémentaires"
+        required: false
+        type: "string"
+      - name: "typologie.code"
+        in: "query"
+        description: "Filtre par le code de typologie"
+        required: false
+        type: "string"
+      - name: "publics"
+        in: "query"
+        description: "Filtre sur les puclics de l'action"
+        required: false
+        type: "string"
+      - name: "nature"
+        in: "query"
+        description: "Filtre sur le code de nature"
+        required: false
+        type: "string"
+      - name: "titulaire"
+        in: "query"
+        description: "Filtre sur le titulaire"
+        required: false
+        type: "string"
+      - name: "modules.num"
+        in: "query"
+        description: "Filtre sur le numéro de module"
+        required: false
+        type: "integer"
+        format: int32
+      - name: "modules.intitule"
+        in: "query"
+        description: "Filtre sur l'intitule de module"
+        required: false
+        type: "string"
+      - name: "modules.contexte"
+        in: "query"
+        description: "Filtre sur le contexte de module"
+        required: false
+        type: "string"
+      - name: "modules.objectifs"
+        in: "query"
+        description: "Filtre sur les objectifs de module"
+        required: false
+        type: "string"
+      - name: "modules.programme"
+        in: "query"
+        description: "Filtre sur le programme de module"
+        required: false
+        type: "string"
+      - name: "modules.duree"
+        in: "query"
+        description: "Filtre sur la durée de module (ISO-8601)"
+        required: false
+        type: "string"
+      - name: "modules.publics"
+        in: "query"
+        description: "Filtre sur les publics de module"
+        required: false
+        type: "string"
+      responses:
+        200:
+          description: "Succès de la requête"
+          schema:
+            $ref: "#/definitions/CollectionActionFormation"
+        400:
+          description: "La requête ne peut pas être interprété par le serveur à cause\
+            \ d’une erreur de syntaxe"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+        500:
+          description: "Le serveur a rencontré une erreur inattendue"
+      x-swagger-router-controller: "PAR"
+  /par/actions/{id}:
+    get:
+      tags:
+      - "PAR"
+      description: "Obtenir une action de formation avec son identifiant\n"
+      operationId: "parActionsIdGET"
+      parameters:
+      - name: "id"
+        in: "path"
+        description: "Identifiant de l'action de formation"
+        required: true
+        type: "string"
+      responses:
+        200:
+          description: "Succès de la requête"
+          schema:
+            $ref: "#/definitions/ActionFormation"
+        404:
+          description: "Aucune action de formation n'a pu être trouvée"
+          schema:
+            $ref: "#/definitions/ErrorModel"
+        500:
+          description: "Le serveur a rencontré une erreur inattendue"
+      x-swagger-router-controller: "PAR"
+
+
+definitions:
+  Instance:
+    type: "object"
+    required:
+    - "derniereModif"
+    properties:
+      derniereModif:
+        type: "string"
+        format: "date-time"
+        description: "Horodatage de la dernière modification apportée à la ressource"
+  Collection:
+    type: "object"
+    required:
+    - "total"
+    properties:
+      total:
+        type: "integer"
+        format: "int32"
+        description: "Nombre total de ressources"
+  CollectionCentreBC:
+    allOf:
+    - $ref: "#/definitions/Collection"
+    - type: "object"
+      required:
+      - "items"
+      properties:
+        items:
+          type: "array"
+          description: "Tableau limité des centres de bilans"
+          items:
+            $ref: "#/definitions/CentreBC"
+  CentreBC:
+    allOf:
+    - $ref: "#/definitions/Instance"
+    - type: "object"
+      required:
+      - "adresse"
+      - "id"
+      - "idOrg"
+      - "raisonSociale"
+      properties:
+        id:
+          type: "integer"
+          format: "int64"
+          description: "Identifiant du centre de bilan"
+          minimum: 0
+          exclusiveMinimum: true
+        region:
+          type: "string"
+          description: "Code région ANFH où se situe le centre de bilan"
+          pattern: "/[A-Z]{3}/"
+        idOrg:
+          type: "integer"
+          format: "int64"
+          description: "Identifiant de l’organisme détenant le centre de bilan"
+          minimum: 0
+          exclusiveMinimum: true
+        raisonSociale:
+          type: "string"
+          description: "Raison sociale de l’organisme détenant le centre de bilan"
+          minLength: 1
+          maxLength: 80
+        siret:
+          type: "string"
+          description: "Numéro Siret de l’établissement attribué par l’INSEE"
+          pattern: "/[0-9]{14}/"
+        ape:
+          type: "string"
+          description: "Code APE issu de la nomenclature NAF"
+          pattern: "/[0-9]{4}[A-Z]/"
+        nda:
+          type: "string"
+          description: "Numéro de déclaration d’activité"
+          pattern: "/[0-9]{11}/"
+        dateFinHabilitation:
+          type: "string"
+          format: "date"
+          description: "Date de fin d’habilitation"
+        site:
+          type: "string"
+          format: "url"
+          description: "URL du site de l’organisme"
+        adresse:
+          $ref: "#/definitions/Adresse"
+        tel:
+          type: "string"
+          description: "Numéro de téléphone du centre de bilan"
+        email:
+          type: "string"
+          format: "email"
+          description: "Adresse mail du centre de bilan"
+  CollectionRegionFormation:
+    allOf:
+    - $ref: "#/definitions/Collection"
+    - type: "object"
+      required:
+      - "items"
+      properties:
+        items:
+          type: "array"
+          description: "Tableau limité des régions de formation"
+          items:
+            $ref: "#/definitions/RegionFormation"
+  RegionFormation:
+    allOf:
+    - $ref: "#/definitions/Instance"
+    - type: "object"
+      required:
+      - "code"
+      - "denomination"
+      properties:
+        code:
+          type: "string"
+          description: "Code de référence de la région (ALP, ALS, BGN, …)"
+          pattern: "/[A-Z]{3}/"
+        denomination:
+          type: "string"
+          description: "Dénomination de la région"
+          minLength: 1
+          maxLength: 80
+  CollectionAxeFormation:
+    allOf:
+    - $ref: "#/definitions/Collection"
+    - type: "object"
+      required:
+      - "items"
+      properties:
+        items:
+          type: "array"
+          description: "Tableau limité des axes de formation"
+          items:
+            $ref: "#/definitions/AxeFormation"
+  AxeFormation:
+    allOf:
+    - $ref: "#/definitions/Instance"
+    - type: "object"
+      required:
+      - "exercice"
+      - "id"
+      - "intitule"
+      - "num"
+      - "region"
+      properties:
+        id:
+          type: "string"
+          description: "Identifiant unique de l’axe de formation"
+          minLength: 1
+        region:
+          type: "string"
+          description: "Code région du PAR"
+          pattern: "/[A-Z]{3}/"
+        exercice:
+          type: "integer"
+          format: "int32"
+          description: "Exercice du PAR"
+          minimum: 2015
+        num:
+          type: "integer"
+          format: "int32"
+          description: "Numéro d’ordre de l’axe de formation"
+          minimum: 1
+        intitule:
+          type: "string"
+          description: "Intitulé de l’axe de formation"
+          minLength: 1
+          maxLength: 80
+  CollectionActionFormation:
+    allOf:
+    - $ref: "#/definitions/Collection"
+    - type: "object"
+      required:
+      - "items"
+      properties:
+        items:
+          type: "array"
+          description: "Tableau limité des actions de formation"
+          items:
+            $ref: "#/definitions/ActionFormation"
+  ActionFormation:
+    allOf:
+    - $ref: "#/definitions/Instance"
+    - type: "object"
+      required:
+      - "contexte"
+      - "exercice"
+      - "id"
+      - "intitule"
+      - "modules"
+      - "nature"
+      - "objectifs"
+      - "region"
+      properties:
+        id:
+          type: "string"
+          description: "Identifiant unique de l’action de formation"
+          minLength: 1
+        region:
+          type: "string"
+          description: "Code région du PAR"
+          pattern: "/[A-Z]{3}/"
+        exercice:
+          type: "integer"
+          format: "int32"
+          description: "Exercice du PAR"
+          minimum: 2015
+        code:
+          type: "string"
+          description: "Classification libre, propre à la délégation régionale"
+          maxLength: 10
+        axe:
+          type: "object"
+          description: "Axe de formation"
+          properties:
+            id:
+              type: "string"
+              description: "Identifiant unique de l’axe de formation"
+              minLength: 1
+            num:
+              type: "integer"
+              format: "int32"
+              description: "Numéro de l’axe de formation"
+              minimum: 1
+            intitule:
+              type: "string"
+              description: "Intitulé de l’axe de formation"
+              minLength: 1
+              maxLength: 80
+          required:
+          - "id"
+          - "intitule"
+          - "num"
+        intitule:
+          type: "string"
+          description: "Intitulé de l’action de formation"
+          minLength: 1
+          maxLength: 150
+        contexte:
+          type: "string"
+          description: "Contexte de l’action de formation"
+          minLength: 1
+          maxLength: 1200
+        objectifs:
+          type: "string"
+          description: "Objectifs de l’action de formation"
+          minLength: 1
+          maxLength: 900
+        autre:
+          type: "string"
+          description: "Champs d’information libre"
+          maxLength: 600
+        typologie:
+          type: "object"
+          description: "DPC / Typologie FPTLV"
+          properties:
+            code:
+              type: "string"
+              description: "Code de référence de typologie\n\n- DPC : 0\n- FPTLV :\
+                \ 1, 2, 3, 5\n\nLes codes de typologie FPTLV vont de 1 à 8. \nCependant,\
+                \ dans le contexte des actions de formation Nationales/Régionales,\n\
+                seules les typologies 1, 2, 3 et 5 sont valides. \n\ncf. [Art 1 du\
+                \ décret n°2008-824 du 21 août 2008](https://www.legifrance.gouv.fr/affichTexteArticle.do?idArticle=LEGIARTI000019366598&cidTexte=LEGITEXT000019366578&dateTexte=20160217)\n"
+              enum:
+              - "0"
+              - "1"
+              - "2"
+              - "3"
+              - "5"
+            libelle:
+              type: "string"
+              description: "Libellé de la typologie"
+              minLength: 1
+              maxLength: 80
+          required:
+          - "code"
+          - "libelle"
+        publics:
+          type: "array"
+          description: "Tableau des publics"
+          items:
+            type: "string"
+            description: "Libellé métier FPH"
+            minLength: 1
+        nature:
+          type: "string"
+          description: "- N pour AFN\n- R pour AFR\n- C pour AFC\n"
+          enum:
+          - "N"
+          - "R"
+          - "C"
+        titulaire:
+          type: "string"
+          description: "Raison sociale de l’organisme de formation titulaire du marché"
+        modules:
+          type: "array"
+          description: "Tableau des modules de formation"
+          items:
+            type: "object"
+            description: "Module de formation"
+            properties:
+              num:
+                type: "integer"
+                format: "int32"
+                description: "Numéro du module"
+                minimum: 1
+              intitule:
+                type: "string"
+                description: "Intitulé du module"
+                minLength: 1
+                maxLength: 150
+              contexte:
+                type: "string"
+                description: "Contexte du module"
+                maxLength: 1200
+              objectifs:
+                type: "string"
+                description: "Objectifs du module"
+                maxLength: 900
+              programme:
+                type: "string"
+                description: "Programme du module"
+                minLength: 1
+                maxLength: 700
+              duree:
+                type: "string"
+                description: "Durée du module"
+              formateur:
+                type: "string"
+                description: "Raison sociale de l’organisme de formation dispensant\
+                  \ le module"
+              publics:
+                type: "array"
+                description: "Tableau des publics"
+                items:
+                  type: "string"
+                  description: "Libellé métier FPH"
+                  minLength: 1
+            required:
+            - "intitule"
+            - "programme"
+        planifications:
+          type: "array"
+          description: "Tableau des planifications"
+          items:
+            type: "object"
+            description: "Planification"
+            properties:
+              calendrier:
+                type: "array"
+                description: "Tableau des évènements planifiés. \nLes événements sont\
+                  \ triés chronologiquement par date de début de l'événement\n"
+                items:
+                  type: "object"
+                  description: "Évènement"
+                  properties:
+                    debut:
+                      type: "string"
+                      format: "date"
+                      description: "Date de début de l'événement"
+                    fin:
+                      type: "string"
+                      format: "date"
+                      description: "Date de fin de fin de l’évènement"
+                    ville:
+                      type: "string"
+                      description: "Nom de ville où l'événement a lieu"
+                    detail:
+                      type: "string"
+                      description: "Détail concernant l’événement"
+            required:
+            - "calendrier"
+    description: "Action de formation"
+  Adresse:
+    type: "object"
+    required:
+    - "cpLocalite"
+    - "nom"
+    properties:
+      nom:
+        type: "string"
+        description: "Nom du destinataire"
+        minLength: 1
+        maxLength: 38
+      service:
+        type: "string"
+        description: "Service destinataire"
+        minLength: 1
+        maxLength: 38
+      pointLocalisation:
+        type: "string"
+        description: "Résidence, bâtiment, appartement, étage, ..."
+        minLength: 1
+        maxLength: 38
+      voie:
+        type: "string"
+        description: "Numéro dans la voie, type de voie, nom de la voie"
+        minLength: 1
+        maxLength: 38
+      lieuDit:
+        type: "string"
+        description: "Lieu dit, hameau, numéro de boite postale"
+        minLength: 1
+        maxLength: 38
+      cpLocalite:
+        type: "string"
+        description: "Code postal et localité"
+        minLength: 1
+        maxLength: 38
+    description: "Adresse postale"
+  ErrorModel:
+    type: "object"
+    required:
+    - "message"
+    - "status"
+    properties:
+      status:
+        type: "integer"
+        format: "int32"
+        description: "Code statut de l'erreur"
+      message:
+        type: "string"
+        description: "Message de description de l'erreur"
