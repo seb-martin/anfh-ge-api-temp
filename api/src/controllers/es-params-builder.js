@@ -91,6 +91,21 @@ class ParamsBuilder {
     return this;
   }
 
+  must_not(fieldName, value) {
+    var fieldBinding = this._bindings[fieldName];
+
+    if (value) {
+      var terms =  {
+        terms: {}
+      };
+      terms.terms[fieldBinding.term] = tokens;
+
+      this._esq.query('body', 'query', 'bool', ['must_not'],  terms);
+    }
+
+    return this;
+  }
+
   sort(signedFields) {
     if (signedFields) {
       this._esq.query('body', 'sort', signedFields.map(function(signedField) {
