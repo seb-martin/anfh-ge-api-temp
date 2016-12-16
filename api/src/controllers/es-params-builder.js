@@ -95,6 +95,8 @@ class ParamsBuilder {
     var fieldBinding = this._bindings[fieldName];
 
     if (value) {
+      var tokens = [value];
+      
       var terms =  {
         terms: {}
       };
