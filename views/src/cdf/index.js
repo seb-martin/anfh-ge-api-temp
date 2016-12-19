@@ -88,7 +88,7 @@
   var actionsSearchResultToRows = function(req, res, next) {
 
     var flatten = function(source) {
-      var flat = [source.region, source.exercice];
+      var flat = [source.region, source.exercice, source.code || null];
 
       // Axe
       if (source.axe) {

@@ -58,6 +58,6 @@
   var server = app.listen(port, function(){
     var _host = server.address().address;
     var _port = server.address().port;
-    console.log('Listening at http://%s:%s', _host, _port);
+    console.log('Listening on port %s (http://localhost:%s)', _port, _port);
   });
 })();
