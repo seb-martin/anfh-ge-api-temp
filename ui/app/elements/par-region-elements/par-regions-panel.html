@@ -13,7 +13,7 @@
     }
 
     .content {
-      max-width: 800px; 
+      max-width: 800px;
       margin-left: auto;
       margin-right: auto
     }
@@ -30,6 +30,16 @@ font-weight: 400;
  */
       border-bottom: 1px solid #dedede;
       background-color: #fff;
+    }
+
+    iron-icon[item-icon] {
+      color: var(--default-primary-color);
+      width: 32px;
+      height: 32px;
+    }
+
+    paper-icon-item:hover iron-icon[item-icon]{
+      color: var(--accent-color);
     }
 
     par-pastille[item-icon] {
@@ -51,7 +61,14 @@ font-weight: 400;
     <div class="content">
 
       <paper-material elevation="1">
-        <template is="dom-repeat" items="{{regions}}" as="region">
+        <template is="dom-repeat" items="{{regions}}" as="region" filter="_isSiege">
+          <paper-icon-item on-tap="_regionTap">
+            <iron-icon icon="stars"  item-icon></iron-icon>
+            {{region.denomination}}
+            <paper-ripple class="circle" recenters></paper-ripple>
+          </paper-icon-item>
+        </template>
+        <template is="dom-repeat" items="{{regions}}" as="region" filter="_isDelegation">
           <paper-icon-item on-tap="_regionTap">
             <par-pastille item-icon>{{region.code}}</par-pastille>
             {{region.denomination}}
@@ -59,7 +76,7 @@ font-weight: 400;
           </paper-icon-item>
         </template>
       </paper-material>
-      
+
     </div>
 
   </template>
@@ -79,6 +96,14 @@ font-weight: 400;
 
       _regionTap: function(evt) {
         this.fire('show-region', {region: evt.model.region});
+      },
+
+      _isSiege: function(region) {
+        return region.code === 'NAT';
+      },
+
+      _isDelegation: function(region) {
+        return !this._isSiege(region);
       }
 
     });

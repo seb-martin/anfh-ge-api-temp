@@ -21,12 +21,10 @@ module.exports = function(configOptions) {
 
   var deleteAlias = function(params) {
     return client.indices.deleteAlias(params);
-    // return client.indices.deleteAlias({index: index, name: alias});
   };
 
   var createAlias = function(params) {
     return client.indices.putAlias(params);
-    // return client.indices.putAlias({ index: index, name: alias });
   };
 
   var deleteIndex = function(params) {
@@ -36,6 +34,10 @@ module.exports = function(configOptions) {
 
   var createIndex = function(params) {
     return client.indices.create(params);
+  };
+
+  var index = function(params) {
+    return client.index(params);
   };
 
   var scroller = function(query_opts) {
@@ -93,6 +95,7 @@ module.exports = function(configOptions) {
     ping: ping,
     deleteIndex: deleteIndex,
     createIndex: createIndex,
+    index: index,
     scroller: scroller,
     bulker: bulker,
     createAlias: createAlias,

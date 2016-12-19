@@ -22,6 +22,16 @@
     (function() {
       'use strict';
 
+      var sortRegions = function(r1, r2) {
+        if (r1.code === 'NAT') {
+          return -1;
+        } else if (r2.code === 'NAT') {
+          return 1;
+        } else {
+          return r1.denomination.localeCompare(r2.denomination);
+        }
+      };
+
       Polymer({
         is: 'par-regions-data',
 
@@ -47,10 +57,7 @@
 
           this._body = JSON.stringify({
             'from': 0,
-            'size': 30,
-            'sort': {
-              'denomination.denomination_na': 'asc'
-            }
+            'size': 30
           });
 
           //this.refresh();
@@ -62,9 +69,11 @@
 
         _handleResponse: function(evt) {
           if (!!evt.detail.response) {
-            this._setRegions(evt.detail.response.hits.hits.map(function(hit) {
+            var regions = evt.detail.response.hits.hits.map(function(hit) {
               return hit._source;
-            }));
+            }).sort(sortRegions);
+
+            this._setRegions(regions);
           } else {
             this._setRegions([]);
           }
@@ -79,7 +88,7 @@
 
               var regions = response.hits.hits.map(function(hit) {
                 return hit._source;
-              });
+              }).sort(sortRegions);
 
               self._setRegions(regions);
 
