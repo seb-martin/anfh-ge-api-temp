@@ -163,30 +163,43 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
     });
 
     page('/', redirectRegion, function() {
-      app.titre = 'Plans d\'actions régionaux';
-      app.sstitre = 'des délégations régionales ANFH';
+      app.titre = 'Plans d\'actions';
+      app.sstitre = 'de l\'ANFH';
       app.route = 'regions';
     });
 
     page(app.baseUrl, redirectRegion, function() {
-      app.titre = 'Plans d\'actions régionaux';
-      app.sstitre = 'des délégations régionales ANFH';
+      app.titre = 'Plans d\'actions';
+      app.sstitre = 'de l\'ANFH';
       app.route = 'regions';
     });
 
     page('/:reg', selectRegion, function(data) {
-      app.titre = 'Plans d\'actions régionaux';
-      app.sstitre = 'de la délégation ' + app._region.denomination;
+      if (app._region.code === 'NAT') {
+        app.titre = 'Plans d\'actions nationaux';
+        app.sstitre = 'du ' + app._region.denomination;
+      } else {
+        app.titre = 'Plans d\'actions régionaux';
+        app.sstitre = 'de la délégation ' + app._region.denomination;
+      }
       app.route = 'region';
       app.params = data.params;
     });
 
     page('/:reg/:exe/axes', selectRegion, selectExercice, loadAxes, function(data) {
-
       app.titre = 'Axes de formation';
-      app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-        .replace(':exe', app._exercice)
-        .replace(':reg', app._region.denomination);
+
+      if (app._region.code === 'NAT') {
+        app.sstitre = 'du plan d\'action national :exe du :reg'
+          .replace(':exe', app._exercice)
+          .replace(':reg', app._region.denomination);
+
+      } else {
+        app.sstitre = 'du plan d\'action régional :exe de la délégation :reg'
+          .replace(':exe', app._exercice)
+          .replace(':reg', app._region.denomination);
+      }
+
       app.route = 'axes';
       app.params = data.params;
 
@@ -196,9 +209,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       selectRegion, selectExercice, loadActions,
       function(data) {
         app.titre = 'Actions de formation';
-        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-          .replace(':exe', app._exercice)
-          .replace(':reg', app._region.denomination);
+
+        if (app._region.code === 'NAT') {
+          app.sstitre = 'du plan d\'action national :exe du :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        } else {
+          app.sstitre = 'du plan d\'action régional :exe de la délégation :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        }
+
         app.route = 'actions';
         app.params = data.params;
       }
@@ -208,9 +229,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       selectRegion, selectExercice, loadAxes, newAxe,
       function(data) {
         app.titre = 'Créer un axe';
-        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-          .replace(':exe', app._exercice)
-          .replace(':reg', app._region.denomination);
+
+        if (app._region.code === 'NAT') {
+          app.sstitre = 'du plan d\'action national :exe du :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        } else {
+          app.sstitre = 'du plan d\'action régional :exe de la délégation :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        }
+
         app.route = 'axe';
         app.params = data.params;
       }
@@ -220,9 +249,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       selectRegion, selectExercice, loadAxes, selectAxe,
       function(data) {
         app.titre = 'Modifier un axe';
-        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-          .replace(':exe', app._exercice)
-          .replace(':reg', app._region.denomination);
+
+        if (app._region.code === 'NAT') {
+          app.sstitre = 'du plan d\'action national :exe du :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        } else {
+          app.sstitre = 'du plan d\'action régional :exe de la délégation :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        }
+
         app.route = 'axe';
         app.params = data.params;
       }
@@ -232,9 +269,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       selectRegion, selectExercice, loadActions, newAction,
       function(data) {
         app.titre = 'Créer une action';
-        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-          .replace(':exe', app._exercice)
-          .replace(':reg', app._region.denomination);
+
+        if (app._region.code === 'NAT') {
+          app.sstitre = 'du plan d\'action national :exe du :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        } else {
+          app.sstitre = 'du plan d\'action régional :exe de la délégation :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        }
+
         app.route = 'action';
         app.menu = 'action';
         app.params = data.params;
@@ -245,9 +290,17 @@ subject to an additional IP rights grant found at http://polymer.github.io/PATEN
       selectRegion, selectExercice, loadActions, selectAction,
       function(data) {
         app.titre = 'Modifier une action';
-        app.sstitre = 'du plan d\'action :exe de la délégation :reg'
-          .replace(':exe', app._exercice)
-          .replace(':reg', app._region.denomination);
+
+        if (app._region.code === 'NAT') {
+          app.sstitre = 'du plan d\'action national  :exe du :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        } else {
+          app.sstitre = 'du plan d\'action régional :exe de la délégation :reg'
+            .replace(':exe', app._exercice)
+            .replace(':reg', app._region.denomination);
+        }
+
         app.route = 'action';
         app.menu = 'action';
         app.params = data.params;
