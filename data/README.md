@@ -73,3 +73,4 @@ Liste des tâches majeures
   - Transforme la durée des modules exprimées en jours/heures/minutes en durées exprimées en heures/minutes,
 6. `update_2_par_1_1`
   - Ajoute la "délégation" `NAT` *Siège*
+  - Recopie les actions nationales des régions dans *Siège*

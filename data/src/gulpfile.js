@@ -168,9 +168,18 @@ gulp.task('update_1_par_1_1', function() {
 Tâches de mise à jour 2 des données du mapping 1.1 (nouvelle "région" : NAT - Siège)
 */
 
-gulp.task('update_2_par_1_1', function() {
+gulp.task('create_siege', function() {
   return par_1_1_dataUpdate_2.indexSiege();
 });
+
+gulp.task('copy_natact_siege', function() {
+  return par_1_1_dataUpdate_2.copyNatActions(par_1_1.scrollActions());
+});
+
+gulp.task('update_2_par_1_1', [
+  'create_siege',
+  'copy_natact_siege'
+]);
 
 
 /*
