@@ -69,10 +69,18 @@
 
       <paper-item>
         <iron-icon icon="home"  item-icon></iron-icon>
-        <span>Délégations</span>
+        <span>Tous</span>
       </paper-item>
 
-      <template is="dom-repeat" items="{{regions}}">
+      <template is="dom-repeat" items="{{regions}}" filter="_isSiege">
+
+        <paper-item>
+          <iron-icon icon="stars"  item-icon></iron-icon>
+          <span>{{item.denomination}}</span>
+        </paper-item>
+
+      </template>
+      <template is="dom-repeat" items="{{regions}}" filter="_isDelegation">
 
         <paper-item>
           <par-pastille item-icon>{{item.code}}</par-pastille>
@@ -139,6 +147,14 @@
         } else {
           this.$.parMenu.select(0);
         }
+      },
+
+      _isSiege: function(region) {
+        return region.code === 'NAT';
+      },
+
+      _isDelegation: function(region) {
+        return !this._isSiege(region);
       }
 
     });
