@@ -76,6 +76,7 @@ module.exports.parRegionsGET = function parRegionsGET (req, res, next) {
 
   var searchParams =  new ParamsBuilder(index, type, bindings[type])
     .searchParams(args)
+    .must_not('code', 'NAT')
     .build();
 
   var dao = new DAO(req.esClient);
@@ -87,20 +88,28 @@ module.exports.parRegionsGET = function parRegionsGET (req, res, next) {
   });
 };
 
-module.exports.parRegionsIdGET = function parRegionsCodeGET (req, res, next) {
-  var type = 'regions';
+module.exports.parRegionsCodeGET = function parRegionsCodeGET (req, res, next) {
 
-  var getParams = new ParamsBuilder(index, type, bindings[type])
-    .getParams(req.swagger.params)
-    .build();
+  if (req.swagger.params.id.value === 'NAT') {
+    next({
+      status: 404,
+      message: 'Not Found'
+    });
+  } else {
+    var type = 'regions';
 
-  var dao = new DAO(req.esClient);
+    var getParams = new ParamsBuilder(index, type, bindings[type])
+      .getParams(req.swagger.params)
+      .build();
 
-  dao.get(getParams, hitToRegion).then(function(region) {
-    res.json(region);
-  }).catch(function(err) {
-    next(err);
-  });
+    var dao = new DAO(req.esClient);
+
+    dao.get(getParams, hitToRegion).then(function(region) {
+      res.json(region);
+    }).catch(function(err) {
+      next(err);
+    });
+  }
 };
 
 
@@ -111,6 +120,7 @@ module.exports.parAxesGET = function parAxesGET (req, res, next) {
 
   var searchParams =  new ParamsBuilder(index, type, bindings[type])
     .searchParams(args)
+    .must_not('region', 'NAT')
     .build();
 
   var dao = new DAO(req.esClient);
@@ -132,7 +142,14 @@ module.exports.parAxesIdGET = function parAxesIdGET (req, res, next) {
   var dao = new DAO(req.esClient);
 
   dao.get(getParams, hitToAxe).then(function(axe) {
-    res.json(axe);
+    if (axe.region === 'NAT') {
+      next({
+        status: 404,
+        message: 'Not Found'
+      });
+    } else {
+      res.json(axe);
+    }
   }).catch(function(err) {
     next(err);
   });
@@ -146,6 +163,7 @@ module.exports.parActionsGET = function parActionsGET (req, res, next) {
 
   var searchParams =  new ParamsBuilder(index, type, bindings[type])
     .searchParams(args)
+    .must_not('region', 'NAT')
     .filter('_publie', true)
     .build();
 
@@ -169,7 +187,14 @@ module.exports.parActionsIdGET = function parActionsIdGET (req, res, next) {
 
   dao.get(getParams, hitToAction).then(function(action) {
     if (action) {
-      res.json(action);
+      if (action.region === 'NAT') {
+        next({
+          status: 404,
+          message: 'Not Found'
+        });
+      } else {
+        res.json(action);
+      }
     } else {
       res.status(404);
       throw "Non trouvé";

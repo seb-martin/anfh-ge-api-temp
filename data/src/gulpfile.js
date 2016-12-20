@@ -1,4 +1,5 @@
 var gulp = require('gulp');
+var runSequence = require('run-sequence');
 var through = require('through2');
 var moment = require('moment');
 
@@ -14,6 +15,7 @@ var par_1_0 = require('./par_1_0')(esHelpers);
 var par_1_1 = require('./par_1_1')(esHelpers);
 var anfh_1_0 = require('./anfh_1_0')(esHelpers);
 var par_1_1_dataUpdate_1 = require('./par_1_1_dataUpdate_1')(esHelpers);
+var par_1_1_dataUpdate_2 = require('./par_1_1_dataUpdate_2')(esHelpers);
 
 var PAR_ALIAS_NAME = 'par';
 var ANFH_ALIAS_NAME = 'anfh';
@@ -162,9 +164,44 @@ gulp.task('update_1_par_1_1', function() {
   return par_1_1_dataUpdate_1.updateActions(par_1_1.scrollActions());
 });
 
-
 /*
-Tâche par défaut (denière tâche majeure de manip des données)
+Tâches de mise à jour 2 des données du mapping 1.1 (nouvelle "région" : NAT - Siège)
 */
 
-gulp.task('default', ['update_1_par_1_1']);
+gulp.task('create_siege', function() {
+  return par_1_1_dataUpdate_2.indexSiege();
+});
+
+gulp.task('copy_natact_siege', function() {
+  return par_1_1_dataUpdate_2.copyNatActions(par_1_1.scrollActions());
+});
+
+gulp.task('update_2_par_1_1', [
+  'create_siege',
+  'copy_natact_siege'
+]);
+
+
+/*
+Tâche par défaut (rejoue les tâches dans l'ordre)
+*/
+
+// gulp.task('default', [
+//   'recover_par_1_0',
+//   'from_par_1_0_to_1_1',
+//   'delete_par_1_0',
+//   'recover_anfh_1_0',
+//   'update_1_par_1_1',
+//   'update_2_par_1_1'
+// ]);
+
+gulp.task('default', function() {
+  return runSequence(
+    'recover_par_1_0',
+    'from_par_1_0_to_1_1',
+    'delete_par_1_0',
+    'recover_anfh_1_0',
+    'update_1_par_1_1',
+    'update_2_par_1_1'
+  );
+});

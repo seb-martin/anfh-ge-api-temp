@@ -75,6 +75,15 @@ docker-compose -f docker-compose.yml -f docker-compose.sample.yml -f docker-comp
 docker-compose -f docker-compose.yml -f docker-compose.sample.yml -f docker-compose.admin.yml run data update_1_par_1_1
 ```
 
+### Mise à jour 2 des données du PAR 1.1 (Ajout du siège aux délégations)
+
+- Ajoute la "délégation" `NAT` *Siège*
+- Recopie les actions nationales des régions dans *Siège*
+
+```sh
+docker-compose -f docker-compose.yml -f docker-compose.sample.yml -f docker-compose.admin.yml run data update_2_par_1_1
+```
+
 ## Relancer le système.
 
 ```sh

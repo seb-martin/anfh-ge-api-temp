@@ -9,6 +9,10 @@
       "type": "number"
     },
     {
+      "caption": "Référence",
+      "type": "string"
+    },
+    {
       "caption": "Numéro axe",
       "type": "number"
     },
