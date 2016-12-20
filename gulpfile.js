@@ -98,10 +98,6 @@
     return ver(paths.versionToBump.ui, argv.version);
   });
 
-  gulp.task('bump-recovery-version', function(){
-    return ver(paths.versionToBump.recovery, argv.version);
-  });
-
   gulp.task('bump-admin-version', function(){
     return ver(paths.versionToBump.admin, argv.version);
   });
@@ -126,10 +122,6 @@
 
   gulp.task('bump-ui-major', [], function() {
     return inc(paths.versionToBump.ui, 'major');
-  });
-
-  gulp.task('bump-recovery-major', [], function() {
-    return inc(paths.versionToBump.recovery, 'major');
   });
 
   gulp.task('bump-admin-major', [], function() {
@@ -158,10 +150,6 @@
     return inc(paths.versionToBump.ui, 'minor');
   });
 
-  gulp.task('bump-recovery-minor', [], function() {
-    return inc(paths.versionToBump.recovery, 'minor');
-  });
-
   gulp.task('bump-admin-minor', [], function() {
     return inc(paths.versionToBump.admin, 'minor');
   });
@@ -188,10 +176,6 @@
     return inc(paths.versionToBump.ui, 'patch');
   });
 
-  gulp.task('bump-recovery-patch', [], function() {
-    return inc(paths.versionToBump.recovery, 'patch');
-  });
-
   gulp.task('bump-admin-patch', [], function() {
     return inc(paths.versionToBump.admin, 'patch');
   });
@@ -209,7 +193,6 @@
     'bump-views-version',
     'bump-ui-version',
     'bump-admin-version',
-    'bump-recovery-version',
     'bump-data-version',
     'commit'
   ]);
@@ -219,7 +202,6 @@
     'bump-api-major',
     'bump-views-major',
     'bump-ui-major',
-    'bump-recovery-major',
     'bump-admin-major',
     'bump-data-major',
     'commit'
@@ -230,7 +212,6 @@
     'bump-api-minor',
     'bump-views-minor',
     'bump-ui-minor',
-    'bump-recovery-minor',
     'bump-admin-minor',
     'bump-data-minor',
     'commit'
@@ -241,7 +222,6 @@
     'bump-api-patch',
     'bump-views-patch',
     'bump-ui-patch',
-    'bump-recovery-patch',
     'bump-admin-patch',
     'bump-data-patch',
     'commit'
