@@ -25,10 +25,6 @@
         src: ['./ui/package.json'],
         dst: './ui'
       },
-      recovery: {
-        src: ['./recovery/package.json'],
-        dst: './recovery'
-      },
       admin: {
         src: ['./admin/src/package.json'],
         dst: './admin/src'
