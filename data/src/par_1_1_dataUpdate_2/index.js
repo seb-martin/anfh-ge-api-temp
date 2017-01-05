@@ -7,6 +7,7 @@ module.exports = function(esHelpers) {
   var docActionModif = function() {
     return through.obj(function(obj, enc, cb) {
       if (obj.nature === 'N') {
+        delete obj._id
         obj._publie = false;
         obj.region = 'NAT';
         delete obj.code;
