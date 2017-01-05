@@ -22,6 +22,18 @@ module.exports = function(esHelpers) {
     });
   };
 
+  var upDateDerniereModif = function() {
+    return through.obj(function(obj, enc, cb) {
+      if (obj.nature === 'N' && obj.region !== 'NAT') {
+        obj.derniereModif = moment().toISOString();
+
+        this.push(obj);
+      }
+
+      cb();
+    });
+  };
+
   var copyNatActions = function(docsStream, docType) {
     return docsStream
       .pipe(docActionModif())
@@ -31,6 +43,19 @@ module.exports = function(esHelpers) {
         })
         .on('error', function(err) {
           console.info('Echec de la copie nationale des documents DOCTYPE sur l\'index'.replace('DOCTYPE', docType), INDEX_1_1);
+        });
+
+  };
+
+  var issue141 = function(docsStream) {
+    return docsStream
+      .pipe(upDateDerniereModif())
+      .pipe(esHelpers.bulker())
+        .on('end', function() {
+          console.info('Succès de la mise à jour de la date de dernère modif des actions nationales en délégation sur l\'index', INDEX_1_1);
+        })
+        .on('error', function(err) {
+          console.info('Echec de la mise à jour de la date de dernère modif des actions nationales en délégation sur l\'index', INDEX_1_1);
         });
 
   };
@@ -53,6 +78,10 @@ module.exports = function(esHelpers) {
 
     copyNatActions: function(actionsStream) {
       return copyNatActions(actionsStream, 'actions');
+    },
+
+    issue141: function(actionsStream) {
+      return issue141(actionsStream);
     }
 
   }
