@@ -181,19 +181,14 @@ gulp.task('update_2_par_1_1', [
   'copy_natact_siege'
 ]);
 
+gulp.task('issue141', function() {
+  return par_1_1_dataUpdate_2.issue141(par_1_1.scrollActions());
+});
+
 
 /*
 Tâche par défaut (rejoue les tâches dans l'ordre)
 */
-
-// gulp.task('default', [
-//   'recover_par_1_0',
-//   'from_par_1_0_to_1_1',
-//   'delete_par_1_0',
-//   'recover_anfh_1_0',
-//   'update_1_par_1_1',
-//   'update_2_par_1_1'
-// ]);
 
 gulp.task('default', function() {
   return runSequence(
