@@ -16,6 +16,7 @@ var par_1_1 = require('./par_1_1')(esHelpers);
 var anfh_1_0 = require('./anfh_1_0')(esHelpers);
 var par_1_1_dataUpdate_1 = require('./par_1_1_dataUpdate_1')(esHelpers);
 var par_1_1_dataUpdate_2 = require('./par_1_1_dataUpdate_2')(esHelpers);
+var par_tools = require('./par_tools')(esHelpers);
 
 var PAR_ALIAS_NAME = 'par';
 var ANFH_ALIAS_NAME = 'anfh';
@@ -185,6 +186,9 @@ gulp.task('issue141', function() {
   return par_1_1_dataUpdate_2.issue141(par_1_1.scrollActions());
 });
 
+gulp.task('upDateDerniereModifActions', function() {
+  return par_tools.upDateDerniereModif(par_1_1.scrollActions());
+});
 
 /*
 Tâche par défaut (rejoue les tâches dans l'ordre)
