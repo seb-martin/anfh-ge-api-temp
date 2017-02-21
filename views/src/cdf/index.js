@@ -72,7 +72,7 @@
               },
               {
                 term: { exercice: req.params.exe }
-              },
+              }
             ]
           }
         }
@@ -163,13 +163,13 @@
       }
 
       // Compare l'intitulé de l'action
-      val = a1[4].localeCompare(a2[4]);
+      val = a1[5].localeCompare(a2[5]);
       if (val !== 0) {
         return val;
       }
 
       // Compare le numéro de module
-      val = a1[6] - a2[6]
+      val = (a1[7] || 0) - (a2[7] || 0)
       if (val !== 0) {
         return val;
       }
